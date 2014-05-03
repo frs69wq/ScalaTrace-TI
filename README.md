@@ -2,6 +2,14 @@ ScalaTrace-TI
 =============
 
 Merging Time Independent Trace Replay and ScalaTrace
+
+Project started by F. Suter and H. Casanova on May 2, 2014 based on
+the official distribution of ScalaTrace V2.
+All source files have been added a proper comment fixing the 
+copyright before any modification of the code.
+
+
+Here follows the original README from the ScalaTraceV2 distribution
 ##################################################################
 # Introduction
 ##################################################################

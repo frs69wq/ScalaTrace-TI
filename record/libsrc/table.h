@@ -1,7 +1,12 @@
-/* -*- Mode: C; -*- */
-/* Creator: Bronis de Supinski (bronis@llnl.gov) Mon Apr 15 2002 */
-/* $Header: /home/cvs/cvs/xwu3/ScalaTraceV2/record/libsrc/table.h,v 1.1 2012/04/02 05:12:09 xwu3 Exp $ */
-/* table.h -- queue header */
+/*
+ * Copyright (c) 2002-May 2, 2014: Bronis de Supinski (bronis@llnl.gov)
+ * Copyright (c) of subsequent modifications of this code:
+ * Frederic Suter, CNRS / IN2P3 Computing Center <fsuter@cc.in2p3.fr>
+ * Henri Casanova, ICS Dept., University of Hawai`i at Manoa <henric@hawaii.edu>
+
+ * The license of the original code is unknown. Modifications are made
+ * under the terms of the GNU LGPL license.
+ */
 
 #ifndef _UMPI_TABLE_H
 #define _UMPI_TABLE_H

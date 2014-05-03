@@ -1,8 +1,11 @@
 /*
- * Filename: walker.h
- * Author:   prasun
- * Created:  Tue Jan 29 16:59:46 2008
- * $Id: walker.h,v 1.1 2012/04/02 05:12:11 xwu3 Exp $
+ * Copyright (c) 2008-May 2, 2014: Prasun Ratn <prasun@ncsu.edu>
+ * Copyright (c) of subsequent modifications of this code:
+ * Frederic Suter, CNRS / IN2P3 Computing Center <fsuter@cc.in2p3.fr>
+ * Henri Casanova, ICS Dept., University of Hawai`i at Manoa <henric@hawaii.edu>
+
+ * The license of the original code is unknown. Modifications are made
+ * under the terms of the GNU LGPL license.
  */
 #ifndef __WALKER_H__
 #define __WALKER_H__

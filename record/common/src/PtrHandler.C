@@ -1,15 +1,15 @@
- /*
- * Filename: ptr_handler.C
- * Author:   pratn
- * Created:  Thu Jun 28 16:23:26 2007
- * $Id: PtrHandler.C,v 1.2 2012/04/19 14:43:09 xwu3 Exp $
- * 
- * tgamblin, 12/26/08   Changed to ptr_handler.C and updated with more 
- *                      standards-compliant datatype and op support.
- * 
- * tgamblin, 01/09/09   Added HandleMapper template class to get rid of
- *                      really nasty C macros.
+/*
+ * Copyright (c) 2007 - May 2, 2014:
+ * Prasun Ratn <prasun@ncsu.edu>, Todd Gamblin <tgamblin@cs.unc.edu>,
+ * Xing Wu <xwu3.ncsu.edu>
+ * Copyright (c) of subsequent modifications of this code:
+ * Frederic Suter, CNRS / IN2P3 Computing Center <fsuter@cc.in2p3.fr>
+ * Henri Casanova, ICS Dept., University of Hawai`i at Manoa <henric@hawaii.edu>
+
+ * The license of the original code is unknown. Modifications are made
+ * under the terms of the GNU LGPL license.
  */
+
 #include "PtrHandler.h"
 
 #include <cstdlib>

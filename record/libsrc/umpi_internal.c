@@ -1,5 +1,12 @@
-/* -*- Mode: C; -*- */
-/* Creator: Jeffrey Vetter (vetter3@llnl.gov) Thu Mar 30 2000 */
+/*
+ * Copyright (c) 2000-May 2, 2014: Jeffrey Vetter (vetter3@llnl.gov)
+ * Copyright (c) of subsequent modifications of this code:
+ * Frederic Suter, CNRS / IN2P3 Computing Center <fsuter@cc.in2p3.fr>
+ * Henri Casanova, ICS Dept., University of Hawai`i at Manoa <henric@hawaii.edu>
+
+ * The license of the original code is unknown. Modifications are made
+ * under the terms of the GNU LGPL license.
+ */
 
 /* umpi_internal.c -- internal vars */
 

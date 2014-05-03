@@ -1,9 +1,14 @@
 /*
- * Filename: ptr_handler.h
- * Author:   pratn
- * Created:  Thu Jun 28 16:37:10 2007
- * $Id: PtrHandler.h,v 1.1 2012/04/02 05:12:08 xwu3 Exp $
+ * Cop	yright (c) 2007 - May 2, 2014:
+ * Prasun Ratn <prasun@ncsu.edu>, Xing Wu <xwu3@ncsu.edu>
+ * Copyright (c) of subsequent modifications of this code:
+ * Frederic Suter, CNRS / IN2P3 Computing Center <fsuter@cc.in2p3.fr>
+ * Henri Casanova, ICS Dept., University of Hawai`i at Manoa <henric@hawaii.edu>
+
+ * The license of the original code is unknown. Modifications are made
+ * under the terms of the GNU LGPL license.
  */
+
 #ifndef __PTR_HANDLER_H__
 #define __PTR_HANDLER_H__
 

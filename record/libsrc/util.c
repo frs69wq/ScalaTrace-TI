@@ -1,5 +1,12 @@
-/* -*- Mode: C; -*- */
-/* Creator: Jeffrey Vetter (j-vetter@llnl.gov) Tue Dec 21 1999 */
+/*
+ * Copyright (c) 1999-May 2, 2014: Jeffrey Vetter (vetter3@llnl.gov)
+ * Copyright (c) of subsequent modifications of this code:
+ * Frederic Suter, CNRS / IN2P3 Computing Center <fsuter@cc.in2p3.fr>
+ * Henri Casanova, ICS Dept., University of Hawai`i at Manoa <henric@hawaii.edu>
+
+ * The license of the original code is unknown. Modifications are made
+ * under the terms of the GNU LGPL license.
+ */
 /* util.c -- common utils */
 
 #include <stdlib.h>

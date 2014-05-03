@@ -1,8 +1,11 @@
-/* -*- Mode: C; -*- */
+/*
+ * Copyright (c) 1996-May 2, 2014: Jeffrey Vetter (vetter3@llnl.gov)
+ * Copyright (c) of subsequent modifications of this code:
+ * Frederic Suter, CNRS / IN2P3 Computing Center <fsuter@cc.in2p3.fr>
+ * Henri Casanova, ICS Dept., University of Hawai`i at Manoa <henric@hawaii.edu>
 
-%{
-/* $Id: lexer.lex,v 1.1 2012/04/02 05:12:10 xwu3 Exp $
- * Created: Jeff Vetter (vetter@lanl.gov) on Mon Jul 15 1996.
+ * The license of the original code is unknown. Modifications are made
+ * under the terms of the GNU LGPL license.
  */
 
 

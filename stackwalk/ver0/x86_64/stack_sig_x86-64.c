@@ -1,8 +1,11 @@
 /*
- * Filename: stack_sig_x86-64.c
- * Author:   pratn
- * Created:  Wed Feb 21 23:27:31 2007
- * $Id: stack_sig_x86-64.c,v 1.1 2012/04/02 05:12:11 xwu3 Exp $
+ * Copyright (c) 2007-May 2, 2014: Prasun Ratn <prasun@ncsu.edu>
+ * Copyright (c) of subsequent modifications of this code:
+ * Frederic Suter, CNRS / IN2P3 Computing Center <fsuter@cc.in2p3.fr>
+ * Henri Casanova, ICS Dept., University of Hawai`i at Manoa <henric@hawaii.edu>
+
+ * The license of the original code is unknown. Modifications are made
+ * under the terms of the GNU LGPL license.
  */
 #include <stdint.h>
 #include <stdlib.h>
