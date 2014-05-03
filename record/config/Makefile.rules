@@ -1,0 +1,23 @@
+# Hey emacs, this is a -*- makefile -*-
+#
+# This Makefile contains rules for autogenerating C and C++ 
+# dependencies.  It should be included in subdir makefiles.
+#
+
+%.d: %.c 
+	@$(SHELL) -ec '$(DEPCC) $(CPPFLAGS) $< \
+    | sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@; \
+    [ -s $@ ] || rm -f $@'
+
+%.D: %.C
+	@$(SHELL) -ec '$(DEPCXX) $(CPPFLAGS) $< \
+    | sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@; \
+    [ -s $@ ] || rm -f $@'
+
+.c.o: 
+	$(MPICC) $(MPICFLAGS) $(CPPFLAGS) -o $@ -c $<
+
+.C.o: 
+	$(MPICXX) $(MPICXXFLAGS) $(CPPFLAGS) -o $@ -c $<
+
+# vim: set syntax=make:

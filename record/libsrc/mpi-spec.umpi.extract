@@ -1,0 +1,6182 @@
+# -*- Mode: C; -*-
+# vim: set syntax=c:
+
+# MPI specification file for wrapper generator.
+#
+#
+boot 
+{
+##### OPERATIONAL ATTRIBUTES
+##### These attributes are operational and really should
+##### be inferred from the descriptive attributes - they
+##### are included for convenience (and historic reasons)
+# doesn't require a postop
+	attr nopost;
+# doesn't require a preop
+	attr nopre;
+# doesn't require asynchronous/global postop processing
+	attr noasynchpost;
+# doesn't require asynchronous/global preop processing
+	attr noasynchpre;
+# doesn't require asynchronous local postop processing
+	attr noasynchlocalpost;
+# doesn't require asynchronous local preop processing
+	attr noasynchlocalpre;
+# doesn't require (asynchronous) global postop processing
+	attr noasynchglobalpost;
+# doesn't require (asynchronous) global preop processing
+	attr noasynchglobalpre;
+# doesn't require (synchronous) local postop processing
+	attr nolocalpost;
+# doesn't require (synchronous) local preop processing
+	attr nolocalpre;
+# doesn't require a wrapper: usually has no wrapper; some specialized wrappers
+	attr nowrapper;
+##### DESCRIPTIVE ATTRIBUTES
+# is it a collective operation
+	attr collective;
+# is it a collective operation without a root arg
+	attr synchronous_collective;
+# can be part of an MPI deadlock: basically a blocking op with communication
+	attr candeadlock;
+# don't need to wait for result of global operation
+	attr asynchronous;
+# a non-blocking communication operation
+	attr nonblocking;
+# a persistent communication initiation operation
+	attr persistent_init;
+# a persistent communication start operation
+	attr persistent_start;
+# has a send component (i.e., includes sendrecvs...)
+	attr send;
+# has a recv component (i.e., includes sendrecvs...)
+	attr recv;
+# is a sendrecv...
+	attr sendrecv;
+# is a bsend...
+	attr bsend;
+# is a completion operation of a non-blocking communication
+	attr completion;
+# is a partial completion operation (some of its requests may not be
+# completed after it returns, e.g. any MPI_Test* and MPI_Waitany)
+	attr partial_completion;
+# is a test completion operation (i.e., an MPI_Test*)
+	attr test_completion;
+# is an "any" completion operation (i.e., an MPI_Testany or MPI_Waitany)
+	attr any_completion;
+# is a "some" completion operation (i.e., an MPI_Testsome or MPI_Waitsome)
+	attr some_completion;
+# is a "request free" operation (e.g., an MPI_Request_free)
+	attr request_free;
+# is an op that creates something that uses resources (e.g., an MPI_Comm)
+	attr resource_constructor;
+# is a operation that frees resources (e.g., an MPI_Comm_free)
+	attr resource_destructor;
+# is an operation that creates a communicator (i.e., an MPI_Comm_dup)
+	attr comm_constructor;
+# is an operation that creates a group (i.e., an MPI_Comm_group)
+	attr group_constructor;
+# is an operation that creates a datatype (i.e., an MPI_Type_contiguous)
+	attr type_constructor;
+# is an operation with multiple requests in array_of_requests
+	attr multiple_requests;
+# is an MPI function, thus might not be present in many MPI implementations
+	attr MPI2_function;
+# is an POSIX operation and needed to generate link time wrappers
+	attr posix_function;
+};
+
+###############################
+#
+# PROTOTYPE PARAMETER CONVENTIONS IN WRAPPER GENERATOR:
+#           IF SCALAR PARAMETER, RECORD VALUE
+#           ELSE IF "POINTER" PARAMETER 
+#               IF PARAMETER TYPE IS VOID OR PARAMETER NAME IS "function" 
+#                   RECORD ADDRESS
+#               ELSE IF PARAMETER NAME INCLUDES "array" 
+#                   RECORD "count" VALUES
+#               ELSE IF PARAMETER NAME INCLUDES "counts" OR "displs"
+#                   RECORD PMPI_Comm_size("comm", &VAR) VALUES
+#               ELSE IF PARAMETER NAME INCLUDES "retcoords" OR "dimsp"
+#                   RECORD PMPI_Cartdim_get("comm", &VAR) VALUES
+#               ELSE IF PARAMETER NAME INCLUDES "retedges" 
+#                   RECORD "edgecount" VALUES
+#               ELSE IF PARAMETER NAME INCLUDES "edges" 
+#                   RECORD "array_of_degrees"["count" - 1] VALUES
+#               ELSE IF PARAMETER NAME INCLUDES "the_addresses" 
+#                   RECORD "addrcount" VALUES
+#               ELSE IF PARAMETER NAME INCLUDES "the_datatypes" 
+#                   RECORD "dtypecount" VALUES
+#               ELSE IF PARAMETER NAME INCLUDES "ranges" 
+#                   RECORD 3 * "count" VALUES
+#               ELSE 
+#                   RECORD SINGLE VALUE (i.e., TREAT AS SCALAR)
+#
+#
+# THIS LEAVES CHAR POINTERS BROKEN (RECORDS FIRST CHAR, I THINK)
+#
+#
+###############################
+
+
+extern int MPI_Abort ( MPI_Comm comm, int errorcode )
+{
+#   not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+	/*
+	init_op (&operation);
+	init_event(event);
+	recordEventTime(event, 0);
+	recordTime (&operation, 0);
+	*/
+}
+wrapper-pre
+wrapper-post
+{
+	/*
+	operation.fields = COMM;
+	event_set_param_list(event, op->op, op->seq_num, COMM);
+	operation.op = op->op;
+	operation.seq_num = op->seq_num;
+	operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+	add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+
+	recordTime (&operation, 1);
+	recordEventTime(event, 1);
+	compress_rsd_event( &op_queue, &operation, event);
+	recordEventTime(0,0);
+	recordTime (0, 0);
+	*/
+}
+wrapper-post
+;
+
+
+
+extern int MPI_Address ( void *location, MPI_Aint *address )
+{
+#   not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+	/*
+	init_op (&operation);
+	init_event(event);
+	recordEventTime(event, 0);
+	recordTime (&operation, 0);
+	*/
+}
+wrapper-pre
+wrapper-post
+{
+	/*
+	operation.fields = NO_FIELDS;
+	event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+	operation.seq_num = op->seq_num;
+    
+	recordTime (&operation, 1);
+	recordEventTime(event, 1);
+	compress_rsd_event( &op_queue, &operation, event);
+	recordEventTime(0,0);
+	recordTime (0, 0);
+	*/
+}
+wrapper-post
+;
+
+extern int MPI_Allgather ( void *buf, int count, MPI_Datatype datatype, void *recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+#	set nopost;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, RECVCOUNT, op->data.mpi.recvcount, my_rank);
+	addScalarValue(event, RECVTYPE, type_to_index(record_ptr, op->data.mpi.recvtype), my_rank);
+	appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_Allgatherv ( void *buf, int count, MPI_Datatype datatype, void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype, MPI_Comm comm )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+#	set nopost;
+	extrafield "size" "int";
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	int comm_size;
+	PMPI_Comm_size(op->data.mpi.comm, &comm_size);
+
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, RECVTYPE, type_to_index(record_ptr, op->data.mpi.recvtype), my_rank);
+	addVectorValue(event, RECVCOUNTS, comm_size, op->data.mpi.recvcounts, my_rank);
+	addVectorValue(event, DISPLS, comm_size, op->data.mpi.recvcounts, my_rank);
+	appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_Allreduce ( void *buf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+#	set nopost;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, MPI_OP, op_to_index(record_ptr, op->data.mpi.op), my_rank);
+	appendEvent(&trace, event);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Alltoall ( void *buf, int count, MPI_Datatype datatype, void *recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+#	set nopost;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, RECVCOUNT, op->data.mpi.recvcount, my_rank);
+	addScalarValue(event, RECVTYPE, type_to_index(record_ptr, op->data.mpi.recvtype), my_rank);
+	appendEvent(&trace, event);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Alltoallv ( void *buf, int *counts, int *sdispls, MPI_Datatype datatype, void *recvbuf, int *recvcounts, int *rdispls, MPI_Datatype recvtype, MPI_Comm comm )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+#	set nopost;
+	extrafield "size" "int";
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	int comm_size;
+	PMPI_Comm_size(op->data.mpi.comm, &comm_size);
+
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, RECVTYPE, type_to_index(record_ptr, op->data.mpi.recvtype), my_rank);
+
+	addVectorValue(event, COUNTS, comm_size, op->data.mpi.counts, my_rank);
+	addVectorValue(event, DISPLS, comm_size, op->data.mpi.sdispls, my_rank);
+	addVectorValue(event, RECVCOUNTS, comm_size, op->data.mpi.recvcounts, my_rank);
+	addVectorValue(event, RDISPLS, comm_size, op->data.mpi.rdispls, my_rank);
+
+	appendEvent(&trace, event);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Attr_delete ( MPI_Comm comm, int keyval )
+{
+# Attributes and keyvals are not yet supported in resource tracking
+# this function detroys attributes; they are also destroyed
+# by MPI_Comm_free; delaying support until ready to handle
+# the association with communicators correctly but should be:
+#	set resource_destructor;
+#	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+    
+	
+  recordTime (&operation, 1);
+	
+
+    
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Attr_get ( MPI_Comm comm, int keyval, void *attr_value, int *flag )
+{
+#	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+    
+	
+  recordTime (&operation, 1);
+	
+
+    
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Attr_put ( MPI_Comm comm, int keyval, void *attr_value )
+{
+# Attributes and keyvals are not yet supported in resource tracking
+# this function constructs attributess; it can also overwrite one;
+# Delaying support until ready to handle the association with 
+# communicators correctly but should be:
+#	set resource_constructor;
+#	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+
+	
+  recordTime (&operation, 1);
+	
+
+
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Barrier ( MPI_Comm comm )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+#	set nopost;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	appendEvent(&trace, event);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Bcast ( void *buf, int count, MPI_Datatype datatype, int root, MPI_Comm comm )
+{
+#	set collective;
+#	set candeadlock;
+#	set nopost;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, RT, op->data.mpi.root, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	appendEvent(&trace, event);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Bsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
+{
+# need one of these somewhere; really should build into wrapper generator...
+#	set send;
+#	set bsend;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, DEST, ENCODE_DEST(op->data.mpi.dest), my_rank);
+	addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.tag), my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+
+	appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_Bsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+{
+#	set send;
+#	set bsend;
+#	set persistent_init;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = COUNT | DATATYPE | DEST | TAG | COMM;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | DATATYPE | DEST | TAG | COMM);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.datatype = type_to_index(record_ptr, op->data.mpi.datatype);
+  add_scalar_param_int(event, TYPE_DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype));
+  operation.dest = ENCODE_DEST(op->data.mpi.dest);
+  add_scalar_param_int(event, TYPE_DEST, ENCODE_DEST(op->data.mpi.dest));
+  operation.tag = ENCODE_TAG ( op->data.mpi.tag );
+  add_scalar_param_int(event, TYPE_TAG, ENCODE_TAG ( op->data.mpi.tag ));
+  operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+  add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+  add_request_entry (record_req, op->data.mpi.request);
+
+	
+  recordTime (&operation, 1);
+	
+
+
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Buffer_attach ( void *buf, int size )
+{
+# possible errors with attach/detach sequencing and buffer overflow
+# but the MPI implementation should catch those...
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Buffer_detach ( void *bufptr, int *size )
+{
+# possible errors with attach/detach sequencing and buffer overflow
+# but the MPI implementation should catch those...
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+	
+  recordTime (&operation, 1);
+	
+
+
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Cancel ( MPI_Request *request )
+{
+#	set completion; 
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+  int req = 0;
+  lookup_offset (record_req, op->data.mpi.request, &operation.request);
+  lookup_offset (record_req, op->data.mpi.request, &req);
+  add_scalar_param_int (event, TYPE_REQUEST, req);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = REQUEST;
+  event_set_param_list(event, op->op, op->seq_num, REQUEST);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+
+  if (op->data.mpi.request == MPI_REQUEST_NULL)
+  {
+    int req = 0;
+    event_get_param (event, TYPE_REQUEST, (void *)&req);
+    reset_offset (record_req, req);
+  }
+
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Cart_coords ( MPI_Comm comm, int rank, int count, int *array_of_coords )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Cart_create ( MPI_Comm comm, int count, int *array_of_dims, int *array_of_periods, int reorder, MPI_Comm *comm_out )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+#	set comm_constructor;
+#       this isn't used at this point but is here to be consistent
+#	set resource_constructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = COMM | COUNT | REORDER;
+  event_set_param_list(event, op->op, op->seq_num, COMM | COUNT | REORDER);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  operation.arrays = ARRAY_OF_DIMS | ARRAY_OF_PERIODS;
+
+  // array_of_dims 
+  operation.array1 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size1 = op->data.mpi.count;
+  if(!operation.array1) {
+    perror("malloc operation.array1");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array1, op->data.mpi.array_of_dims, op->data.mpi.count);
+
+  // array_of_periods 
+  operation.array2 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size2 = op->data.mpi.count;
+  if(!operation.array2) {
+    perror("malloc operation.array2");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array2, op->data.mpi.array_of_periods, op->data.mpi.count);
+
+  add_vector_param (event, TYPE_ARRAY_OF_DIMS, op->data.mpi.array_of_dims, op->data.mpi.count);
+  add_vector_param (event, TYPE_ARRAY_OF_PERIODS, op->data.mpi.array_of_periods, op->data.mpi.count);
+
+  operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+  add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.reorder = op->data.mpi.reorder;
+  add_scalar_param_int(event, TYPE_REORDER, op->data.mpi.reorder);
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Cart_get ( MPI_Comm comm, int count, int *array_of_dims, int *array_of_periods, int *array_of_coords )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Cart_map ( MPI_Comm comm, int count, int *array_of_dims, int *array_of_periods, int *newrank )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = COMM | COUNT | NEWRANK;
+  event_set_param_list(event, op->op, op->seq_num, COMM | COUNT | NEWRANK);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.arrays = ARRAY_OF_DIMS | ARRAY_OF_PERIODS;
+
+  // array_of_dims 
+  operation.array1 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size1 = op->data.mpi.count;
+  if(!operation.array1) {
+    perror("malloc operation.array1");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array1, op->data.mpi.array_of_dims, op->data.mpi.count);
+
+  // array_of_periods 
+  operation.array2 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size2 = op->data.mpi.count;
+  if(!operation.array2) {
+    perror("malloc operation.array2");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array2, op->data.mpi.array_of_periods, op->data.mpi.count);
+
+  add_vector_param(event, ARRAY_OF_DIMS, op->data.mpi.array_of_dims, op->data.mpi.count);
+  add_vector_param(event, ARRAY_OF_PERIODS, op->data.mpi.array_of_periods, op->data.mpi.count);
+
+  operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+  add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.newrank = op->data.mpi.newrank;
+  add_scalar_param_int(event, TYPE_NEWRANK, op->data.mpi.newrank);
+  
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Cart_rank ( MPI_Comm comm, int *retcoords, int *rank )
+{
+#       not useful for replay purposes
+	set nowrapper;
+	extrafield "size" "int";
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Cart_shift ( MPI_Comm comm, int direction, int displ, int *cart_src, int *cart_dest )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Cart_sub ( MPI_Comm comm, int *dimsp, MPI_Comm *comm_out )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+#	set comm_constructor;
+#this isn't used at this point but is here to be consistent
+#	set resource_constructor;
+	extrafield "size" "int";
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = COMM;
+  event_set_param_list(event, op->op, op->seq_num, COMM);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  operation.arrays = DIMSP;
+
+  // recvcounts 
+  operation.array1 = OP_ARRAY_ALLOC(op->data.mpi.size);
+  operation.array_size1 = op->data.mpi.size;
+  if(!operation.array1) {
+    perror("malloc operation.array1");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array1, op->data.mpi.dimsp, op->data.mpi.size);
+
+  add_vector_param (event, TYPE_DIMSP, op->data.mpi.dimsp, op->data.mpi.size);
+
+  operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+  add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+  add_comm_entry (record_ptr, op->data.mpi.comm_out);
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+#use "_p" so only get the one value... 
+extern int MPI_Cartdim_get ( MPI_Comm comm, int *ndims_p )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+    
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Comm_compare ( MPI_Comm comm1, MPI_Comm comm2, int *result )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Comm_create ( MPI_Comm comm, MPI_Group group, MPI_Comm *comm_out )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+#	set comm_constructor;
+#this isn't used at this point but is here to be consistent
+#	set resource_constructor;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	addScalarValue(event, GROUP, group_to_index(record_ptr, op->data.mpi.group), my_rank);
+	appendEvent(&trace, event);
+
+	add_comm_entry(record_ptr, op->data.mpi.comm_out);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Comm_dup ( MPI_Comm comm, MPI_Comm *comm_out )
+{
+#	set collective;
+#	set candeadlock;
+#	set synchronous_collective;
+#	set comm_constructor;
+#this isn't used at this point but is here to be consistent
+#	set resource_constructor;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	appendEvent(&trace, event);
+
+	add_comm_entry(record_ptr, op->data.mpi.comm_out);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Comm_free ( MPI_Comm *comm )
+{
+#	set collective;
+#	set candeadlock;
+#	set synchronous_collective;
+#this isn't used at this point but is here to be consistent
+#	set resource_destructor;
+	set noasynchpre;
+	extrafield "comm" "int";
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+  	remove_comm_entry (record_ptr, op->data.mpi.comm);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	appendEvent(&trace, event);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Comm_get_name ( MPI_Comm comm, char *namep, int *reslen )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Comm_group ( MPI_Comm comm, MPI_Group *group_out )
+{
+#	set resource_constructor;
+#	set group_constructor;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	appendEvent(&trace, event);
+	add_group_entry (record_ptr, op->data.mpi.group_out);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Comm_rank ( MPI_Comm comm, int *rank )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Comm_remote_group ( MPI_Comm comm, MPI_Group *group_out )
+{
+#	set resource_constructor;
+#	set group_constructor;
+#       not useful for replay purposes
+        set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Comm_remote_size ( MPI_Comm comm, int *size )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Comm_set_name ( MPI_Comm comm, char * name )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Comm_size ( MPI_Comm comm, int *size )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Comm_split ( MPI_Comm comm, int color, int key, MPI_Comm *comm_out )
+{
+#	set collective;
+#	set candeadlock;
+#	set synchronous_collective;
+#	set comm_constructor;
+#this isn't used at this point but is here to be consistent
+#	set resource_constructor;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	addScalarValue(event, COLOR, op->data.mpi.color, my_rank);
+	addScalarValue(event, KEY, ENCODE_KEY(op->data.mpi.key), my_rank);
+	appendEvent(&trace, event);
+	add_comm_entry (record_ptr, op->data.mpi.comm_out);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Comm_test_inter ( MPI_Comm comm, int *flag )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Dims_create ( int nnodes, int count, int *array_of_dims )
+{
+#       not useful for replay purposes
+#	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields_extn = COMM_SIZE | NDIMS;
+  event_set_param_list(event, op->op, op->seq_num, COMM_SIZE | NDIMS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.comm_size = op->data.mpi.nnodes;
+  add_scalar_param_int(event, TYPE_COMM_SIZE, op->data.mpi.nnodes);
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_NDIMS, op->data.mpi.count);
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Errhandler_create ( MPI_Handler_function *function, MPI_Errhandler *errhandler )
+{
+#	set resource_constructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Errhandler_free ( MPI_Errhandler *errhandler )
+{
+#	set resource_destructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Errhandler_get ( MPI_Comm comm, MPI_Errhandler *errhandler )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Errhandler_set ( MPI_Comm comm, MPI_Errhandler errhandler_notptr )
+{
+#	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Error_class ( int errorcode, int *errorclass )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Error_string ( int errorcode, char *string, int *reslen )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+
+extern int MPI_Finalize ( )
+{
+#	set nowrapper;
+# Note that we set comm to MPI_COMM_WORLD in umpi_mpi_extra.c...
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+}
+wrapper-pre
+{
+	PMPI_Barrier (MPI_COMM_WORLD);
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	appendEvent(&trace, event);
+
+  #ifdef FEATURE_LOOP_LCS
+    int dw = 0;
+    while(dw);
+	finalizePendingIterations(&trace); 
+    cleanupLoops(&trace);
+  #endif
+
+  #ifndef COMPRESS_CROSS_NODE
+	/* output node-level traces */
+	char path[1024];
+	sprintf(path, "trace_%d/%d", my_size, my_rank);
+	outputTrace(&trace, path);
+  #else
+	/* inter-node compression */
+	int lchild = get_child(my_rank, LEFT);
+	if(lchild < my_size) {
+		recvTrace(&left_trace, lchild);
+		mergeTrace(&trace, &left_trace); 
+    }
+
+	int rchild = get_child(my_rank, RIGHT);
+	if(rchild < my_size) {
+		recvTrace(&right_trace, rchild);
+		mergeTrace(&trace, &right_trace); 
+    }
+
+	if(my_rank != 0) {
+		int parent = get_parent(my_rank);
+		sendTrace(&trace, parent);
+	} else {
+		char path[1024];
+		sprintf(path, "trace_%d/%d", my_size, my_rank);
+		outputTrace(&trace, path);
+	}
+  #endif
+
+	finalize_ptr(record_ptr);
+	finalize_req(record_req);
+
+/*
+  char output_trace_name[4096];
+
+  //PMPI_Barrier (MPI_COMM_WORLD);
+  int world_size = get_my_size();
+
+ #if defined (OUTPUT_TIMING)
+  double start = all_start.tv_sec + all_start.tv_usec / 1e6;
+ #endif
+ #ifdef PROFILE_TIMING
+  if (my_rank == 0)
+    profile_timing ();
+ #endif
+
+  FILE *time_file;
+  
+  // This is the usual MPI instrumentation. 
+  init_op (&operation);
+  init_event(event);
+  //recordEventTime(event, 0);
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 0);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+
+ #ifdef OUTPUT_TIMING
+  if (my_rank == 0) {
+    char filename[4096];
+    sprintf(filename, "%s/apptimes", output_trace_dir);
+    time_file = fopen(filename, "w");
+    output_time(time_file, "APP");
+  }
+ #endif
+
+  sprintf(output_trace_name, "%s/%d", output_trace_dir, my_rank);
+  
+  // From here on, we're done recording all routines.  Global finalization follows. 
+  #if RESULTS_TASKLEVEL
+    output_trace = fopen(output_trace_name, "w");
+    if (!output_trace) {
+      fprintf(stderr, "Error: Couldn't open %s for tracing: %s\n", 
+	      output_trace_name, strerror(errno));
+      exit(1);
+    }
+    
+    output_rsd_queue(output_trace, &op_queue);
+    fflush(output_trace);
+    fclose(output_trace);
+  #ifdef PROFILE_TIMING
+  if (my_rank == 0)
+    profile_timing (); // output 
+  #endif
+
+  #else // !RESULTS_TASKLEVEL 
+
+    // fetch and merge left child's queue 
+    int lchild = get_child(my_rank, LEFT);
+    if(lchild < world_size) {
+      rsd_queue child_queue;
+      recv_rsd_queue(&child_queue, MPI_COMM_WORLD, lchild);
+
+  #ifdef VERIFY_TRANSFER
+      dump_queue_with_label(&op_queue, lchild, my_rank, "beforerecv");
+      dump_queue_with_label(&child_queue, lchild, my_rank, "recv");
+  #endif // VERIFY_TRANSFER 
+      merge_queues(&op_queue, &child_queue, lchild); 
+      //dump_queue_with_label(&op_queue, lchild, my_rank, "mergerecv");
+      free_rsd_nodes(&child_queue);
+    }
+    
+    // fetch and merge right child's queue. 
+    int rchild = get_child(my_rank, RIGHT);
+    if(rchild < world_size) {
+      rsd_queue child_queue;
+      recv_rsd_queue(&child_queue, MPI_COMM_WORLD, rchild);
+
+  #ifdef VERIFY_TRANSFER
+      dump_queue_with_label(&op_queue, rchild, my_rank, "beforerecv");
+      dump_queue_with_label(&child_queue, rchild, my_rank, "recv");
+  #endif // VERIFY_TRANSFER 
+      merge_queues(&op_queue, &child_queue, rchild);
+      //dump_queue_with_label(&op_queue, rchild, my_rank, "mergerecv");
+      free_rsd_nodes(&child_queue);
+    }
+    
+    // send to parent 
+    if(my_rank != 0) {
+      int parent = get_parent(my_rank);
+  #ifdef VERIFY_TRANSFER
+      dump_queue_with_label(&op_queue, my_rank, parent, "send");
+  #endif // VERIFY_TRANSFER 
+      send_rsd_queue(&op_queue, MPI_COMM_WORLD, parent);
+
+    } else {
+  #ifdef PROFILE_TIMING
+      profile_timing (); // merge 
+  #endif
+      // node 0 dumps out results 
+      output_trace = fopen(output_trace_name, "w");
+      if (!output_trace) {
+        fprintf(stderr, "Error: Couldn't open %s for tracing: %s\n", 
+            output_trace_name, strerror(errno));
+        exit(1);
+      }
+
+      output_rsd_queue(output_trace, &op_queue);
+      fflush(output_trace);
+      fclose(output_trace);
+  #ifdef PROFILE_TIMING
+      profile_timing (); // output 
+  #endif
+    }
+  #endif // RESULTS_TASKLEVEL 
+
+  #ifdef RESULTS_MEMUSAGE
+    int size = 0;//rsd_queue_packed_size (&op_queue, MPI_COMM_WORLD);
+  #endif
+    //free_rsd_nodes(&op_queue);
+
+ #ifdef OUTPUT_TIMING
+    // output timing to a separate file. 
+    if (my_rank == 0) {
+      double now = output_time(time_file, "MERGE");
+      double total_time = now - start;
+      fprintf(time_file, "TOTAL:\t%g\n", total_time);
+      fclose(time_file);
+    }
+ #endif
+    finalize_req(record_req);
+
+
+ #ifdef PROFILE_TIMING
+    if (my_rank == 0) {
+      char filename[4096];
+      sprintf(filename, "%s/times", output_trace_dir);
+      time_file = fopen(filename, "w");
+      output_profile_timing (time_file);
+      fclose (time_file);
+    }
+  #endif
+    #if RESULTS_MEMUSAGE
+    {
+      int minsize,maxsize,sumsize;
+      FILE * mem_file;
+
+      PMPI_Reduce (&size, &minsize,1,MPI_INT,MPI_MIN,0,MPI_COMM_WORLD);
+      PMPI_Reduce (&size, &maxsize,1,MPI_INT,MPI_MAX,0,MPI_COMM_WORLD);
+      PMPI_Reduce (&size,&sumsize,1,MPI_INT,MPI_SUM,0,MPI_COMM_WORLD);
+      if (my_rank==0) {
+        char filename[4096];
+        sprintf(filename, "%s/memory", output_trace_dir);
+        mem_file = fopen(filename, "w");
+        fprintf(mem_file, "min:%d\nmax:%d\navg:%f\nzero:%d\n",
+            minsize, maxsize, ((double)sumsize)/((double) world_size), size);
+        fclose (mem_file);
+      }
+    }
+    #endif
+*/
+}
+wrapper-pre
+;
+
+extern int MPI_Finalized ( int *flag )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Gather ( void *buf, int count, MPI_Datatype datatype, void *recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm )
+{
+#	set collective;
+#	set candeadlock;
+#	set nopost;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, RECVCOUNT, op->data.mpi.recvcount, my_rank);
+	addScalarValue(event, RECVTYPE, type_to_index(record_ptr, op->data.mpi.recvtype), my_rank);
+	addScalarValue(event, RT, op->data.mpi.root, my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_Gatherv ( void *buf, int count, MPI_Datatype datatype, void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype, int root, MPI_Comm comm )
+{
+#	set collective;
+#	set candeadlock;
+#	set nopost;
+	extrafield "size" "int";
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addVectorValue(event, RECVCOUNTS, op->data.mpi.size, op->data.mpi.recvcounts, my_rank);
+	addVectorValue(event, DISPLS, op->data.mpi.size, op->data.mpi.displs, my_rank);
+	addScalarValue(event, RECVTYPE, type_to_index(record_ptr, op->data.mpi.recvtype), my_rank);
+	addScalarValue(event, RT, op->data.mpi.root, my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_Get_count ( MPI_Status *status, MPI_Datatype datatype, int *countp )
+{
+# need these extrafields somewhere; should build into wrapper generator...
+	extrafield "status_src" "int";
+	extrafield "statuses_srcs" "int*";
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Get_elements ( MPI_Status *status, MPI_Datatype datatype, int *elements )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Get_processor_name ( char *name, int *reslen )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Get_version ( int *version, int *subversion )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Graph_create ( MPI_Comm comm, int count, int *array_of_degrees, int *edges, int reorder, MPI_Comm *comm_out )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+#	set comm_constructor;
+#this isn't used at this point but is here to be consistent
+#	set resource_constructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*  
+    operation.fields = COMM | COUNT | REORDER ;
+  event_set_param_list(event, op->op, op->seq_num, COMM | COUNT | REORDER | ARRAY_OF_DEGREES | ARRAY_OF_EDGES);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  operation.arrays = ARRAY_OF_DEGREES | ARRAY_OF_EDGES;
+
+  // array_of_degrees 
+  operation.array1 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size1 = op->data.mpi.count;
+  if(!operation.array1) {
+    perror("malloc operation.array1");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array1, op->data.mpi.array_of_degrees, op->data.mpi.count);
+
+  operation.array2 = OP_ARRAY_ALLOC(op->data.mpi.array_of_degrees[op->data.mpi.count - 1]);
+  operation.array_size2 = op->data.mpi.array_of_degrees[op->data.mpi.count - 1];
+  if(!operation.array2) {
+    perror("malloc operation.array2");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array2, op->data.mpi.edges, op->data.mpi.array_of_degrees[op->data.mpi.count - 1]);
+
+  add_vector_param(event, TYPE_ARRAY_OF_DEGREES, op->data.mpi.array_of_degrees, op->data.mpi.count);
+  add_vector_param(event, TYPE_ARRAY_OF_EDGES, op->data.mpi.edges, op->data.mpi.array_of_degrees[op->data.mpi.count - 1]);
+  operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+  add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.reorder = op->data.mpi.reorder;
+  add_scalar_param_int(event, TYPE_REORDER, op->data.mpi.reorder);
+  add_comm_entry (record_ptr, op->data.mpi.comm_out);
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Graph_get ( MPI_Comm comm, int count, int edgecount, int *array_of_degrees, int *retedges )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Graph_map ( MPI_Comm comm, int count, int *array_of_degrees, int *edges, int *newrank )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+  /*
+    operation.fields = COMM | COUNT | NEWRANK;
+  event_set_param_list(event, op->op, op->seq_num, COMM | COUNT | NEWRANK | ARRAY_OF_DEGREES | ARRAY_OF_EDGES);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.arrays = ARRAY_OF_DEGREES | ARRAY_OF_EDGES;
+
+  operation.array1 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size1 = op->data.mpi.count;
+  if(!operation.array1) {
+    perror("malloc operation.array1");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array1, op->data.mpi.array_of_degrees, op->data.mpi.count);
+
+  operation.array2 = OP_ARRAY_ALLOC(op->data.mpi.array_of_degrees[op->data.mpi.count - 1]);
+  operation.array_size2 = op->data.mpi.array_of_degrees[op->data.mpi.count - 1];
+  if(!operation.array2) {
+    perror("malloc operation.array2");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array2, op->data.mpi.edges, op->data.mpi.array_of_degrees[op->data.mpi.count - 1]);
+
+  add_vector_param(event, TYPE_ARRAY_OF_DEGREES, op->data.mpi.array_of_degrees, op->data.mpi.count);
+  add_vector_param(event, TYPE_ARRAY_OF_EDGES, op->data.mpi.edges, op->data.mpi.array_of_degrees[op->data.mpi.count - 1]);
+  operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+  add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.newrank = op->data.mpi.newrank;
+  add_scalar_param_int(event, TYPE_NEWRANK, op->data.mpi.newrank);
+  
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Graph_neighbors ( MPI_Comm comm, int rank, int count, int *array_of_neighbors )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+    
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Graph_neighbors_count ( MPI_Comm comm, int rank, int *nneighbors )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Graphdims_get ( MPI_Comm comm, int *nnodes, int *edgecountp )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Group_compare ( MPI_Group group1, MPI_Group group2, int *result )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Group_difference ( MPI_Group group1, MPI_Group group2, MPI_Group *group_out )
+{
+#	set resource_constructor;
+#	set group_constructor;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, GROUP1, group_to_index(record_ptr, op->data.mpi.group1), my_rank);
+	addScalarValue(event, GROUP2, group_to_index(record_ptr, op->data.mpi.group2), my_rank);
+	appendEvent(&trace, event);
+	add_group_entry (record_ptr, op->data.mpi.group_out);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Group_excl ( MPI_Group group, int count, int *array_of_ranks, MPI_Group *group_out )
+{
+#	set resource_constructor;
+#	set group_constructor;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, GROUP, group_to_index(record_ptr, op->data.mpi.group), my_rank);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addVectorValue(event, ARRAY_OF_RANKS, op->data.mpi.count, op->data.mpi.array_of_ranks, my_rank);
+	appendEvent(&trace, event);
+	add_group_entry (record_ptr, op->data.mpi.group_out);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Group_free ( MPI_Group *group_out )
+{
+#	set resource_destructor;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	addScalarValue(event, GROUP, group_to_index(record_ptr, op->data.mpi.group_out), my_rank);
+	remove_group_entry (record_ptr, op->data.mpi.group_out);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	appendEvent(&trace, event);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Group_incl ( MPI_Group group, int count, int *array_of_ranks, MPI_Group *group_out )
+{
+#	set resource_constructor;
+#	set group_constructor;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, GROUP, group_to_index(record_ptr, op->data.mpi.group), my_rank);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addVectorValue(event, ARRAY_OF_RANKS, op->data.mpi.count, op->data.mpi.array_of_ranks, my_rank);
+	appendEvent(&trace, event);
+	add_group_entry (record_ptr, op->data.mpi.group_out);
+	resetStats(headEvent(&trace), PHASE_COMP);
+
+}
+wrapper-post
+;
+
+extern int MPI_Group_intersection ( MPI_Group group1, MPI_Group group2, MPI_Group *group_out )
+{
+#	set resource_constructor;
+#	set group_constructor;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, GROUP1, group_to_index(record_ptr, op->data.mpi.group1), my_rank);
+	addScalarValue(event, GROUP2, group_to_index(record_ptr, op->data.mpi.group2), my_rank);
+	appendEvent(&trace, event);
+	add_group_entry (record_ptr, op->data.mpi.group_out);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Group_range_excl ( MPI_Group group, int count, int ranges[][3], MPI_Group *group_out )
+{
+#	set resource_constructor;
+#	set group_constructor;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, GROUP, group_to_index(record_ptr, op->data.mpi.group), my_rank);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addVectorValue(event, RANGES, op->data.mpi.count * 3, op->data.mpi.ranges, my_rank);
+	appendEvent(&trace, event);
+	add_group_entry (record_ptr, op->data.mpi.group_out);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Group_range_incl ( MPI_Group group, int count, int ranges[][3], MPI_Group *group_out )
+{
+#	set resource_constructor;
+#	set group_constructor;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, GROUP, group_to_index(record_ptr, op->data.mpi.group), my_rank);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addVectorValue(event, RANGES, op->data.mpi.count * 3, op->data.mpi.ranges, my_rank);
+	appendEvent(&trace, event);
+	add_group_entry (record_ptr, op->data.mpi.group_out);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Group_rank ( MPI_Group group, int *rank )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Group_size ( MPI_Group group, int *size )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Group_translate_ranks ( MPI_Group group1, int count, int *array_of_ranks, MPI_Group group2, int *array_of_ranks2 )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Group_union ( MPI_Group group1, MPI_Group group2, MPI_Group *group_out )
+{
+#	set resource_constructor;
+#	set group_constructor;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, GROUP1, group_to_index(record_ptr, op->data.mpi.group1), my_rank);
+	addScalarValue(event, GROUP2, group_to_index(record_ptr, op->data.mpi.group2), my_rank);
+	appendEvent(&trace, event);
+	add_group_entry (record_ptr, op->data.mpi.group_out);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern MPI_Fint MPI_Handle2int ( MPI_Handle_type c_handle, MPI_Handle_enum handle_kind )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#	set nowrapper;
+}
+#wrapper-post
+#{
+#  char buf[TSIZE];
+#  replay_op operation;
+#
+#  init_op(&operation);
+#  operation.op = op->op;
+#  operation.seq_num = op->seq_num;
+#
+#  compress_rsd(&op_queue, &operation);
+#}
+#wrapper-post
+;
+
+extern int MPI_Ibsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+{
+#	set nonblocking;
+#	set send;
+#	set bsend;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+    addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+    addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+    addScalarValue(event, DEST, ENCODE_DEST(op->data.mpi.dest), my_rank);
+    addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.tag), my_rank);
+    addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+    appendEvent(&trace, event);
+
+  #ifndef FEATURE_PARAM_HISTO
+    add_request_entry (record_req, op->data.mpi.request);
+  #endif
+}
+wrapper-post
+;
+
+extern MPI_Fint MPI_Info_c2f ( MPI_Info info )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#	set nowrapper;
+}
+#wrapper-post
+#{
+#  char buf[TSIZE];
+#  replay_op operation;
+#
+#  init_op(&operation);
+#  operation.op = op->op;
+#  operation.seq_num = op->seq_num;
+#
+#  compress_rsd(&op_queue, &operation);
+#}
+#wrapper-post
+;
+
+extern int MPI_Info_create ( MPI_Info *info )
+{
+# MPI-2 function; should check if name exists; if so, should:
+#       set resource_constructor;
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Info_delete ( MPI_Info info, char *key )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Info_dup ( MPI_Info info, MPI_Info *newinfo )
+{
+# MPI-2 function; should check if name exists; if so, should:
+#       set resource_constructor;
+#       set info_constructor;
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern MPI_Info MPI_Info_f2c ( MPI_Fint info )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+#wrapper-post
+#{
+#  char buf[TSIZE];
+#  replay_op operation;
+#
+#  init_op(&operation);
+#  operation.op = op->op;
+#  operation.seq_num = op->seq_num;
+#
+#  compress_rsd(&op_queue, &operation);
+#}
+#wrapper-post
+;
+
+extern int MPI_Info_free ( MPI_Info *info )
+{
+# MPI-2 function; should check if name exists; if so, should:
+#       set resource_destructor;
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+	
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Info_get ( MPI_Info info, char *key, int valuelen, char *value, int *flag )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Info_get_nkeys ( MPI_Info info, int *nkeys )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Info_get_nthkey ( MPI_Info info, int count, char *key )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Info_get_valuelen ( MPI_Info info, char *key, int *valuelen, int *flag )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Info_set ( MPI_Info info, char *key, char *value )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Init ( int *argc, char ***argv )
+{
+#	set nowrapper;
+}
+wrapper-pre
+{
+
+}
+wrapper-pre
+wrapper-post
+{
+
+	PMPI_Comm_rank(MPI_COMM_WORLD, &my_rank); 
+	PMPI_Comm_size(MPI_COMM_WORLD, &my_size);
+
+	/*
+	int dw=1;
+	if(my_rank == 0)
+		while(dw);
+	*/
+
+	char dir_name[32];
+	sprintf(dir_name, "trace_%d", my_size);
+	mkdir(dir_name, 0750);
+
+	record_ptr = init_ptr (PTR_HANDLER_SZ);
+	init_req(&record_req, REQ_BUF_SIZE);
+
+	createEvent(&event, op->op, my_rank);
+	addScalarValue(event, GLOBAL_WORLD, comm_to_index(record_ptr, MPI_COMM_WORLD), my_rank);
+	addScalarValue(event, NULL_REQ, 0, my_rank);
+	appendEvent(&trace, event);
+
+	PMPI_Barrier(MPI_COMM_WORLD);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Initialized ( int *flag )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern MPI_Handle_type MPI_Int2handle ( MPI_Fint f_handle, MPI_Handle_enum handle_kind )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#	set nowrapper;
+}
+#wrapper-post
+#{
+#  char buf[TSIZE];
+#  replay_op operation;
+#
+#  init_op(&operation);
+#  operation.op = op->op;
+#  operation.seq_num = op->seq_num;
+#
+#  compress_rsd(&op_queue, &operation);
+#}
+#wrapper-post
+;
+
+extern int MPI_Intercomm_create ( MPI_Comm comm, int local_leader, MPI_Comm peer_comm, int remote_leader, int tag, MPI_Comm *comm_out )
+{
+#	set collective;
+#	set candeadlock;
+#	set synchronous_collective;
+#	set comm_constructor;
+#this isn't used at this point but is here to be consistent
+#	set resource_constructor;
+	extrafield "comm1" "int";
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = COMM | LOCAL_LEADER | PEER_COMM | REMOTE_LEADER | TAG ;
+  event_set_param_list(event, op->op, op->seq_num, COMM | LOCAL_LEADER | PEER_COMM | REMOTE_LEADER | TAG );
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+  add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+  operation.local_leader = op->data.mpi.local_leader;
+  add_scalar_param_int(event, TYPE_LOCAL_LEADER, op->data.mpi.local_leader);
+  operation.peer_comm = comm_to_index (record_ptr, op->data.mpi.peer_comm);
+  add_scalar_param_int(event, TYPE_PEER_COMM, comm_to_index (record_ptr, op->data.mpi.peer_comm));
+  operation.remote_leader = op->data.mpi.remote_leader;
+  add_scalar_param_int(event, TYPE_REMOTE_LEADER, op->data.mpi.remote_leader);
+  operation.tag = op->data.mpi.tag;
+  add_scalar_param_int(event, TYPE_TAG, op->data.mpi.tag);
+  add_comm_entry (record_ptr, op->data.mpi.comm_out);
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Intercomm_merge ( MPI_Comm comm, int high, MPI_Comm *comm_out )
+{
+#	set collective;
+#	set candeadlock;
+#	set synchronous_collective;
+#	set comm_constructor;
+#this isn't used at this point but is here to be consistent
+#	set resource_constructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = COMM | HIGH;
+  event_set_param_list(event, op->op, op->seq_num, COMM | HIGH);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+  add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+  operation.high = op->data.mpi.high;
+  add_scalar_param_int(event, TYPE_HIGH, op->data.mpi.high);
+  add_comm_entry (record_ptr, op->data.mpi.comm_out);
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Iprobe ( int source, int tag, MPI_Comm comm, int *flag, MPI_Status *status )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Irecv ( void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request *request )
+{
+#	set nonblocking;
+#	set recv;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+    addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+    addScalarValue(event, SOURCE, ENCODE_SOURCE(op->data.mpi.source), my_rank);
+    addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.tag), my_rank);
+    addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+    appendEvent(&trace, event);
+
+  #ifndef FEATURE_PARAM_HISTO
+    add_request_entry (record_req, op->data.mpi.request);
+  #endif
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Irsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+{
+#	set nonblocking;
+#	set send;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, DEST, ENCODE_DEST(op->data.mpi.dest), my_rank);
+	addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.tag), my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	appendEvent(&trace, event);
+
+  #ifndef FEATURE_PARAM_HISTO
+	add_request_entry (record_req, op->data.mpi.request);
+  #endif
+}
+wrapper-post
+;
+
+extern int MPI_Isend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+{
+#	set nonblocking;
+#	set send;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, DEST, ENCODE_DEST(op->data.mpi.dest), my_rank);
+	addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.tag), my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	appendEvent(&trace, event);
+
+  #ifndef FEATURE_PARAM_HISTO
+	add_request_entry (record_req, op->data.mpi.request);
+  #endif
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Issend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+{
+#	set nonblocking;
+#	set send;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, DEST, ENCODE_DEST(op->data.mpi.dest), my_rank);
+	addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.tag), my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	appendEvent(&trace, event);
+
+  #ifndef FEATURE_PARAM_HISTO
+	add_request_entry (record_req, op->data.mpi.request);
+  #endif
+}
+wrapper-post
+;
+
+extern int MPI_Keyval_create ( MPI_Copy_function *copy_function, MPI_Delete_function *delete_function, int *keyval, void *extra_state )
+{
+# Attributes and keyvals are not yet supported in resource tracking this 
+# function constructs keyvals; delaying support until ready to handle 
+# association of attributes with communicators correctly but should be:
+#	set resource_constructor;
+#	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Keyval_free ( int *keyval )
+{
+# Attributes and keyvals are not yet supported in resource tracking
+# this function detroys keyvals; delaying support until ready to handle
+# the association of attributes with communicators correctly but should be:
+#	set resource_destructor;
+#	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+  
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Op_create ( MPI_User_function *function, int commute, MPI_Op *op_ptr )
+{
+#	set resource_constructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Op_free ( MPI_Op *op_ptr )
+{
+#	set resource_destructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Pack ( void *inbuf, int incount, MPI_Datatype datatype, void *outbuf, int outcount, int *position, MPI_Comm comm )
+{
+# possible errors with overflow of buffer but MPI implementation should catch
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Pack_size ( int incount, MPI_Datatype datatype, MPI_Comm comm, int *size )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Pcontrol (const int level, ...)
+{
+# set nowrapper
+}
+wrapper-pre
+{
+/*
+  init_op(&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime(&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = NO_FIELDS; 
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS );
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime(&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+  recordTime(0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Probe ( int source, int tag, MPI_Comm comm, MPI_Status *status )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Recv ( void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status )
+{
+#	set candeadlock;
+#	set recv;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, SOURCE, ENCODE_SOURCE(op->data.mpi.source), my_rank);
+	addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.tag), my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	appendEvent(&trace, event);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Recv_init ( void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request *request )
+{
+#	set nonblocking;
+#	set recv;
+#	set persistent_init;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+    addScalarValue(event, SOURCE, ENCODE_SOURCE(op->data.mpi.source), my_rank);
+    addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.tag), my_rank);
+    addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+    appendEvent(&trace, event);
+  #ifndef FEATURE_PARAM_HISTO
+    add_request_entry (record_req, op->data.mpi.request);
+  #endif
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Reduce ( void *buf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm )
+{
+
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+    addScalarValue(event, MPI_OP, op_to_index(record_ptr, op->data.mpi.op), my_rank);
+    addScalarValue(event, RT, op->data.mpi.root, my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+    appendEvent(&trace, event);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Reduce_scatter ( void *buf, void *recvbuf, int *recvcounts, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+#	set nopost;
+	extrafield "size" "int";
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+    addScalarValue(event, MPI_OP, op_to_index(record_ptr, op->data.mpi.op), my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	addVectorValue(event, RECVCOUNTS, op->data.mpi.size, op->data.mpi.recvcounts, my_rank);
+    appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern MPI_Fint MPI_Request_c2f ( MPI_Request c_request )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#	set nowrapper;
+}
+#wrapper-post
+#{
+#  char buf[TSIZE];
+#  replay_op operation;
+#
+#  init_op(&operation);
+#  operation.op = op->op;
+#  operation.seq_num = op->seq_num;
+#
+#  compress_rsd(&op_queue, &operation);
+#}
+#wrapper-post
+;
+
+extern int MPI_Request_free ( MPI_Request *request )
+{
+#	set completion;
+# a strange completion since it has local semantics regardless of req type
+#	set request_free;
+#this isn't used at this point but is here to be consistent
+#	set resource_destructor;
+}
+wrapper-pre
+{
+/*
+  init_op(&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  operation.fields = REQUEST;
+  event_set_param_list(event, op->op, op->seq_num, REQUEST);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  lookup_offset (record_req, op->data.mpi.request, &operation.request);
+  int req = 0;
+  lookup_offset (record_req, op->data.mpi.request, &req);
+  add_scalar_param_int(event, TYPE_REQUEST, req);
+
+  recordTime (&operation, 0);
+
+
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  recordTime (&operation, 1);
+  if (op->data.mpi.request == MPI_REQUEST_NULL)
+  {
+    int req = 0;
+    event_get_param (event, TYPE_REQUEST, (void *)&req);
+    reset_offset (record_req, req);
+  }
+  recordTime (0,0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Rsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
+{
+#	set send;
+#	set candeadlock;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, DEST, ENCODE_DEST(op->data.mpi.dest), my_rank);
+	addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.tag), my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_Rsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+{
+#	set nonblocking;
+#	set send;
+#	set persistent_init;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = COUNT | DATATYPE | DEST | TAG | COMM;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | DATATYPE | DEST | TAG | COMM);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.datatype = type_to_index(record_ptr, op->data.mpi.datatype);
+  add_scalar_param_int(event, TYPE_DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype));
+  operation.dest = ENCODE_DEST(op->data.mpi.dest);
+  add_scalar_param_int(event, TYPE_DEST, ENCODE_DEST(op->data.mpi.dest));
+  operation.tag = ENCODE_TAG ( op->data.mpi.tag );
+  add_scalar_param_int(event, TYPE_TAG, ENCODE_TAG ( op->data.mpi.tag ));
+  operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+  add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+  add_request_entry (record_req, op->data.mpi.request);
+  
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Scan ( void *buf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
+{
+#	set collective;
+#	set synchronous_collective;
+#	set candeadlock;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = COUNT | DATATYPE | MPI_OP | COMM;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | DATATYPE | MPI_OP | COMM);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.datatype = type_to_index(record_ptr, op->data.mpi.datatype);
+  add_scalar_param_int(event, TYPE_DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype));
+  operation.mpi_op = op_to_index (record_ptr, op->data.mpi.op);
+  add_scalar_param_int(event, TYPE_MPI_OP, op_to_index (record_ptr, op->data.mpi.op));
+  operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+  add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+  
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Scatter ( void *buf, int count, MPI_Datatype datatype, void *recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm )
+{
+#	set collective;
+#	set candeadlock;
+#	set nopost;
+	set noasynchpre;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, RECVCOUNT, op->data.mpi.recvcount, my_rank);
+	addScalarValue(event, RECVTYPE, type_to_index(record_ptr, op->data.mpi.recvtype), my_rank);
+	addScalarValue(event, RT, op->data.mpi.root, my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_Scatterv ( void *buf, int *counts, int *displs, MPI_Datatype datatype, void *recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm )
+{
+#	set collective;
+#	set candeadlock;
+#	set nopost;
+	set noasynchpre;
+	extrafield "size" "int";
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+    addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+    addScalarValue(event, RT, op->data.mpi.root, my_rank);
+    addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+    addScalarValue(event, RECVTYPE, type_to_index(record_ptr, op->data.mpi.recvtype), my_rank);
+	addScalarValue(event, RECVCOUNT, op->data.mpi.recvcount, my_rank);
+    addVectorValue(event, COUNTS, op->data.mpi.size, op->data.mpi.counts, my_rank);
+    addVectorValue(event, DISPLS, op->data.mpi.size, op->data.mpi.displs, my_rank);
+    appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_Send ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
+{
+#  set send;
+#  set candeadlock;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+    addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+    addScalarValue(event, DEST, ENCODE_DEST(op->data.mpi.dest), my_rank);
+    addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.tag), my_rank);
+    addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+    appendEvent(&trace, event);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Send_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+{
+#	set nonblocking;
+#	set send;
+#	set persistent_init;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	addScalarValue(event, DEST, ENCODE_DEST(op->data.mpi.dest), my_rank);
+	addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.tag), my_rank);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	appendEvent(&trace, event);
+
+  #ifndef FEATURE_PARAM_HISTO
+	add_request_entry (record_req, op->data.mpi.request);
+  #endif
+	resetStats(headEvent(&trace), PHASE_COMP);
+
+}
+wrapper-post
+;
+
+extern int MPI_Sendrecv ( void *buf, int count, MPI_Datatype datatype, int dest, int sendtag, void *recvbuf, int recvcount, MPI_Datatype recvtype, int source, int recvtag, MPI_Comm comm, MPI_Status *status )
+{
+#	set candeadlock;
+#	set recv;
+#	set send;
+#	set sendrecv;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+    addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+    addScalarValue(event, DEST, ENCODE_DEST(op->data.mpi.dest), my_rank);
+    addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.sendtag), my_rank);
+	addScalarValue(event, RECVCOUNT, op->data.mpi.recvcount, my_rank);
+    addScalarValue(event, RECVTYPE, type_to_index(record_ptr, op->data.mpi.recvtype), my_rank);
+    addScalarValue(event, SOURCE, ENCODE_SOURCE(op->data.mpi.source), my_rank);
+    addScalarValue(event, RECVTAG, ENCODE_TAG(op->data.mpi.recvtag), my_rank);
+    addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+    appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_Sendrecv_replace ( void *buf, int count, MPI_Datatype datatype, int dest, int sendtag, int source, int recvtag, MPI_Comm comm, MPI_Status *status )
+{
+#	set candeadlock;
+#	set recv;
+#	set send;
+#	set sendrecv;
+	extrafield "recvbuf" "void*";
+	extrafield "recvcount" "int";
+	extrafield "recvtype" "int";
+}
+wrapper-pre
+{
+/*
+	op->data.mpi.recvbuf = op->data.mpi.buf;
+	op->data.mpi.recvcount = op->data.mpi.count;
+	op->data.mpi.recvtype = op->data.mpi.datatype;
+*/
+}
+wrapper-pre
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+	op->data.mpi.recvbuf = op->data.mpi.buf;
+	op->data.mpi.recvcount = op->data.mpi.count;
+	op->data.mpi.recvtype =  op->data.mpi.datatype;
+
+    operation.fields = COUNT | DATATYPE | DEST | TAG | SOURCE | RECVTAG | COMM | RECVCOUNT | RECVTYPE;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | DATATYPE | DEST | TAG | SOURCE | RECVTAG | COMM | RECVCOUNT | RECVTYPE);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.datatype = type_to_index(record_ptr, op->data.mpi.datatype);
+  add_scalar_param_int(event, TYPE_DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype));
+  operation.dest = ENCODE_DEST(op->data.mpi.dest);
+  add_scalar_param_int(event, TYPE_DEST, ENCODE_DEST(op->data.mpi.dest));
+  operation.tag = op->data.mpi.sendtag;
+  add_scalar_param_int(event, TYPE_TAG, op->data.mpi.sendtag);
+  operation.source = ENCODE_SOURCE(op->data.mpi.source);
+  add_scalar_param_int(event, TYPE_SOURCE, ENCODE_SOURCE(op->data.mpi.source));
+  operation.recvtag = op->data.mpi.recvtag;
+  add_scalar_param_int(event, TYPE_RECVTAG, op->data.mpi.recvtag);
+  operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+  add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+  operation.recvcount = op->data.mpi.recvcount;
+  add_scalar_param_int(event, TYPE_RECVCOUNT, op->data.mpi.recvcount);
+  operation.recvtype = type_to_index(record_ptr, op->data.mpi.recvtype);
+  add_scalar_param_int(event, TYPE_RECVTYPE, type_to_index(record_ptr, op->data.mpi.recvtype));
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
+{
+#	set send;
+#	set candeadlock;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+    addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+    addScalarValue(event, DEST, ENCODE_DEST(op->data.mpi.dest), my_rank);
+    addScalarValue(event, TAG, ENCODE_TAG(op->data.mpi.tag), my_rank);
+    addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+    appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_Ssend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+{
+#	set nonblocking;
+#	set send;
+#	set persistent_init;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = COUNT | DATATYPE | DEST | TAG | COMM;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | DATATYPE | DEST | TAG | COMM);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.datatype = type_to_index(record_ptr, op->data.mpi.datatype);
+  add_scalar_param_int(event, TYPE_DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype));
+  operation.dest = ENCODE_DEST(op->data.mpi.dest);
+  add_scalar_param_int(event, TYPE_DEST, ENCODE_DEST(op->data.mpi.dest));
+  operation.tag = ENCODE_TAG ( op->data.mpi.tag );
+  add_scalar_param_int(event, TYPE_TAG, ENCODE_TAG ( op->data.mpi.tag ));
+  operation.comm = comm_to_index (record_ptr,  op->data.mpi.comm);
+  add_scalar_param_int(event, TYPE_COMM, comm_to_index (record_ptr,  op->data.mpi.comm));
+  add_request_entry (record_req, op->data.mpi.request);
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Start ( MPI_Request *request )
+{
+#	set nonblocking;
+#	set persistent_start;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+	resetStats(event, PHASE_COMM);
+/*
+  init_op (&operation);
+  init_event(event);
+    operation.fields = REQUEST;
+  event_set_param_list(event, op->op, op->seq_num, REQUEST);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  int req = 0;
+  lookup_offset (record_req, op->data.mpi.request, &req);
+  add_scalar_param_int(event, TYPE_REQUEST, req);
+
+  recordTime (&operation, 0);
+  recordEventTime(event, 0);
+
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  recordTime (&operation, 1);
+  if (op->data.mpi.request == MPI_REQUEST_NULL)
+  {
+    int req = 0;
+    event_get_param (event, TYPE_REQUEST, (void *)&req);
+    reset_offset (record_req, req);
+  }
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Startall ( int count, MPI_Request array_of_requests[] )
+{
+#	set nonblocking;
+#	set persistent_start;
+#	set multiple_requests;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  
+    operation.fields = COUNT;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | ARRAY_OF_REQUESTS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.arrays = ARRAY_OF_REQUESTS;
+
+  operation.array1 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size1 = op->data.mpi.count;
+  if(!operation.array1) {
+    perror("malloc operation.array1");
+    exit(0);
+  }
+  lookup_offsetlist(record_req, op->data.mpi.array_of_requests, operation.array_size1, operation.array1, 0);
+  int *req_arr = OP_ARRAY_ALLOC(op->data.mpi.count);
+  lookup_offsetlist(record_req, op->data.mpi.array_of_requests, op->data.mpi.count, req_arr, 0);
+  add_vector_param(event, TYPE_ARRAY_OF_REQUESTS, req_arr, op->data.mpi.count);
+  free(req_arr);
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Status_c2f ( MPI_Status *c_status, MPI_Fint *f_status )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#	set nowrapper;
+}
+#wrapper-post
+#{
+#  char buf[TSIZE];
+#  replay_op operation;
+#
+#  init_op(&operation);
+#  operation.op = op->op;
+#  operation.seq_num = op->seq_num;
+#
+#  compress_rsd(&op_queue, &operation);
+#}
+#wrapper-post
+;
+
+extern int MPI_Status_f2c ( MPI_Fint *f_status, MPI_Status *c_status )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#	set nowrapper;
+}
+#wrapper-post
+#{
+#  char buf[TSIZE];
+#  replay_op operation;
+#
+#  init_op(&operation);
+#  operation.op = op->op;
+#  operation.seq_num = op->seq_num;
+#
+#  compress_rsd(&op_queue, &operation);
+#}
+#wrapper-post
+;
+
+extern int MPI_Test ( MPI_Request *request, int *flag, MPI_Status *status )
+{
+#	set completion; 
+#	set partial_completion;
+#	set test_completion;
+#       not useful for replay purposes
+        set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Test_cancelled ( MPI_Status *status, int *flag )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Testall ( int count, MPI_Request array_of_requests[], int *flag, MPI_Status *array_of_statuses )
+{
+#	set completion; 
+#	set partial_completion;
+#	set multiple_requests;
+#	set test_completion;
+#       not useful for replay purposes
+        set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+    
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Testany ( int count, MPI_Request array_of_requests[], int *index, int *flag, MPI_Status *status )
+{
+#	set completion; 
+#	set partial_completion;
+#	set multiple_requests;
+#	set test_completion;
+#	set any_completion;
+#       not useful for replay purposes
+        set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Testsome ( int count, MPI_Request array_of_requests[], int *outcount, int array_of_indices[], MPI_Status array_of_statuses[] )
+{
+#	set completion;
+#	set partial_completion;
+#	set multiple_requests;
+#	set test_completion;
+#	set some_completion;
+	extrafield "flag" "int";
+#       not useful for replay purposes
+        set nowrapper;
+}
+# we want a valid flag field with test completions... 
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+	op->data.mpi.flag = op->data.mpi.outcount;
+
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Topo_test ( MPI_Comm comm, int *top_type )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+#
+# MPI_Type_dup is an MPI-2 function.  Uncomment if you need to trace this.
+#
+# extern int MPI_Type_dup (MPI_Datatype datatype, MPI_Datatype *newtype)
+# {
+# }
+# wrapper-pre
+# {
+#   init_op (&operation);
+#   recordTime (&operation, 0);
+# }
+# wrapper-pre
+# wrapper-post
+# {
+#   operation.fields = OLDTYPE ;
+#   operation.op = op->op;
+#   operation.seq_num = op->seq_num;
+#   operation.oldtype = type_to_index(record_ptr, op->data.mpi.old_type);
+#   add_type_entry (record_ptr, op->data.mpi.newtype);
+  
+#   recordTime (&operation, 1);
+
+#   compress_rsd(&op_queue, &operation);
+#   recordTime (0, 0);
+# }
+# wrapper-post
+# ;
+
+extern int MPI_Type_commit ( MPI_Datatype *newtype )
+{
+#	set nopost;
+#	set nopre;
+	set noasynchpre;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NEWTYPE;
+  event_set_param_list(event, op->op, op->seq_num, NEWTYPE);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.newtype = type_to_index(record_ptr, op->data.mpi.newtype);
+  add_scalar_param_int(event, TYPE_NEWTYPE, type_to_index(record_ptr, op->data.mpi.newtype));
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_contiguous ( int count, MPI_Datatype old_type, MPI_Datatype *newtype )
+{
+#	set resource_constructor;
+#	set type_constructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = COUNT | OLDTYPE ;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | OLDTYPE );
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.oldtype = type_to_index(record_ptr, op->data.mpi.old_type);
+  add_scalar_param_int(event, TYPE_OLDTYPE, type_to_index(record_ptr, op->data.mpi.old_type));
+  add_type_entry (record_ptr, op->data.mpi.newtype);
+  
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_count ( MPI_Datatype datatype, int *count )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#       not useful for replay purposes
+}
+#wrapper-post
+#{
+#  char buf[TSIZE];
+#  replay_op operation;
+#
+#  init_op(&operation);
+#  operation.op = op->op;
+#  operation.seq_num = op->seq_num;
+#
+#  compress_rsd(&op_queue, &operation);
+#}
+#wrapper-post
+;
+
+extern int MPI_Type_create_indexed_block ( int count, int blocklength, int array_of_displacements[], MPI_Datatype datatype, MPI_Datatype *newtype )
+{
+# MPI-2 function; should check if name exists; if so, should:
+#       set resource_constructor;
+#       set type_constructor;
+#	set MPI2_function;
+#	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_create_subarray ( int count, int *array_of_sizes, int *array_of_subsizes, int *array_of_starts, int order, MPI_Datatype datatype, MPI_Datatype *newtype )
+{
+# MPI-2 function; should check if name exists; if so, should:
+#       set resource_constructor;
+#       set type_constructor;
+#	set MPI2_function;
+#	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_extent ( MPI_Datatype datatype, MPI_Aint *extent )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_free ( MPI_Datatype *newtype )
+{
+#	set resource_destructor;
+#	set nopre;
+	set noasynchpre;
+}
+wrapper-pre
+{
+/*
+  init_op(&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  operation.fields = NEWTYPE;
+  event_set_param_list(event, op->op, op->seq_num, NEWTYPE);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.newtype = type_to_index(record_ptr, op->data.mpi.newtype);
+  add_scalar_param_int(event, TYPE_NEWTYPE, type_to_index(record_ptr, op->data.mpi.newtype));
+  remove_type_entry (record_ptr, op->data.mpi.newtype);
+
+  recordTime (&operation, 0);
+
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+*/
+}
+wrapper-pre
+;
+
+extern int MPI_Type_get_contents ( MPI_Datatype datatype, int count, int addrcount, int dtypecount, int *array_of_integers, MPI_Aint *the_addresses, MPI_Datatype *the_datatypes )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_get_envelope ( MPI_Datatype datatype, int *num_integers, int *num_addresses, int *num_datatypes, int *combiner )
+{
+# MPI-2 function; probably don't want a wrapper even if name exists
+#	set MPI2_function;
+#	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  // probably should throw an error if we try to replay
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_hindexed ( int count, int array_of_blocklens[], MPI_Aint array_of_displacements[], MPI_Datatype datatype, MPI_Datatype *newtype )
+{
+#	set resource_constructor;
+#	set type_constructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+ /* 
+    operation.fields = COUNT | DATATYPE;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | DATATYPE | ARRAY_OF_BLOCKLENS | ARRAY_OF_DISPLACEMENTS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  operation.arrays = ARRAY_OF_BLOCKLENS | ARRAY_OF_DISPLACEMENTS;
+
+  operation.array1 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size1 = op->data.mpi.count;
+  if(!operation.array1) {
+    perror("malloc operation.array1");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array1, op->data.mpi.array_of_blocklens, op->data.mpi.count);
+
+  operation.array_of_displacements = OP_AINT_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size_displs = op->data.mpi.count;
+  if(!operation.array_of_displacements) {
+    perror("malloc operation.array_of_displacements");
+    exit(0);
+  }
+  OP_AINT_ARRAY_COPY(operation.array_of_displacements, op->data.mpi.array_of_displacements, op->data.mpi.count);
+
+  add_vector_param(event, TYPE_ARRAY_OF_BLOCKLENS, op->data.mpi.array_of_blocklens, op->data.mpi.count);
+  add_vector_param(event, TYPE_ARRAY_OF_DISPLACEMENTS, op->data.mpi.array_of_displacements, op->data.mpi.count);
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.datatype = type_to_index(record_ptr, op->data.mpi.datatype);
+  add_scalar_param_int(event, TYPE_DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype));
+  add_type_entry (record_ptr, op->data.mpi.newtype);
+  
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_create_darray ( int size, int rank, int count, int array_of_gsizes[], int array_of_distribs[], int array_of_dargs[], int array_of_psizes[], int order, MPI_Datatype datatype, MPI_Datatype *newtype )
+{
+# MPI-2 function; should check if name exists; if so, should:
+#       set resource_constructor;
+#       set type_constructor;
+#       set MPI2_function;
+#       set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = DATATYPE;
+  event_set_param_list(event, op->op, op->seq_num, DATATYPE | COMM_SIZE | RANK | NDIMS | ORDER | ARRAY_OF_GSIZES | ARRAY_OF_DISTRIBS | ARRAY_OF_DARGS | ARRAY_OF_PSIZES);
+  operation.fields_extn = COMM_SIZE | RANK | NDIMS | ORDER;
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  operation.arrays = NO_ARRAYS;
+  operation.arrays_extn = ARRAY_OF_GSIZES | ARRAY_OF_DISTRIBS | ARRAY_OF_DARGS | ARRAY_OF_PSIZES;
+
+  operation.array1 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size1 = op->data.mpi.count;
+  if(!operation.array1) {
+    perror("malloc operation.array_of_gsizes");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array1, op->data.mpi.array_of_gsizes, op->data.mpi.count);
+  add_vector_param(event, TYPE_ARRAY_OF_GSIZES, op->data.mpi.array_of_gsizes, op->data.mpi.count);
+
+  operation.array2 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size2 = op->data.mpi.count;
+  if(!operation.array2) {
+    perror("malloc operation.array_of_distribs");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array2, op->data.mpi.array_of_distribs, op->data.mpi.count);
+  add_vector_param(event, TYPE_ARRAY_OF_DISTRIBS, op->data.mpi.array_of_distribs, op->data.mpi.count);
+
+  operation.array3 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size3 = op->data.mpi.count;
+  if(!operation.array3) {
+    perror("malloc operation.array_of_dargs");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array3, op->data.mpi.array_of_dargs, op->data.mpi.count);
+  add_vector_param(event, TYPE_ARRAY_OF_DARGS, op->data.mpi.array_of_dargs, op->data.mpi.count);
+
+  operation.array4 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size4 = op->data.mpi.count;
+  if(!operation.array4) {
+    perror("malloc operation.array_of_psizes");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array4, op->data.mpi.array_of_psizes, op->data.mpi.count);
+  add_vector_param(event, TYPE_ARRAY_OF_PSIZES, op->data.mpi.array_of_psizes, op->data.mpi.count);
+
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.datatype = type_to_index(record_ptr, op->data.mpi.datatype);
+  add_scalar_param_int(event, TYPE_DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype));
+  add_type_entry (record_ptr, op->data.mpi.newtype);
+
+  operation.rank = op->data.mpi.rank;
+  add_scalar_param_int(event, TYPE_RANK, op->data.mpi.rank);
+  operation.comm_size = op->data.mpi.size;
+  add_scalar_param_int(event, TYPE_COMM_SIZE, op->data.mpi.size);
+  operation.order = op->data.mpi.order;
+  add_scalar_param_int(event, TYPE_ORDER, op->data.mpi.order);
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_hvector ( int count, int blocklen, MPI_Aint stride, MPI_Datatype datatype, MPI_Datatype *newtype )
+{
+#	set resource_constructor;
+#	set type_constructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = COUNT | BLOCKLEN | STRIDE | DATATYPE  ;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | BLOCKLEN | STRIDE | DATATYPE  );
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.blocklen = op->data.mpi.blocklen;
+  add_scalar_param_int(event, TYPE_BLOCKLEN, op->data.mpi.blocklen);
+  operation.stride = op->data.mpi.stride;
+  add_scalar_param_int(event, TYPE_STRIDE, op->data.mpi.stride);
+  operation.datatype = type_to_index(record_ptr, op->data.mpi.datatype);
+  add_scalar_param_int(event, TYPE_DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype));
+  add_type_entry (record_ptr, op->data.mpi.newtype);
+  
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_indexed ( int count, int array_of_blocklens[], int array_of_int_displacements[], MPI_Datatype datatype, MPI_Datatype *newtype )
+{
+#	set resource_constructor;
+#	set type_constructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  recordTime (&operation, 1);
+
+  operation.fields = COUNT | DATATYPE  ;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | DATATYPE | ARRAY_OF_BLOCKLENS | DISPLS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  operation.arrays = ARRAY_OF_BLOCKLENS | DISPLS;
+
+  operation.array1 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size1 = op->data.mpi.count;
+  if(!operation.array1) {
+    perror("malloc operation.array1");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array1, op->data.mpi.array_of_blocklens, op->data.mpi.count);
+  add_vector_param(event, TYPE_ARRAY_OF_BLOCKLENS, op->data.mpi.array_of_blocklens, op->data.mpi.count);
+
+  operation.array2 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size2 = op->data.mpi.count;
+  if(!operation.array2) {
+    perror("malloc operation.array2");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array2, op->data.mpi.array_of_int_displacements, op->data.mpi.count);
+  add_vector_param(event, TYPE_DISPLS, op->data.mpi.array_of_int_displacements, op->data.mpi.count);
+
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.datatype = type_to_index(record_ptr, op->data.mpi.datatype);
+  add_scalar_param_int(event, TYPE_DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype));
+  add_type_entry (record_ptr, op->data.mpi.newtype);
+
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_lb ( MPI_Datatype datatype, MPI_Aint *displacement )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_size ( MPI_Datatype datatype, int *size )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_struct ( int count, int array_of_blocklens[], MPI_Aint array_of_displacements[], MPI_Datatype array_of_types[], MPI_Datatype *newtype )
+{
+#	set resource_constructor;
+#	set type_constructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  
+    operation.fields = COUNT ;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | ARRAY_OF_BLOCKLENS | ARRAY_OF_DISPLACEMENTS | ARRAY_OF_TYPES);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  operation.arrays = ARRAY_OF_BLOCKLENS | ARRAY_OF_DISPLACEMENTS | ARRAY_OF_TYPES;
+
+  operation.array1 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size1 = op->data.mpi.count;
+  if(!operation.array1) {
+    perror("malloc operation.array1");
+    exit(0);
+  }
+  OP_ARRAY_COPY(operation.array1, op->data.mpi.array_of_blocklens, op->data.mpi.count);
+  add_vector_param(event, TYPE_ARRAY_OF_BLOCKLENS, op->data.mpi.array_of_blocklens, op->data.mpi.count);
+
+  operation.array_of_displacements = OP_AINT_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size_displs = op->data.mpi.count;
+  if(!operation.array_of_displacements) {
+    perror("malloc operation.array_of_displacements");
+    exit(0);
+  }
+  OP_AINT_ARRAY_COPY(operation.array_of_displacements, op->data.mpi.array_of_displacements, op->data.mpi.count);
+  add_vector_param(event, TYPE_ARRAY_OF_DISPLACEMENTS,op->data.mpi.array_of_displacements, op->data.mpi.count);
+
+  operation.array3 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size3 = op->data.mpi.count;
+  if(!operation.array3) {
+    perror("malloc operation.array3");
+    exit(0);
+  }
+  OP_ARRAY_COPY_TYPES(operation.array3, op->data.mpi.array_of_types, op->data.mpi.count, record_ptr);
+  int * arrtype = OP_ARRAY_ALLOC(op->data.mpi.count);
+  OP_ARRAY_COPY_TYPES(arrtype, op->data.mpi.array_of_types, op->data.mpi.count, record_ptr);
+  add_vector_param(event, TYPE_ARRAY_OF_TYPES, arrtype, op->data.mpi.count);
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  add_type_entry (record_ptr, op->data.mpi.newtype);
+  
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/}
+wrapper-post
+;
+
+extern int MPI_Type_ub ( MPI_Datatype datatype, MPI_Aint *displacement )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Type_vector ( int count, int blocklen, int stride, MPI_Datatype datatype, MPI_Datatype *newtype )
+{
+#	set resource_constructor;
+#	set type_constructor;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = COUNT | BLOCKLEN | STRIDE | DATATYPE ;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | BLOCKLEN | STRIDE | DATATYPE );
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+  operation.blocklen = op->data.mpi.blocklen;
+  add_scalar_param_int(event, TYPE_BLOCKLEN, op->data.mpi.blocklen);
+  operation.stride = op->data.mpi.stride;
+  add_scalar_param_int(event, TYPE_STRIDE, op->data.mpi.stride);
+  operation.datatype = type_to_index(record_ptr, op->data.mpi.datatype);
+  add_scalar_param_int(event, TYPE_DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype));
+  add_type_entry (record_ptr, op->data.mpi.newtype);
+  
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Unpack ( void *inbuf, int insize, int *position, void *outbuf, int outcount, MPI_Datatype datatype, MPI_Comm comm )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+    operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, NO_FIELDS);
+    operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Wait ( MPI_Request *request, MPI_Status *status )
+{
+#	set candeadlock;
+#	set completion; 
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+  #ifndef FEATURE_PARAM_HISTO
+	int offset;
+	lookup_offset(record_req, op->data.mpi.request, &offset);
+	addScalarValue(event, REQUEST, offset, my_rank);
+  #endif
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+  #ifndef FEATURE_PARAM_HISTO
+	int *offsets;
+	getParamValues(event, REQUEST, 0, NULL, &offsets);
+	if(op->data.mpi.request == MPI_REQUEST_NULL){
+		reset_offset(record_req, offsets[0]);
+	}
+	free(offsets);
+  #endif
+	appendEvent(&trace, event);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Waitall ( int count, MPI_Request array_of_requests[], MPI_Status array_of_statuses[] )
+{
+#	set candeadlock;
+#	set completion; 
+#	set multiple_requests;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	recordStats(event, tailEvent(&trace), PHASE_COMP);
+
+  #ifndef FEATURE_PARAM_HISTO
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	int *offsets = (int *)malloc(op->data.mpi.count * sizeof(int) );
+	if( !offsets ){
+		fprintf(stderr, "malloc failed, offsets\n");
+		exit(1);
+	}
+	lookup_offsetlist(record_req, op->data.mpi.array_of_requests, op->data.mpi.count, offsets, 0);
+	addVectorValue(event, ARRAY_OF_REQUESTS, op->data.mpi.count, offsets, my_rank);
+	free(offsets);
+  #endif
+
+	resetStats(event, PHASE_COMM);
+}
+wrapper-pre
+wrapper-post
+{
+	recordStats(event, tailEvent(&trace), PHASE_COMM);
+
+  #ifndef FEATURE_PARAM_HISTO
+	int *offsets;
+	getParamValues(event, ARRAY_OF_REQUESTS, 0, NULL, &offsets);
+	for (int i = 0; i < op->data.mpi.count; i++) {
+		if (op->data.mpi.array_of_requests[i] == MPI_REQUEST_NULL){
+			reset_offset (record_req, offsets[i]);
+		}
+	}
+	free(offsets);
+  #endif
+	appendEvent(&trace, event);
+	resetStats(headEvent(&trace), PHASE_COMP);
+}
+wrapper-post
+;
+
+extern int MPI_Waitany ( int count, MPI_Request array_of_requests[], int *index, MPI_Status *status )
+{
+#	set candeadlock;
+#	set completion; 
+#	set partial_completion;
+#	set any_completion;
+#	set multiple_requests;
+}
+wrapper-pre
+{ 
+/* 
+  init_op(&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+  operation.fields = COUNT;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | ARRAY_OF_REQUESTS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.arrays = ARRAY_OF_REQUESTS;
+
+  operation.array1 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size1 = op->data.mpi.count;
+  if(!operation.array1) {
+    perror("malloc operation.array1");
+    exit(0);
+  }
+  lookup_offsetlist (record_req, op->data.mpi.array_of_requests, operation.array_size1, operation.array1, 0);
+  int *req_arr = OP_ARRAY_ALLOC(op->data.mpi.count);
+  lookup_offsetlist(record_req, op->data.mpi.array_of_requests, op->data.mpi.count, req_arr, 0);
+  add_vector_param(event, TYPE_ARRAY_OF_REQUESTS, req_arr, op->data.mpi.count);
+  free(req_arr);
+
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+	
+  recordTime (0, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  compress_rsd_event( &op_queue, &operation, event);
+
+  int * arrreq = OP_ARRAY_ALLOC(op->data.mpi.count);
+  event_get_param(event, TYPE_ARRAY_OF_REQUESTS, (void *)arrreq);
+  int i = op->data.mpi.index;
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+    if (op->data.mpi.array_of_requests[i] == MPI_REQUEST_NULL)
+      reset_offset (record_req, arrreq[i]);
+
+  free(arrreq);
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int MPI_Waitsome ( int count, MPI_Request array_of_requests[], int *outcount, int array_of_indices[], MPI_Status array_of_statuses[] )
+{
+#	set candeadlock;
+#	set completion; 
+#	set partial_completion;
+#	set some_completion;
+#	set multiple_requests;
+}
+wrapper-pre
+{
+/*
+  init_op(&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+  operation.fields = COUNT;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | ARRAY_OF_REQUESTS);
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+
+  operation.arrays = ARRAY_OF_REQUESTS;
+
+  operation.array1 = OP_ARRAY_ALLOC(op->data.mpi.count);
+  operation.array_size1 = op->data.mpi.count;
+  if(!operation.array1) {
+    perror("malloc operation.array1");
+    exit(0);
+  }
+  lookup_offsetlist (record_req, op->data.mpi.array_of_requests, operation.array_size1, operation.array1, 0);
+  int *req_arr = OP_ARRAY_ALLOC(op->data.mpi.count);
+  lookup_offsetlist(record_req, op->data.mpi.array_of_requests, op->data.mpi.count, req_arr, 0);
+  add_vector_param(event, TYPE_ARRAY_OF_REQUESTS, req_arr, op->data.mpi.count);
+  free(req_arr);
+
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+	
+  //TODO: Take care of special case
+  if(op_queue.last_op_added != umpi_MPI_Waitsome) {
+    operation.fields |= NULL_REQ; 
+    rsd_push(&op_queue, &operation, event);     
+  } else {
+    free(operation.array1);
+  }
+  recordTime (0, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  recordTime (&operation, 1);
+  if(op_queue.tail->data.fields & NULL_REQ) {
+    op_queue.tail->data.outcount = op->data.mpi.outcount;
+    op_queue.tail->data.fields &= ~NULL_REQ;
+  }
+  else {
+    op_queue.tail->data.outcount += op->data.mpi.outcount;
+  }
+  
+  int * arrreq = OP_ARRAY_ALLOC(op->data.mpi.count);
+  event_get_param(event, TYPE_ARRAY_OF_REQUESTS, (void *)arrreq);
+  for (int i = 0; i < op->data.mpi.count; i++)
+  {
+    if (op->data.mpi.array_of_requests[i] == MPI_REQUEST_NULL)
+      reset_offset (record_req, arrreq[i]);
+  }
+  free(arrreq);
+  recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern double MPI_Wtick ( void )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+#wrapper-post
+#{
+#  char buf[TSIZE];
+#  replay_op operation;
+#
+#  #
+#  #  operation.op = op->op;
+#  operation.seq_num = op->seq_num;
+#
+# compress_rsd(&op_queue, &operation);
+#}
+#wrapper-post
+;
+
+extern double MPI_Wtime ( void )
+{
+#       not useful for replay purposes
+	set nowrapper;
+}
+#wrapper-post
+#{
+#  char buf[TSIZE];
+#  replay_op operation;
+#
+#  init_op(&operation);
+#  operation.op = op->op;
+#  operation.seq_num = op->seq_num;
+#
+# compress_rsd(&op_queue, &operation);
+#}
+#wrapper-post
+;
+
+
+
+
+###############################
+#
+# MPI prototypes w/ directives
+#
+extern ssize_t write(int fd, const void *buf, size_t count)
+{
+#       not useful for replay purposes
+#	set nowrapper;
+        set posix_function;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = COUNT;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | FH);
+  operation.fields_extn = FH;
+  operation.op = (MPI_Op_t)op->op;
+  operation.seq_num = op->seq_num;
+  operation.fh = file_handle_to_index (record_ptr,  op->data.mpi.fd);
+  add_scalar_param_int(event, TYPE_FH, file_handle_to_index (record_ptr,  op->data.mpi.fd));
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+
+  if(operation.fh>0)
+  compress_rsd_event( &op_queue, &operation, event);
+
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern ssize_t read(int fd, void *buf, size_t count)
+{
+#       not useful for replay purposes
+#       set nowrapper;
+        set posix_function;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  operation.fields = COUNT;
+  event_set_param_list(event, op->op, op->seq_num, COUNT | FH);
+  operation.fields_extn = FH;
+  operation.op = (MPI_Op_t)op->op;
+  operation.seq_num = op->seq_num;
+  operation.fh = file_handle_to_index (record_ptr,  op->data.mpi.fd);
+  add_scalar_param_int(event, TYPE_FH, file_handle_to_index (record_ptr,  op->data.mpi.fd));
+  operation.count = op->data.mpi.count;
+  add_scalar_param_int(event, TYPE_COUNT, op->data.mpi.count);
+
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  if(operation.fh>0)
+  compress_rsd_event( &op_queue, &operation, event);
+
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+
+extern int open(const char *filename, int flags, mode_t mode)
+{
+#       not useful for replay purposes
+#	set nowrapper;
+        set posix_function;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post 
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, FILENAME | POSIX_MODE | POSIX_FLAGS);
+  operation.fields_extn = FILENAME | POSIX_MODE | POSIX_FLAGS;
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.filepath = (char *)malloc((strlen(op->data.mpi.filename)+1)*sizeof(char));//&(op->data.mpi.filename);
+  add_scalar_param_string(event, TYPE_FILENAME, op->data.mpi.filename);
+
+  strcpy(operation.filepath,op->data.mpi.filename);
+  //strcpy(operation.filepath,"btio.full.out");
+
+  operation.posixargs.mode = op->data.mpi.mode;
+  add_scalar_param_int(event, TYPE_POSIX_MODE, op->data.mpi.mode);
+  operation.posixargs.flags = op->data.mpi.flags;
+  add_scalar_param_int(event, TYPE_POSIX_FLAGS, op->data.mpi.flags);
+
+  add_file_handle_entry(record_ptr, op->res);
+  operation.fh = file_handle_to_index(record_ptr, op->res);
+  add_scalar_param_int(event, TYPE_FH, file_handle_to_index (record_ptr,  op->res));
+
+  operation.is_mpi_io = 1;
+
+  char* sep = strrchr(operation.filepath,'/');
+  if(sep!=NULL) {
+    operation.filename = (char *)malloc((strlen(sep+1)+1)*sizeof(char));//Reason for spe+1 to remove / from filename
+    strcpy(operation.filename,sep+1);
+    memset(sep+1,'\0',strlen(sep+1));
+  }
+  else {
+    operation.filename = (char *)malloc((strlen(operation.filepath)+1)*sizeof(char));
+    strcpy(operation.filename,operation.filepath);
+  }
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int open64(const char *filename, int flags, mode_t mode)
+{
+#       not useful for replay purposes
+#	set nowrapper;
+        set posix_function;
+}
+wrapper-pre
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post 
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, FILENAME | POSIX_MODE | POSIX_FLAGS);
+  operation.fields_extn = FILENAME | POSIX_MODE | POSIX_FLAGS;
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.filepath = (char *)malloc((strlen(op->data.mpi.filename)+1)*sizeof(char));//&(op->data.mpi.filename);
+  add_scalar_param_string(event, TYPE_FILENAME, op->data.mpi.filename);
+
+  strcpy(operation.filepath,op->data.mpi.filename);
+  //strcpy(operation.filepath,"btio.full.out");
+
+  operation.posixargs.mode = op->data.mpi.mode;
+  add_scalar_param_int(event, TYPE_POSIX_MODE, op->data.mpi.mode);
+  operation.posixargs.flags = op->data.mpi.flags;
+  add_scalar_param_int(event, TYPE_POSIX_FLAGS, op->data.mpi.flags);
+
+  add_file_handle_entry(record_ptr, op->res);
+  operation.fh = file_handle_to_index(record_ptr, op->res);
+  add_scalar_param_int(event, TYPE_FH, file_handle_to_index (record_ptr,  op->res));
+
+  operation.is_mpi_io = 1;
+
+  char* sep = strrchr(operation.filepath,'/');
+  if(sep!=NULL) {
+    operation.filename = (char *)malloc((strlen(sep+1)+1)*sizeof(char));//Reason for spe+1 to remove / from filename
+    strcpy(operation.filename,sep+1);
+    memset(sep+1,'\0',strlen(sep+1));
+  }
+  else {
+    operation.filename = (char *)malloc((strlen(operation.filepath)+1)*sizeof(char));
+    strcpy(operation.filename,operation.filepath);
+  }
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int creat(const char *pathname, mode_t mode)
+{
+#       not useful for replay purposes
+#	set nowrapper;
+        set posix_function;
+}
+wrapper-pre
+{
+
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-pre
+wrapper-post 
+{
+/*
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, FILENAME | POSIX_MODE);
+  operation.fields_extn = FILENAME | POSIX_MODE;
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.filepath = (char *)malloc((strlen(op->data.mpi.filename)+1)*sizeof(char));//&(op->data.mpi.filename);
+  add_scalar_param_string(event, TYPE_FILENAME, op->data.mpi.filename);
+
+  strcpy(operation.filepath,op->data.mpi.filename);
+  //strcpy(operation.filepath,"btio.full.out");
+
+  operation.posixargs.mode = op->data.mpi.mode;
+  add_scalar_param_int(event, TYPE_POSIX_MODE, op->data.mpi.mode);
+
+  add_file_handle_entry(record_ptr, op->res);
+  operation.fh = file_handle_to_index(record_ptr, op->res);
+  add_scalar_param_int(event, TYPE_FH, file_handle_to_index (record_ptr,  op->res));
+
+  operation.is_mpi_io = 1;
+
+  char* sep = strrchr(operation.filepath,'/');
+  if(sep!=NULL) {
+    operation.filename = (char *)malloc((strlen(sep+1)+1)*sizeof(char));//Reason for spe+1 to remove / from filename
+    strcpy(operation.filename,sep+1);
+    memset(sep+1,'\0',strlen(sep+1));
+  }
+  else {
+    operation.filename = (char *)malloc((strlen(operation.filepath)+1)*sizeof(char));
+    strcpy(operation.filename,operation.filepath);
+  }
+  recordTime (&operation, 1);
+  recordEventTime(event, 1);
+  compress_rsd_event( &op_queue, &operation, event);
+  recordEventTime(0,0);
+recordTime (0, 0);
+*/
+}
+wrapper-post
+;
+
+extern int close(int fd)
+{
+#       not useful for replay purposes
+#	set nowrapper;
+        set posix_function;
+}
+wrapper-pre 
+{
+/*
+
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  operation.fields = NO_FIELDS;
+  event_set_param_list(event, op->op, op->seq_num, FH);
+  operation.fields_extn = FH;
+  operation.op = op->op;
+  operation.seq_num = op->seq_num;
+  operation.fh = file_handle_to_index(record_ptr, op->data.mpi.fd);
+  add_scalar_param_int(event, TYPE_FH, file_handle_to_index(record_ptr, op->data.mpi.fd) );
+  remove_file_handle_entry(record_ptr, op->data.mpi.fd);
+  operation.is_mpi_io = 1;
+  recordTime (&operation, 0);
+  recordEventTime(event, 0);
+
+  if(operation.fh > 0)
+  compress_rsd_event( &op_queue, &operation, event);
+
+  recordEventTime(0,0);
+  recordTime (0, 0);
+*/
+}
+wrapper-pre
+wrapper-post
+{
+/*
+  init_op (&operation);
+  init_event(event);
+  recordEventTime(event, 0);
+  recordTime (&operation, 0);
+*/
+}
+wrapper-post
+;
+
+
+
+extern int MPI_File_open(MPI_Comm comm, char *filename, int amode, MPI_Info info, MPI_File *fh)
+ 
+{
+#  set send;
+#  set candeadlock;
+}
+wrapper-pre 
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post 
+{
+	add_file_handle_entry(record_ptr, op->data.mpi.fh);
+	addScalarValue(event, COMM, comm_to_index(record_ptr, op->data.mpi.comm), my_rank);
+	addScalarValue(event, AMODE, op->data.mpi.amode, my_rank);
+	addScalarValue(event, FH, file_handle_to_index(record_ptr, op->data.mpi.fh), my_rank);
+	appendEvent(&trace, event);
+
+}
+wrapper-post
+; 
+
+extern int MPI_File_set_view(MPI_File fh, MPI_Offset disp, MPI_Datatype etype,
+                                MPI_Datatype filetype, char *datarep, MPI_Info info)
+{
+#  set send;
+#  set candeadlock;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, FH, file_handle_to_index(record_ptr, op->data.mpi.fh), my_rank);
+	addScalarValue(event, OFFSET, op->data.mpi.disp, my_rank);
+	addScalarValue(event, ETYPE, type_to_index(record_ptr, op->data.mpi.etype), my_rank);
+	addScalarValue(event, FILETYPE, type_to_index(record_ptr, op->data.mpi.filetype), my_rank);
+	addScalarValue(event, DATAREP, op->data.mpi.datarep, my_rank);
+	appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_File_write_at(MPI_File fh, MPI_Offset offset, void *buf, int count,
+				MPI_Datatype datatype, MPI_Status *status)
+{
+#  set send;
+#  set candeadlock;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, FH, file_handle_to_index(record_ptr, op->data.mpi.fh), my_rank);
+	addScalarValue(event, OFFSET, op->data.mpi.offset, my_rank);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_File_write_all(MPI_File fh, void *buf, int count,
+                                MPI_Datatype datatype, MPI_Status *status)
+{
+#  set send;
+#  set candeadlock;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, FH, file_handle_to_index(record_ptr, op->data.mpi.fh), my_rank);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_File_read_all(MPI_File fh, void *buf, int count,
+                                MPI_Datatype datatype, MPI_Status *status)
+{
+#  set send;
+#  set candeadlock;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post
+{
+	addScalarValue(event, FH, file_handle_to_index(record_ptr, op->data.mpi.fh), my_rank);
+	addScalarValue(event, COUNT, op->data.mpi.count, my_rank);
+	addScalarValue(event, DATATYPE, type_to_index(record_ptr, op->data.mpi.datatype), my_rank);
+	appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_File_seek(MPI_File fh, MPI_Offset offset, int whence)
+{
+#  set send;
+#  set candeadlock; 
+}
+wrapper-pre
+{ 
+	createEvent(&event, op->op, my_rank);
+}
+wrapper-pre
+wrapper-post 
+{
+	addScalarValue(event, FH, file_handle_to_index(record_ptr, op->data.mpi.fh), my_rank);
+	addScalarValue(event, OFFSET, op->data.mpi.offset, my_rank);
+	addScalarValue(event, WHENCE, op->data.mpi.whence, my_rank);
+	appendEvent(&trace, event);
+}
+wrapper-post
+;
+
+extern int MPI_File_close(MPI_File *fh)
+{
+#  set send;
+#  set candeadlock;
+}
+wrapper-pre
+{
+	createEvent(&event, op->op, my_rank);
+	addScalarValue(event, FH, file_handle_to_index(record_ptr, op->data.mpi.fh), my_rank);
+	remove_file_handle_entry(record_ptr, op->data.mpi.fh);
+	appendEvent(&trace, event);
+}
+wrapper-pre
+wrapper-post
+{
+}
+wrapper-post
+;
+
+
+

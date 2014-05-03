@@ -1,0 +1,58 @@
+# Generated automatically from Makefile.in by configure.
+# -*- Mode: Makefile; -*-
+# Makefile for umpire src
+# Creator: Jeffrey Vetter (vetter3@llnl.gov) Tue Mar 14 2000
+# $Header: /home/cvs/cvs/xwu3/ScalaTraceV2/record/wrapper-engine/Makefile,v 1.1 2012/04/02 05:12:10 xwu3 Exp $
+
+TARGET	= wrapper-engine.exe
+OBJS	= \
+	lexer.o \
+	y.tab.o \
+	main.o \
+	parser_util.o \
+	typeutil.o \
+	mpi_copy_free.o \
+	mpi_lookup.o \
+	mpi_pack.o \
+	mpi_params.o \
+	mpi_print.o \
+	mpi_replay.o \
+	mpi_verification.o \
+    posix_wrappers.o \
+	mpi_wrappers.o
+
+all: install
+
+include ../config/Makefile.config
+
+.c.o:
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
+
+install:: $(TARGET)
+
+.SUFFIXES: .y .lex
+
+##############################################################
+## Parser generation
+y.tab.c y.tab.h: parser.y
+	$(YACC) -d -t -v parser.y
+
+clean::
+	$(RM) y.tab.c y.tab.h y.output
+
+##############################################################
+## Lexer generation
+lexer.c: lexer.lex
+	$(LEX) -o$@ lexer.lex
+
+lexer.o: y.tab.h
+
+clean::
+	$(RM) lexer.c
+
+clean::
+	$(RM) *.o *.exe 
+##### EOF
