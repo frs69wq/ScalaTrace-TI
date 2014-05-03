@@ -23,10 +23,10 @@
 using namespace std;
 
 typedef struct {
-	Event *loophead;
-	Event *looptail;
-	loop_t* loopitem;
-	int iteration;
+  Event *loophead;
+  Event *looptail;
+  loop_t* loopitem;
+  int iteration;
 } loopcontext_t;
 
 extern int my_rank;
@@ -34,40 +34,40 @@ extern int my_rank;
 class Context{
 
 private:
-	/* for trace traversal */
-	int rank;
-	Event *iter;
-	int depth;
-	vector<loopcontext_t *> lps;
-	void buildLoopcontext(Event *e);
-	map<int, bool> membership;
+  /* for trace traversal */
+  int rank;
+  Event *iter;
+  int depth;
+  vector<loopcontext_t *> lps;
+  void buildLoopcontext(Event *e);
+  map<int, bool> membership;
 
-	/* for random number generation */
-	RandMnger* randmnger;
+  /* for random number generation */
+  RandMnger* randmnger;
 
-	/* for timing */
-	Timer *timer;
+  /* for timing */
+  Timer *timer;
 
-	bool hasMember(Event *e, int rank);
-	Event* next_helper();
+  bool hasMember(Event *e, int rank);
+  Event* next_helper();
 
 public:
-	Context(Event *head, Event* tail, int _rank);
-	Context(Event *head, Event* tail, int _rank, unsigned int _seed, int _limit = INT_MAX, compute_t *_compute = NULL);
-	~Context();
+  Context(Event *head, Event* tail, int _rank);
+  Context(Event *head, Event* tail, int _rank, unsigned int _seed, int _limit = INT_MAX, compute_t *_compute = NULL);
+  ~Context();
 
-	Event* next();
-	bool hasNext(){
-		return iter != NULL;
-	}
+  Event* next();
+  bool hasNext(){
+    return iter != NULL;
+  }
 
-	RandMnger* getRandMnger(){
-		return randmnger;
-	}
+  RandMnger* getRandMnger(){
+    return randmnger;
+  }
 
-	Timer* getTimer(){
-		return timer;
-	}
+  Timer* getTimer(){
+    return timer;
+  }
 };
 
 #endif /*__CONTEXT_H__*/

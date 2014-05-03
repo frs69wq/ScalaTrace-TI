@@ -34,13 +34,13 @@ using namespace std;
 class CompareSendinfo;
 
 typedef struct {
-	long long int time;
-	Event *e;
-	int count;
-	int datatype;
-	int src;
-	int tag;
-	int comm;
+  long long int time;
+  Event *e;
+  int count;
+  int datatype;
+  int src;
+  int tag;
+  int comm;
 } sendinfo_t;
 
 extern int my_rank, my_size;
@@ -67,12 +67,12 @@ sendinfo_t* getNextSendForRank(int rank);
  */
 class CompareSendinfo{
 public:
-	bool operator()(sendinfo_t* s1, sendinfo_t* s2){
-		if(s1->time < s2->time)
-			return false;
-		else 
-			return true;
-	}
+  bool operator()(sendinfo_t* s1, sendinfo_t* s2){
+    if(s1->time < s2->time)
+      return false;
+    else
+      return true;
+  }
 };
 
 #endif

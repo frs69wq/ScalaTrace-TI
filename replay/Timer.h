@@ -16,8 +16,8 @@
 
 typedef void* (*func_t)(void* );
 typedef struct {
-	func_t func;
-	void *param;
+  func_t func;
+  void *param;
 } compute_t;
 
 using namespace std;
@@ -25,39 +25,39 @@ using namespace std;
 class Timer{
 
 private:
-	int leftover;
-	long long int timestamp;
-	Event *cur_event;
-	Event *prev_event;
-	long long int accumulated;
-	compute_t* compute;
+  int leftover;
+  long long int timestamp;
+  Event *cur_event;
+  Event *prev_event;
+  long long int accumulated;
+  compute_t* compute;
 
-	long long int getCurrentTime();
-	int busyWait(int sleep_duration);
+  long long int getCurrentTime();
+  int busyWait(int sleep_duration);
 
 public:
-	Timer();
-	Timer(compute_t* _compute);
-	~Timer();
+  Timer();
+  Timer(compute_t* _compute);
+  ~Timer();
 
-	void setCurrentEvent(Event *op);
-	void setTime();
-	void resetTime();
-	void maxTime();
-	long long int getTime();
-	int getCompTime();
-	int getCommTime();
-	void simulateComputeTime(bool doComm = false, compute_t *_exec = NULL);
+  void setCurrentEvent(Event *op);
+  void setTime();
+  void resetTime();
+  void maxTime();
+  long long int getTime();
+  int getCompTime();
+  int getCommTime();
+  void simulateComputeTime(bool doComm = false, compute_t *_exec = NULL);
 
-	void accumulateCompTime(){
-		accumulated += getCompTime();
-	}
-	void accumulateCommTime(){
-		accumulated += getCommTime();
-	}
-	long long int getAccumulatedTime(){
-		return accumulated;
-	}
+  void accumulateCompTime(){
+    accumulated += getCompTime();
+  }
+  void accumulateCommTime(){
+    accumulated += getCommTime();
+  }
+  long long int getAccumulatedTime(){
+    return accumulated;
+  }
 
 };
 

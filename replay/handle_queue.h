@@ -26,25 +26,25 @@ extern int doTestFor;
 
 class HandleQueue{
 private:
-	vector<MPI_Request> requests;
-	vector<void *> buffers;
-	long long int sbufsize;
-	void *sendbuffer;
-	long long int rbufsize;
-	void *recvbuffer;
+  vector<MPI_Request> requests;
+  vector<void *> buffers;
+  long long int sbufsize;
+  void *sendbuffer;
+  long long int rbufsize;
+  void *recvbuffer;
 
 public:
-	HandleQueue();
-	~HandleQueue();
+  HandleQueue();
+  ~HandleQueue();
 
-	void testallCompletion();
-	void testsomeCompletion();
-	void testsingleCompletion();
-	void testCompletion();
-	void add(MPI_Request request, void *buf);
+  void testallCompletion();
+  void testsomeCompletion();
+  void testsingleCompletion();
+  void testCompletion();
+  void add(MPI_Request request, void *buf);
 
-	void *getSendBuffer(int size);
-	void *getRecvBuffer(int size);
+  void *getSendBuffer(int size);
+  void *getRecvBuffer(int size);
 };
 
 
