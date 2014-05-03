@@ -8,7 +8,7 @@
  * under the terms of the GNU LGPL license.
  */
 
-
+%{
 /*#include "gtypes.h"*/
 #include "y.tab.h"
 
