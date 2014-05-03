@@ -11,6 +11,8 @@
 #ifndef __RANKLIST_H__
 #define __RANKLIST_H__
 
+#include <climits>
+#include <stdlib.h>
 #include <vector>
 #include <string>
 #include <sstream>

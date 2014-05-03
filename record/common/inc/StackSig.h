@@ -11,6 +11,7 @@
 #ifndef __STACKSIG_H__
 #define __STACKSIG_H__
 
+#include <stdint.h>
 #include <vector>
 #include <string>
 #include <sstream>

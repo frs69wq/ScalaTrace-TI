@@ -11,6 +11,7 @@
 #ifndef __PARAMVALUE_H__
 #define __PARAMVALUE_H__
 
+#include <typeinfo>
 #include <vector>
 #include <string>
 #include <map>
