@@ -19,7 +19,7 @@
 #include <time.h>
 
 #define INPUT_GLOBAL	0
-#define INPUT_NODE		1
+#define INPUT_NODE	1
 
 using namespace std;
 

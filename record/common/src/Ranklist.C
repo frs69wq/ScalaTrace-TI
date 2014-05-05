@@ -8,6 +8,8 @@
  * under the terms of the GNU LGPL license.
  */
 
+#include <stdio.h> 	 // Added by Henri so that smpicxx can compile this
+
 #include "Ranklist.h"
 
 void Ranklist::initRanklist(int rank){

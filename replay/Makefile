@@ -20,8 +20,8 @@ VPATH+=${top_srcdir}/record/common/src
 
 GCC=gcc
 GXX=g++
-MPI_CC = mpicc
-MPI_CXX = mpicxx
+MPI_CC = smpicc
+MPI_CXX = smpicxx
 
 SRCS:= mpi_util.c \
  

@@ -8,6 +8,7 @@
  * under the terms of the GNU LGPL license.
  */
 
+#include <iostream>	 // Added by Henri so that smpicxx can compile this
 #include "Event.h"
 #include "assert.h"
 #include "Stat.h"
