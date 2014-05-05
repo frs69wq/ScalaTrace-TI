@@ -8,6 +8,8 @@
  * under the terms of the GNU LGPL license.
  */
 
+#include <iostream>      // Added by Henri so that smpicxx can compile this
+
 #include "RandMnger.h"
 
 RandMnger::RandMnger(){}

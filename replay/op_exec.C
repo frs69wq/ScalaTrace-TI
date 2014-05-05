@@ -7,6 +7,10 @@
  * The license of the original code is unknown. Modifications are made
  * under the terms of the GNU LGPL license.
  */
+
+#include <iostream>      // Added by Henri so that smpicxx can compile this
+
+
 #include "op_exec.h"
 
 #define RECORDED_MPI_REQUEST_NULL -1
