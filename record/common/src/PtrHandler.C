@@ -39,7 +39,7 @@ private:
     for (int i = 0; i < bufsize; i++) {
       if (buffer[i] == handle) {
         // return (i - current + bufsize) % bufsize;
-		return i;
+        return i;
       }
     }
     return -1;
@@ -75,7 +75,7 @@ public:
   ~HandleMapper() {
     delete [] buffer;
   }
-  
+
   //Method to fill the buffer with default null handle
   void clear_handle_buffer() {
     for(int i=0; i<bufsize; i++) {
@@ -84,11 +84,11 @@ public:
   }
 
   int get_current(){
-	return (int)current;
+    return (int)current;
   }
 
   int get_bufsize(){
-	return bufsize;
+    return bufsize;
   }
 
   /// Maps an MPI handle to a unique int.  If the handle is not
@@ -114,7 +114,7 @@ public:
       return builtin;
     }
     // return buffer[(current + index) % bufsize];
-	return buffer[index % bufsize];
+    return buffer[index % bufsize];
   }
 
   /// Adds a mapping for the MPI handle to this HandleMapper.
@@ -130,18 +130,18 @@ public:
     int i = lookup_handle(handle);
     if (i >= 0) {
       // buffer[(current + i) % bufsize] = builtins[0];  // set to null
-	  buffer[i % bufsize] = builtins[0];
+      buffer[i % bufsize] = builtins[0];
     }
   }
 
-  
+
   // --- Methods below affect the list of builtins. --- //
 
   /// Adds a builtin to the back of the builtin vector.
   void add_builtin(const T& builtin) {
     builtins.push_back(builtin);
   }
-  
+
   size_t num_builtins() {
     return builtins.size();
   }
@@ -200,7 +200,7 @@ static void init_types(HandleMapper<MPI_Datatype>& types) {
   types.add_builtin(MPI_2REAL);					// 27
   types.add_builtin(MPI_2DOUBLE_PRECISION);		// 28
   types.add_builtin(MPI_2INTEGER);				// 29
-												// ...
+  // ...
   /* Optional datatypes (Fortran) */
 #ifdef MPI_INTEGER1
   types.add_builtin(MPI_INTEGER1);
@@ -307,7 +307,7 @@ static void init_ops(HandleMapper<MPI_Op>& ops) {
   ops.add_builtin(MPI_LAND);
   ops.add_builtin(MPI_LOR);
   ops.add_builtin(MPI_LXOR);
-  
+
   /* ---------------------------------------------------- */
   /* MPI-1 Ops.                                           */
   /* ---------------------------------------------------- */
@@ -335,8 +335,8 @@ static void init_groups(HandleMapper<MPI_Group>& groups) {
 
 /* i/o tracing */
 static void init_file_handles(HandleMapper<MPI_File>& files) {
-    if(files.num_builtins()) return;
-      files.add_builtin(0);
+  if(files.num_builtins()) return;
+  files.add_builtin(0);
 }
 
 
@@ -349,7 +349,7 @@ struct ptr_handler {
   HandleMapper<MPI_File>     files;
 
   ptr_handler(int bufsize = PTR_HANDLER_SZ) 
-    : types(bufsize), comms(bufsize), groups(bufsize), ops(bufsize), files(bufsize) { 
+  : types(bufsize), comms(bufsize), groups(bufsize), ops(bufsize), files(bufsize) {
 
     // init the lookup tables for builtins
     init_types(types);
@@ -387,10 +387,10 @@ int comm_to_index(ptr_handler_t ptr, MPI_Comm comm) {
 }
 
 int comm_current(ptr_handler_t ptr){
-	return ptr->comms.get_current();
+  return ptr->comms.get_current();
 }
 int comm_bufsize(ptr_handler_t ptr){
-	return ptr->comms.get_bufsize();
+  return ptr->comms.get_bufsize();
 }
 /*
 int comm_abs_index(ptr_handler_t ptr, int index){
@@ -399,7 +399,7 @@ int comm_abs_index(ptr_handler_t ptr, int index){
 	else
 		return index;
 }
-*/
+ */
 int group_to_index(ptr_handler_t ptr, MPI_Group group) {
   return ptr->groups.handle_to_index(group);
 }
@@ -433,7 +433,7 @@ void add_group_entry(ptr_handler_t ptr, MPI_Group group) {
 void add_op_entry(ptr_handler_t ptr, MPI_Op op) {
   ptr->ops.add_handle(op);
 }
-  
+
 void remove_type_entry(ptr_handler_t ptr, MPI_Datatype type) {
   ptr->types.remove_handle(type);
 }
@@ -450,19 +450,19 @@ void remove_op_entry(ptr_handler_t ptr, MPI_Op op) {
 
 /* i/o tracing*/
 int file_handle_to_index(ptr_handler_t ptr, MPI_File file) {
-    return ptr->files.handle_to_index(file);
+  return ptr->files.handle_to_index(file);
 }
 
 MPI_File index_to_file_handle(ptr_handler_t ptr, int index) {
-    return ptr->files.index_to_handle(index);
+  return ptr->files.index_to_handle(index);
 }
 
 void add_file_handle_entry(ptr_handler_t ptr, MPI_File file) {
-    ptr->files.add_handle(file);
+  ptr->files.add_handle(file);
 }
 
 void remove_file_handle_entry(ptr_handler_t ptr, MPI_File file) {
-    ptr->files.remove_handle(file);
+  ptr->files.remove_handle(file);
 }
 
 /* vim: set tw=80 sw=2 expandtab: */

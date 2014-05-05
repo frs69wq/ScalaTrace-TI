@@ -29,7 +29,7 @@ int get_child(int rank, int child)
 
   for(i = 0; i < msb; i++)
     mask |= (1 << i);
-  
+
   return ((1 << (msb + 1)) | (child << msb) | (rank & mask)) - 1;
 }
 
