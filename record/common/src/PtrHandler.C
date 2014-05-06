@@ -184,7 +184,9 @@ static void init_types(HandleMapper<MPI_Datatype>& types) {
   types.add_builtin(MPI_COMPLEX);				// 17
   types.add_builtin(MPI_DOUBLE_COMPLEX);		// 18
   types.add_builtin(MPI_LOGICAL);				// 19
+#ifdef MPI_CHARACTER	// Added by Henri Casanova
   types.add_builtin(MPI_CHARACTER);				// 20
+#endif
   /* MPI_BYTE   is mentioned here but covered by C. */
   /* MPI_PACKED is mentioned here but covered by C. */
 
@@ -197,11 +199,16 @@ static void init_types(HandleMapper<MPI_Datatype>& types) {
   types.add_builtin(MPI_LONG_DOUBLE_INT);		// 26
 
   /* Datatypes for reduction functions (Fortran) */
+#ifdef MPI_2REAL	// Added by Henri Casanova
   types.add_builtin(MPI_2REAL);					// 27
+#endif
   types.add_builtin(MPI_2DOUBLE_PRECISION);		// 28
+#ifdef MPI_2INTEGER	// Added by Henri Casanova
   types.add_builtin(MPI_2INTEGER);				// 29
+#endif
   // ...
   /* Optional datatypes (Fortran) */
+/*
 #ifdef MPI_INTEGER1
   types.add_builtin(MPI_INTEGER1);
 #endif
@@ -240,6 +247,7 @@ static void init_types(HandleMapper<MPI_Datatype>& types) {
 #ifdef MPI_COMPLEX32
   types.add_builtin(MPI_COMPLEX32);  /* not mentioned in the standard */
 #endif
+*/
 
   /* Optional datatypes (C) */
 #ifdef MPI_LONG_LONG_INT
