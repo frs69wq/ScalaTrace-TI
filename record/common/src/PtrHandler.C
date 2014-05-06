@@ -208,7 +208,7 @@ static void init_types(HandleMapper<MPI_Datatype>& types) {
 #endif
   // ...
   /* Optional datatypes (Fortran) */
-/*
+#if 0
 #ifdef MPI_INTEGER1
   types.add_builtin(MPI_INTEGER1);
 #endif
@@ -247,7 +247,7 @@ static void init_types(HandleMapper<MPI_Datatype>& types) {
 #ifdef MPI_COMPLEX32
   types.add_builtin(MPI_COMPLEX32);  /* not mentioned in the standard */
 #endif
-*/
+#endif
 
   /* Optional datatypes (C) */
 #ifdef MPI_LONG_LONG_INT
