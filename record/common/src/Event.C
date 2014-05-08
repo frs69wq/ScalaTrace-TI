@@ -30,7 +30,7 @@ next(0)
   StatTime *st_comm = new StatTime(STAT_TIME);
   commStats[STAT_TIME] = st_comm;
 #else
-  StatInst *st_comp = new StatTime(STAT_INST);
+  StatInst *st_comp = new StatInst(STAT_INST);
   compStats[STAT_INST] = st_comp;
   StatInst *st_comm = new StatInst(STAT_INST);
   commStats[STAT_INST] = st_comm;
