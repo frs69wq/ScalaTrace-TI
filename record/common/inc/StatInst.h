@@ -11,10 +11,13 @@
 #define __STATINST_H__
 
 #include "Stat.h"
+#include <papi.h>
 
 class StatInst : public Stat{
 
 public:
+  int EventSet=PAPI_NULL;
+  int Events[30];
 
   StatInst(int s);
 

@@ -42,8 +42,8 @@ CPPFLAGS+=-DMPICH_IGNORE_CXX_SEEK
 
 
 SW_HOME=${top_srcdir}/../stackwalk/ver0
-SW_LIBS = -L$(SW_HOME) -lstackwalk
-SW_INCLUDE = -I$(SW_HOME)
+SW_LIBS = -L$(SW_HOME) -lstackwalk -L$(papilibdir) -lpapi
+SW_INCLUDE = -I$(SW_HOME) 
 
 
 
@@ -53,7 +53,8 @@ SW_INCLUDE = -I$(SW_HOME)
 CPPFLAGS+=-I${top_srcdir}/libsrc  \
           -I${top_srcdir}/common/inc \
           -I${top_srcdir}/libsrc/${DIR} \
-	      $(SW_INCLUDE)
+           $(SW_INCLUDE) \
+           -I$(papiincludedir)
 
 
 #### #### #### #### #### source dirs  #### #### #### #### ####

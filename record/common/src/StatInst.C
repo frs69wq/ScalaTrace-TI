@@ -8,11 +8,21 @@
  */
 
 #include "StatInst.h"
-
+#include <iostream>
 
 StatInst::StatInst(int s):
     Stat(s)
-{}
+{
+  int event_code;
+  PAPI_library_init(PAPI_VER_CURRENT);
+  if(PAPI_create_eventset(&EventSet)!=PAPI_OK) {
+     cout << "Could not create the EventSet" << endl;
+  }
+  PAPI_event_name_to_code("PAPI_TOT_INS",&event_code);
+
+  PAPI_add_event(EventSet, event_code);
+
+}
 
 void StatInst::start(){
 
