@@ -67,6 +67,7 @@ int main(int argc, char **argv){
   }
   //unsigned int seed = 0;
   PMPI_Bcast(&seed, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  cout << "Rank post-Bcast " << my_rank << endl;
   setSeed(seed);
   setDestLimit(FEATURE_RAND_DEST);
   setupCommunicators(trace);

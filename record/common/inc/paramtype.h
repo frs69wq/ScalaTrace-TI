@@ -95,5 +95,6 @@
 
 /* Statistics*/
 #define STAT_TIME                 75
+#define STAT_INST                 76
 
 #endif /*__PARAMTYPE_H__*/

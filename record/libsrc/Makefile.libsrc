@@ -17,6 +17,9 @@ SIG_DIFF=0
 # Compress loop iterations using LCS analysis
 LOOP_LCS=n
 
+# Use time-independent tracing 
+TIME_INDEPENDENT=n
+
 ifeq ($(RETAIN_TAGS),y)
 MPIFLAGS += -DFEATURE_RETAIN_TAGS
 endif
@@ -26,6 +29,9 @@ endif
 MPIFLAGS += -DFEATURE_SIG_DIFF=$(SIG_DIFF)
 ifeq ($(LOOP_LCS),y)
 MPIFLAGS += -DFEATURE_LOOP_LCS
+endif
+ifeq ($(TIME_INDEPENDENT),y)
+MPIFLAGS += -DFEATURE_TIME_INDEPENDENT
 endif
 
 

@@ -13,6 +13,7 @@
 #include "assert.h"
 #include "Stat.h"
 #include "StatTime.h"
+#include "StatInst.h"
 
 Event::Event(int op, int rank):
 op(op),
@@ -23,10 +24,17 @@ prev(0),
 next(0)
 {
   signature.unwind();
+#ifndef FEATURE_TIME_INDEPENDENT
   StatTime *st_comp = new StatTime(STAT_TIME);
   compStats[STAT_TIME] = st_comp;
   StatTime *st_comm = new StatTime(STAT_TIME);
   commStats[STAT_TIME] = st_comm;
+#else
+  StatInst *st_comp = new StatTime(STAT_INST);
+  compStats[STAT_INST] = st_comp;
+  StatInst *st_comm = new StatInst(STAT_INST);
+  commStats[STAT_INST] = st_comm;
+#endif
 #ifdef FEATURE_LOOP_LCS
   insertLoop(1, 1);
 #endif
