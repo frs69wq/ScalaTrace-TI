@@ -96,6 +96,7 @@ CXX_SRCS:= \
 	ValueSet.C \
 	Stat.C \
 	StatTime.C \
+	StatInst.C \
 	RandMnger.C \
 
 
