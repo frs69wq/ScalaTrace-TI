@@ -10,6 +10,7 @@
 #ifndef __STATINST_H__
 #define __STATINST_H__
 
+#include <iostream>
 #include "Stat.h"
 #include <papi.h>
 
@@ -17,12 +18,9 @@ class StatInst : public Stat{
 
 public:
   static long long counter;
-  static int Events[30];
-  long long values [1];
-
+  static long long values [1];
 
   StatInst(int s);
-  virtual ~StatInst();
 
   void start();
   long long end();

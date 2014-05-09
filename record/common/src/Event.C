@@ -27,14 +27,37 @@ next(0)
 #ifndef FEATURE_TIME_INDEPENDENT
   StatTime *st_comp = new StatTime(STAT_TIME);
   compStats[STAT_TIME] = st_comp;
-  StatTime *st_comm = new StatTime(STAT_TIME);
-  commStats[STAT_TIME] = st_comm;
 #else
+  if (op == 1084){ //MPI_Init
+    int EventSet = PAPI_NULL;
+    int Events[30];
+    int event_code;
+    cout << "Start PAPI counters" << endl;
+
+    PAPI_library_init(PAPI_VER_CURRENT);
+    if(PAPI_create_eventset(&EventSet)!=PAPI_OK) {
+      cerr << "Could not create the EventSet" << endl;
+    }
+    PAPI_event_name_to_code("PAPI_TOT_INS",&event_code);
+
+    PAPI_add_event(EventSet, event_code);
+    Events[0]=event_code;
+
+    if(PAPI_start_counters(Events,1)!=PAPI_OK)
+      cerr << "Unable to start counters for event code " << event_code << endl;
+    else
+      cout << "Start counters for event code " << event_code << endl;
+  }
   StatInst *st_comp = new StatInst(STAT_INST);
   compStats[STAT_INST] = st_comp;
-  StatInst *st_comm = new StatInst(STAT_INST);
-  commStats[STAT_INST] = st_comm;
+  if (op == 1045) {//MPI_Finalize
+    long long values[1];
+    cout << "End counters" << endl;
+    PAPI_stop_counters(values, 1);
+  }
 #endif
+  StatTime *st_comm = new StatTime(STAT_TIME);
+  commStats[STAT_TIME] = st_comm;
 #ifdef FEATURE_LOOP_LCS
   insertLoop(1, 1);
 #endif
