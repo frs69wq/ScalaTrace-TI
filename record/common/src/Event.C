@@ -14,6 +14,7 @@
 #include "Stat.h"
 #include "StatTime.h"
 #include "StatInst.h"
+#include "umpi_mpi_ops.h"
 
 Event::Event(int op, int rank):
 op(op),
@@ -28,7 +29,7 @@ next(0)
   StatTime *st_comp = new StatTime(STAT_TIME);
   compStats[STAT_TIME] = st_comp;
 #else
-  if (op == 1084){ //MPI_Init
+  if (op == umpi_MPI_Init){
     int EventSet = PAPI_NULL;
     int Events[30];
     int event_code;
@@ -50,7 +51,7 @@ next(0)
   }
   StatInst *st_comp = new StatInst(STAT_INST);
   compStats[STAT_INST] = st_comp;
-  if (op == 1045) {//MPI_Finalize
+  if (op == umpi_MPI_Finalize){
     long long values[1];
     cout << "End counters" << endl;
     PAPI_stop_counters(values, 1);

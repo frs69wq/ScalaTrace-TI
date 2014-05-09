@@ -18,12 +18,6 @@ StatInst::StatInst(int s):
 {
   if(PAPI_accum_counters(values, 1)!=PAPI_OK)
     cerr << "PAPI event is not supported" << endl;
-
-  //TODO See later what these Georges's variable do
-  //  ins1=values[0];
-  //  t1=values[0];
-
-
 }
 
 void StatInst::start(){
