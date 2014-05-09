@@ -7,6 +7,7 @@
  * The license of the original code is unknown. Modifications are made
  * under the terms of the GNU LGPL license.
  */
+#include <iostream>
 #include "Timer.h"
 
 extern int doTestFor;
@@ -79,6 +80,15 @@ long long int Timer::getTime(){
   return t - timestamp;
 }
 
+// Added for SMPI integration
+int Timer::getNumInst(){
+  StackSig* prev_sig = NULL;
+  if(prev_event)
+    prev_sig = prev_event->getSignature();
+  return (int) cur_event->getStatValue(PHASE_COMP, STAT_INST, prev_sig);
+}
+
+
 int Timer::getCompTime(){
   StackSig* prev_sig = NULL;
   if(prev_event)
@@ -103,8 +113,9 @@ void Timer::simulateComputeTime(bool doComm, compute_t *_exec) {
 
 #ifdef SMPI_SIMULATION_ACTIVATED
   #ifdef SMPI_SIMULATION_TIME_INDEPENDENT
-  double flops = (double)comp_time;
-  smpi_execute_flops(flops);
+  long long flops = getNumInst();
+  cout << "Simulating " << flops << " flops" << endl;
+  smpi_execute_flops((double)flops);
   #else
   smpi_execute((double)comp_time / 1000000.0);
   #endif

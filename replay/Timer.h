@@ -46,6 +46,7 @@ public:
   void maxTime();
   long long int getTime();
   int getCompTime();
+  int getNumInst();
   int getCommTime();
   void simulateComputeTime(bool doComm = false, compute_t *_exec = NULL);
 
