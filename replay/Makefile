@@ -11,8 +11,9 @@ RAND_DEST=6
 
 PREALLOC_MEM=y
 
-
-
+# Added for SMPI integration
+SMPI_SIMULATION=n
+SMPI_SIMULATION_TIME_INDEPENDENT=y
 
 top_srcdir=$(shell pwd)/..
 
@@ -20,8 +21,15 @@ VPATH+=${top_srcdir}/record/common/src
 
 GCC=gcc
 GXX=g++
+
+# Added for SMPI integration
+ifeq ($(SMPI_SIMULATION),y)
 MPI_CC = smpicc
 MPI_CXX = smpicxx
+else
+MPI_CC = mpicc
+MPI_CXX = mpicxx
+endif
 
 SRCS:= mpi_util.c \
  
@@ -90,6 +98,14 @@ endif
 
 ifeq ($(PREALLOC_MEM),y)
 CFLAGS+=-DFEATURE_PREALLOC_MEM
+endif
+
+# Added for SMPI integration
+ifeq ($(SMPI_SIMULATION),y)
+CFLAGS+=-DSMPI_SIMULATION_ACTIVATED
+ifeq ($(SMPI_SIMULATION_TIME_INDEPENDENT),y)
+CFLAGS+=-DSMPI_SIMULATION_TIME_INDEPENDENT
+endif
 endif
 
 CFLAGS+=-DFEATURE_RAND_DEST=$(RAND_DEST)

@@ -101,8 +101,13 @@ void Timer::simulateComputeTime(bool doComm, compute_t *_exec) {
 
   comp_time = sleep_duration = getCompTime();
 
-#ifdef SMPI_H
+#ifdef SMPI_SIMULATION_ACTIVATED
+  #ifdef SMPI_SIMULATION_TIME_INDEPENDENT
+  double flops = (double)comp_time;
+  smpi_execute_flops(flops);
+  #else
   smpi_execute((double)comp_time / 1000000.0);
+  #endif
   leftover = 0;
 #else
   if(doComm)
