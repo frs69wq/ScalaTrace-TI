@@ -1,1 +1,1 @@
-smpirun --cfg="smpi/privatize_global_variables:yes" --cfg=smpi/running_power:2e9 -np 4 -platform ./cluster.xml -hostfile ./hostfile ../../replay/replay ./trace_4/0
+smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg=smpi/running_power:1e9 -np 4 -platform ./cluster.xml -hostfile ./hostfile ../../replay/replay ./trace_4/0
