@@ -4,7 +4,7 @@ MPI_CC:=mpicxx
 CFLAGS:=-Wall -g -O0
 
 LDFLAGS:=-L${SCALATRACE_HOME}/record/lib -L${SCALATRACE_HOME}/stackwalk/ver0
-LIBS:=-lglob -lstackwalk
+LIBS:=-lglob -lstackwalk -lpapi
 
 TARGET=stencil
 SOURCE=$(addsuffix .c, $(basename $(TARGET)))

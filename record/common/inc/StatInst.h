@@ -16,10 +16,13 @@
 class StatInst : public Stat{
 
 public:
+  static long long counter;
+  static int Events[30];
+  long long values [1];
   int EventSet=PAPI_NULL;
-  int Events[30];
 
   StatInst(int s);
+  virtual ~StatInst();
 
   void start();
   long long end();
