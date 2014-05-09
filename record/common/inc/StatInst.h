@@ -19,7 +19,7 @@ public:
   static long long counter;
   static int Events[30];
   long long values [1];
-  int EventSet=PAPI_NULL;
+
 
   StatInst(int s);
   virtual ~StatInst();

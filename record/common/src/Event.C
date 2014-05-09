@@ -25,13 +25,11 @@ next(0)
 {
   signature.unwind();
 #ifndef FEATURE_TIME_INDEPENDENT
-  cout << "Am I here ?" << endl;
   StatTime *st_comp = new StatTime(STAT_TIME);
   compStats[STAT_TIME] = st_comp;
   StatTime *st_comm = new StatTime(STAT_TIME);
   commStats[STAT_TIME] = st_comm;
 #else
-  cout << "or Am I there ?" << endl;
   StatInst *st_comp = new StatInst(STAT_INST);
   compStats[STAT_INST] = st_comp;
   StatInst *st_comm = new StatInst(STAT_INST);

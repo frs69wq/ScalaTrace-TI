@@ -16,14 +16,15 @@ int StatInst::Events[30];
 StatInst::StatInst(int s):
     Stat(s)
 {
+  int EventSet = PAPI_NULL;
   int event_code;
   PAPI_library_init(PAPI_VER_CURRENT);
-  if(PAPI_create_eventset(&(StatInst::EventSet))!=PAPI_OK) {
+  if(PAPI_create_eventset(&EventSet)!=PAPI_OK) {
      cerr << "Could not create the EventSet" << endl;
   }
   PAPI_event_name_to_code("PAPI_TOT_INS",&event_code);
 
-  PAPI_add_event(StatInst::EventSet, event_code);
+  PAPI_add_event(EventSet, event_code);
   StatInst::Events[0]=event_code;
 
   if(PAPI_start_counters(Events,1)!=PAPI_OK)
