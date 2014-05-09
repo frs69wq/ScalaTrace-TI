@@ -31,5 +31,6 @@ long long StatInst::end(){
   current_counter_value = values[0];
   cout << "end() called: " << values[0] -StatInst::counter
       << " counted instructions" <<endl;
-  return values[0]-StatInst::counter;
+  return (values[0]-StatInst::counter)/1000;  // Dividing by 1000 to avoid overflows
+					      // without loosing too much accuracy
 }
