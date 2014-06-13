@@ -61,6 +61,9 @@ int main(int argc, char *argv[])
 			if(request_list[i] != MPI_REQUEST_NULL )
 				MPI_Wait(request_list + i, status + i);
 #endif
+/* Introduce huge computation */
+//    for (i = 0; i < 1e9; i++)
+//      j = 2 * i - (j / 2);
 	}
 	MPI_Barrier(MPI_COMM_WORLD);
 	gettimeofday(&end, NULL);

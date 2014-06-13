@@ -1,4 +1,4 @@
-SCALATRACE_HOME=../../
+SCALATRACE_HOME=../..
 
 MPI_CC:=mpicxx
 CFLAGS:=-Wall -g -O0
