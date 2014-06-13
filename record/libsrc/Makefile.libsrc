@@ -22,7 +22,7 @@ TIME_INDEPENDENT=y
 
 # Use calibration feature (to log both timed and time independent computation stats)
 # Should be set to y only if TIME_INDEPENDENT is set to y
-CALIBRATION=y
+CALIBRATION=n
 
 ifeq ($(RETAIN_TAGS),y)
 MPIFLAGS += -DFEATURE_RETAIN_TAGS
