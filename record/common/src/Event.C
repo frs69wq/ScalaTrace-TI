@@ -3,6 +3,7 @@
  * Copyright (c) of subsequent modifications of this code:
  * Frederic Suter, CNRS / IN2P3 Computing Center <fsuter@cc.in2p3.fr>
  * Henri Casanova, ICS Dept., University of Hawai`i at Manoa <henric@hawaii.edu>
+ * Anshul Gupta <anshulgupta0803@gmail.com>
 
  * The license of the original code is unknown. Modifications are made
  * under the terms of the GNU LGPL license.
@@ -49,8 +50,12 @@ next(0)
     else
       cout << "Start counters for event code " << event_code << endl;
   }
-  StatInst *st_comp = new StatInst(STAT_INST);
-  compStats[STAT_INST] = st_comp;
+  StatInst *st_comp_inst = new StatInst(STAT_INST);
+  compStats[STAT_INST] = st_comp_inst;
+#ifdef FEATURE_CALIBRATION
+  StatTime *st_comp_time = new StatTime(STAT_TIME);
+  compStats[STAT_TIME] = st_comp_time;
+#endif
   if (op == umpi_MPI_Finalize){
     long long values[1];
     cout << "End counters" << endl;
@@ -486,7 +491,12 @@ void Event::pack(void *buf, int bufsize, int *position, MPI_Comm comm){
   PMPI_Pack(&loc, 1, MPI_INT, buf, bufsize, position, comm);
   ranklist.pack(buf, bufsize, position, comm);
   int numStats = compStats.size();
+#ifdef FEATURE_CALIBRATION
+/* Because we are counting computation stats twice but communication stats only once */
+  assert(numStats == (int)commStats.size() * 2);
+#else
   assert(numStats == (int)commStats.size());
+#endif
   PMPI_Pack(&numStats, 1, MPI_INT, buf, bufsize, position, comm);
   map<int, Stat*>::iterator sit;
   for(sit = compStats.begin(); sit != compStats.end(); sit++ ){
@@ -517,7 +527,12 @@ void Event::unpack(void *buf, int bufsize, int *position, MPI_Comm comm){
     type = stat->getStattype();
     compStats[type] = stat;
   }
+#ifdef FEATURE_CALIBRATION
+/* The communication stats are half the computation stats */
+  for(int i=0; i<numStats / 2; i++){
+#else
   for(int i=0; i<numStats; i++){
+#endif
     Stat *stat = new Stat();
     stat->unpack(buf, bufsize, position, comm);
     type = stat->getStattype();

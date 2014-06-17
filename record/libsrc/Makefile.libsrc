@@ -18,7 +18,11 @@ SIG_DIFF=0
 LOOP_LCS=n
 
 # Use time-independent tracing 
-TIME_INDEPENDENT=n
+TIME_INDEPENDENT=y
+
+# Use calibration feature (to log both timed and time independent computation stats)
+# Should be set to y only if TIME_INDEPENDENT is set to y
+CALIBRATION=n
 
 ifeq ($(RETAIN_TAGS),y)
 MPIFLAGS += -DFEATURE_RETAIN_TAGS
@@ -32,6 +36,13 @@ MPIFLAGS += -DFEATURE_LOOP_LCS
 endif
 ifeq ($(TIME_INDEPENDENT),y)
 MPIFLAGS += -DFEATURE_TIME_INDEPENDENT
+  ifeq ($(CALIBRATION), y)
+    MPIFLAGS += -DFEATURE_CALIBRATION
+  endif
+else
+  ifeq ($(CALIBRATION), y)
+    CALIBRATION=n
+  endif
 endif
 
 

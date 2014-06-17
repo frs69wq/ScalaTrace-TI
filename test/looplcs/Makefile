@@ -4,7 +4,7 @@ MPI_CC:=mpicxx
 CFLAGS:=-Wall -g -O0
 
 LDFLAGS:=-L${SCALATRACE_HOME}/record/lib -L${SCALATRACE_HOME}/stackwalk/ver0
-LIBS:=-lnode -lstackwalk
+LIBS:=-lnode -lstackwalk -lpapi
 
 TARGET=looplcs
 SOURCE=$(addsuffix .c, $(basename $(TARGET)))
