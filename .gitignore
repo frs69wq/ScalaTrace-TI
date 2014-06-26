@@ -1,0 +1,10 @@
+*.d
+*.D
+*.o
+record/libsrc/dump/
+record/libsrc/node/
+record/libsrc/glob/
+record/lib/
+record/wrapper-engine
+replay/replay
+stackwalk/ver0/libstackwalk.a
