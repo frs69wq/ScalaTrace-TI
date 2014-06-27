@@ -1,9 +1,9 @@
-* TODO Trace analysis todo list [0/5]
-** TODO Give access to traces and shell/R scripts
+* TODO Trace analysis todo list [2/5]
+** DONE Give access to traces and shell/R scripts
    + So that I can modify/complete the R parts
    + Maybe create traces/ and scripts/ directories on the
      ScalaTrace-TI GitHub
-** TODO Make the R documents more 'litterate programming' compliant
+** DONE Make the R documents more 'litterate programming' compliant
    + Add information about the different fields of the data-frame(s)
    + Be more explanatory between the different steps of the R script
      + what you expect to find or visualize

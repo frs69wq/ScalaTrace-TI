@@ -5,8 +5,12 @@
 #+STARTUP: indent
 
 * Plot COMM 4b ratios of TD vs TI
-Multiple traces were acquired on graphene cluster for LU benchmark,
-class C and 16 Processes.
+See [[file:~/git/ScalaTrace-TI/R-analysis/comm.4b.ratio.td.ti.Rmd][comm.4b.ratio.td.ti.Rmd]]
+** Motive
+X
+** Overview
+Multiple time dependent and time independent traces were acquired on
+graphene cluster for LU benchmark, class C and 16 Processes.
 Their *COMM 4b* global values were parsed using the [[file:~/git/ScalaTrace-TI/scripts/Expand.java][Expand.java]] code
 with this format.
 #+BEGIN_EXAMPLE
@@ -31,7 +35,7 @@ java Expand ../traces/ti/lu/C/16/V/0 > ../datasets/ti.lu.C.16.comm.4b.V
 The variables are named as *d<A>_<B>*,
 where *<A>* is the Time Dependent dataset and *<B>* is the Time
 Independent dataset
-#+BEGIN_SRC R :results silent :session :exports both
+#+BEGIN_SRC R :results silent :session comm.4b.ratio.td.ti :exports both
 setwd('..')
 library(ggplot2)
 dataset.td.lu.16.I<-read.table("datasets/td.lu.C.16.comm.4b.I", header=TRUE)
@@ -271,7 +275,7 @@ ratiomin=dataset.td.lu.16.V$min/dataset.ti.lu.16.V$min,
 ratiomax=dataset.td.lu.16.V$max/dataset.ti.lu.16.V$max)
 #+END_SRC
 ** Mean Averages
-#+BEGIN_SRC R :session :exports both
+#+BEGIN_SRC R :results output :session comm.4b.ratio.td.ti :exports both
 mean.avg<-matrix(0, 5, 5)
 mean.avg[1,]<-c(mean(dI_I$ratioavg), mean(dI_II$ratioavg), mean(dI_III$ratioavg), mean(dI_IV$ratioavg), mean(dI_V$ratioavg))
 mean.avg[2,]<-c(mean(dII_I$ratioavg), mean(dII_II$ratioavg), mean(dII_III$ratioavg), mean(dII_IV$ratioavg), mean(dII_V$ratioavg))
@@ -280,11 +284,8 @@ mean.avg[4,]<-c(mean(dIV_I$ratioavg), mean(dIV_II$ratioavg), mean(dIV_III$ratioa
 mean.avg[5,]<-c(mean(dV_I$ratioavg), mean(dV_II$ratioavg), mean(dV_III$ratioavg), mean(dV_IV$ratioavg), mean(dV_V$ratioavg))
 print(mean.avg)
 #+END_SRC
-
-#+RESULTS:
-
 ** Mean Mins
-#+BEGIN_SRC R :session :exports both
+#+BEGIN_SRC R :results output :session comm.4b.ratio.td.ti :exports both
 mean.min<-matrix(0, 5, 5)
 mean.min[1,]<-c(mean(dI_I$ratiomin), mean(dI_II$ratiomin), mean(dI_III$ratiomin), mean(dI_IV$ratiomin), mean(dI_V$ratiomin))
 mean.min[2,]<-c(mean(dII_I$ratiomin), mean(dII_II$ratiomin), mean(dII_III$ratiomin), mean(dII_IV$ratiomin), mean(dII_V$ratiomin))
@@ -293,11 +294,8 @@ mean.min[4,]<-c(mean(dIV_I$ratiomin), mean(dIV_II$ratiomin), mean(dIV_III$ratiom
 mean.min[5,]<-c(mean(dV_I$ratiomin), mean(dV_II$ratiomin), mean(dV_III$ratiomin), mean(dV_IV$ratiomin), mean(dV_V$ratiomin))
 print(mean.min)
 #+END_SRC
-
-#+RESULTS:
-
 ** Mean Maxs
-#+BEGIN_SRC R :session :exports both
+#+BEGIN_SRC R :results output :session comm.4b.ratio.td.ti :exports both
 mean.max<-matrix(0, 5, 5)
 mean.max[1,]<-c(mean(dI_I$ratiomax), mean(dI_II$ratiomax), mean(dI_III$ratiomax), mean(dI_IV$ratiomax), mean(dI_V$ratiomax))
 mean.max[2,]<-c(mean(dII_I$ratiomax), mean(dII_II$ratiomax), mean(dII_III$ratiomax), mean(dII_IV$ratiomax), mean(dII_V$ratiomax))
@@ -306,12 +304,13 @@ mean.max[4,]<-c(mean(dIV_I$ratiomax), mean(dIV_II$ratiomax), mean(dIV_III$ratiom
 mean.max[5,]<-c(mean(dV_I$ratiomax), mean(dV_II$ratiomax), mean(dV_III$ratiomax), mean(dV_IV$ratiomax), mean(dV_V$ratiomax))
 print(mean.max)
 #+END_SRC
-
-#+RESULTS:
-
 * Plot COMP 4b ratios of TI vs TI
-Multiple traces were acquired on graphene cluster for LU benchmark,
-class C and 16 Processes.
+See [[file:~/git/ScalaTrace-TI/R-analysis/comp.4b.ratio.ti.ti.Rmd][comp.4b.ratio.ti.ti.Rmd]]
+** Motive
+X
+** Overview
+Multiple time independent traces were acquired on graphene cluster for
+LU benchmark, class C and 16 Processes.
 Their *COMP 4b* global values were parsed using the [[file:~/git/ScalaTrace-TI/scripts/Expand.java][Expand.java]] code
 with this format.
 #+BEGIN_EXAMPLE
@@ -330,7 +329,9 @@ java Expand ../traces/td/lu/C/16/V/0 > ../datasets/td.lu.C.16.comp.4b.V
 ** Read the datasets into R
 The variables are named as *d<A>_<B>*,
 where *<A>* and *<B>* both are Time Independent dataset
-#+BEGIN_SRC R :results silent :session :exports both
+#+BEGIN_SRC R :results silent :session comp.4b.ratio.ti.ti :exports both
+setwd('..')
+library(ggplot2)
 dataset.td.lu.16.I<-read.table("datasets/td.lu.C.16.comp.4b.I", header=TRUE)
 dataset.td.lu.16.II<-read.table("datasets/td.lu.C.16.comp.4b.II", header=TRUE)
 dataset.td.lu.16.III<-read.table("datasets/td.lu.C.16.comp.4b.III", header=TRUE)
@@ -561,7 +562,7 @@ ratiomin=dataset.td.lu.16.V$min/dataset.td.lu.16.V$min,
 ratiomax=dataset.td.lu.16.V$max/dataset.td.lu.16.V$max)
 #+END_SRC
 ** Mean Averages
-#+BEGIN_SRC R :results output :session :exports both
+#+BEGIN_SRC R :results output :session comp.4b.ratio.ti.ti :exports both
 mean.avg<-matrix(0, 5, 5)
 mean.avg[1,]<-c(mean(dI_I$ratioavg), mean(dI_II$ratioavg), mean(dI_III$ratioavg), mean(dI_IV$ratioavg), mean(dI_V$ratioavg))
 mean.avg[2,]<-c(mean(dII_I$ratioavg), mean(dII_II$ratioavg), mean(dII_III$ratioavg), mean(dII_IV$ratioavg), mean(dII_V$ratioavg))
@@ -570,17 +571,8 @@ mean.avg[4,]<-c(mean(dIV_I$ratioavg), mean(dIV_II$ratioavg), mean(dIV_III$ratioa
 mean.avg[5,]<-c(mean(dV_I$ratioavg), mean(dV_II$ratioavg), mean(dV_III$ratioavg), mean(dV_IV$ratioavg), mean(dV_V$ratioavg))
 print(mean.avg)
 #+END_SRC
-
-#+RESULTS:
-:           [,1]      [,2]     [,3]      [,4]      [,5]
-: [1,] 1.0000000 0.9984286 1.005314 0.9984847 1.0001570
-: [2,] 1.0045386 1.0000000 1.009260 1.0017329 1.0035174
-: [3,] 0.9974095 0.9952806 1.000000 0.9944277 0.9950813
-: [4,] 1.0139975 1.0108054 1.017677 1.0000000 1.0105457
-: [5,] 1.0054752 1.0025272 1.008553 1.0008474 1.0000000
-
 ** Mean Mins
-#+BEGIN_SRC R :results output :session :exports both
+#+BEGIN_SRC R :results output :session comp.4b.ratio.ti.ti :exports both
 mean.min<-matrix(0, 5, 5)
 mean.min[1,]<-c(mean(dI_I$ratiomin), mean(dI_II$ratiomin), mean(dI_III$ratiomin), mean(dI_IV$ratiomin), mean(dI_V$ratiomin))
 mean.min[2,]<-c(mean(dII_I$ratiomin), mean(dII_II$ratiomin), mean(dII_III$ratiomin), mean(dII_IV$ratiomin), mean(dII_V$ratiomin))
@@ -589,17 +581,8 @@ mean.min[4,]<-c(mean(dIV_I$ratiomin), mean(dIV_II$ratiomin), mean(dIV_III$ratiom
 mean.min[5,]<-c(mean(dV_I$ratiomin), mean(dV_II$ratiomin), mean(dV_III$ratiomin), mean(dV_IV$ratiomin), mean(dV_V$ratiomin))
 print(mean.min)
 #+END_SRC
-
-#+RESULTS:
-:          [,1]     [,2]     [,3]      [,4]      [,5]
-: [1,] 1.000000 1.001791 1.002766 0.9956147 1.0006442
-: [2,] 1.002000 1.000000 1.003561 0.9955510 1.0002064
-: [3,] 1.000441 1.001023 1.000000 0.9938471 0.9991322
-: [4,] 1.016324 1.015903 1.016734 1.0000000 1.0138514
-: [5,] 1.004893 1.004167 1.005782 0.9975405 1.0000000
-
 ** Mean Maxs
-#+BEGIN_SRC R :results output :session :exports both
+#+BEGIN_SRC R :results output :session comp.4b.ratio.ti.ti :exports both
 mean.max<-matrix(0, 5, 5)
 mean.max[1,]<-c(mean(dI_I$ratiomax), mean(dI_II$ratiomax), mean(dI_III$ratiomax), mean(dI_IV$ratiomax), mean(dI_V$ratiomax))
 mean.max[2,]<-c(mean(dII_I$ratiomax), mean(dII_II$ratiomax), mean(dII_III$ratiomax), mean(dII_IV$ratiomax), mean(dII_V$ratiomax))
@@ -608,12 +591,3 @@ mean.max[4,]<-c(mean(dIV_I$ratiomax), mean(dIV_II$ratiomax), mean(dIV_III$ratiom
 mean.max[5,]<-c(mean(dV_I$ratiomax), mean(dV_II$ratiomax), mean(dV_III$ratiomax), mean(dV_IV$ratiomax), mean(dV_V$ratiomax))
 print(mean.max)
 #+END_SRC
-
-#+RESULTS:
-:           [,1]      [,2]     [,3]     [,4]      [,5]
-: [1,] 1.0000000 1.0086859 1.066964 1.051551 1.0315148
-: [2,] 1.0298134 1.0000000 1.078150 1.070226 1.0397819
-: [3,] 0.9893656 0.9809011 1.000000 1.025979 0.9871245
-: [4,] 1.0039507 1.0002140 1.046869 1.000000 1.0076254
-: [5,] 1.0394037 1.0236284 1.059869 1.070998 1.0000000
-
