@@ -38,7 +38,9 @@ public class Expand {
 	    Double threshold = 0.5;
 	    Integer current_event = 0;
 	    Integer current_subblock = 0;
-	    
+	    Integer opcode = 0;
+
+	    System.out.println ("eventID opcode subblock events avg min max");
 	    while ((line = br.readLine ()) != null) {
 		if (line.length() > 7) {
 		    key = line.substring (0, 7);
@@ -50,10 +52,12 @@ public class Expand {
    		        case "EVENT":
 			    /* Parse the Event ID */
 			    current_event = Integer.parseInt (line.substring (5, line.indexOf (':')));
+			    /* Parse the opcode */
+			    opcode = Integer.parseInt (line.substring (line.indexOf (' ') + 1, line.indexOf (' ', line.indexOf (':') + 2)));
 			    break;
 
 			/* Can be changed to COMP 4c, COMP 4b or COMM 4b */
-  		        case "COMP 4c":
+  		        case "COMP 4b":
 			    /* Parse the subblock ID */
 			    current_subblock = Integer.parseInt (line.substring (8, line.indexOf (':')));
 
@@ -141,7 +145,7 @@ public class Expand {
 				    if (bin_maximum[i] >= maximum)
 					maximum = bin_maximum[i];
 				}
-				System.out.printf ("%d %d %d %.2f %.2f %.2f\n", current_event, current_subblock, bin_events[i], bin_minimum[i], bin_average[i], bin_maximum[i]);
+				// System.out.printf ("%d %d %d %.2f %.2f %.2f\n", current_event, current_subblock, bin_events[i], bin_minimum[i], bin_average[i], bin_maximum[i]);
 			    }
 
 			    Integer new_global_events = global_events;
@@ -151,6 +155,7 @@ public class Expand {
 			    Integer new_global_max_rank = global_max_rank;
 			    Double new_global_maximum = maximum;
 
+			    System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + global_average + " " + global_minimum + " " + global_maximum);
 			    // System.out.printf("%d %d %d %.2f %.2f\n", current_event, current_subblock, bin_events[i], bin_minimum[i], bin_average[i], bin_maximum[i]);
 			    break;
 			    
