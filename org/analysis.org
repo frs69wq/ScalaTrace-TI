@@ -7,7 +7,10 @@
 * Plot COMM 4b ratios of TD vs TI
 See [[file:~/git/ScalaTrace-TI/R-analysis/comm.4b.ratio.td.ti.Rmd][comm.4b.ratio.td.ti.Rmd]]
 ** Motive
-X
+The idea behind checking the ratios of multiple traces is that
+although we have the independent CPUs to process but the network is
+shared and vulnerable so execution time may vary depending on the
+network congestion.
 ** Overview
 Multiple time dependent and time independent traces were acquired on
 graphene cluster for LU benchmark, class C and 16 Processes.
@@ -304,10 +307,15 @@ mean.max[4,]<-c(mean(dIV_I$ratiomax), mean(dIV_II$ratiomax), mean(dIV_III$ratiom
 mean.max[5,]<-c(mean(dV_I$ratiomax), mean(dV_II$ratiomax), mean(dV_III$ratiomax), mean(dV_IV$ratiomax), mean(dV_V$ratiomax))
 print(mean.max)
 #+END_SRC
+** Conclusion
+The ratios vary from trace to trace. Depending on the network
+congestion, some executions take more time.
 * Plot COMP 4b ratios of TI vs TI
 See [[file:~/git/ScalaTrace-TI/R-analysis/comp.4b.ratio.ti.ti.Rmd][comp.4b.ratio.ti.ti.Rmd]]
 ** Motive
-X
+The idea behind checking the ratios of multiple time independent
+traces with each other is to see weather the processing is affected by
+any factors or not.
 ** Overview
 Multiple time independent traces were acquired on graphene cluster for
 LU benchmark, class C and 16 Processes.
@@ -591,3 +599,6 @@ mean.max[4,]<-c(mean(dIV_I$ratiomax), mean(dIV_II$ratiomax), mean(dIV_III$ratiom
 mean.max[5,]<-c(mean(dV_I$ratiomax), mean(dV_II$ratiomax), mean(dV_III$ratiomax), mean(dV_IV$ratiomax), mean(dV_V$ratiomax))
 print(mean.max)
 #+END_SRC
+** Conclusion
+The ratios are almost close to 1, which shows that the CPU processing
+is almost constant for every execution.
