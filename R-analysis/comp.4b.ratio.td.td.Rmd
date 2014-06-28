@@ -1,22 +1,21 @@
 ---
-title: "Comp 4b ratios of TI vs TI"
+title: "COMP 4b ratios of TD vs TD"
 author: "Anshul Gupta"
 date: "27/06/2014"
 output: html_document
 ---
 
 ## Motive
-The idea behind checking the ratios of multiple time independent traces with each other is to see weather the processing is affected by any factors or not.
+The idea behind checking the ratios of multiple time dependent traces with each other is to see weather the processing is affected by any factors or not.
 
 ## Overview
-Multiple time independent traces were acquired on graphene cluster for LU benchmark, class C and 16 Processes.  
+Multiple time dependent traces were acquired on graphene cluster for LU benchmark, class C and 16 Processes.  
 Their **COMP 4b** global values were parsed using the _scripts/Expand.java_ code
 with this format.  
 See _org/analysis.org_
 
 ```{r Init}
 setwd('..')
-library(ggplot2)
 dataset.td.lu.16.I<-read.table("datasets/td.lu.C.16.comp.4b.I", header=TRUE)
 dataset.td.lu.16.II<-read.table("datasets/td.lu.C.16.comp.4b.II", header=TRUE)
 dataset.td.lu.16.III<-read.table("datasets/td.lu.C.16.comp.4b.III", header=TRUE)
@@ -29,12 +28,12 @@ where `<A>` is the Time Dependent dataset and `<B>` is the Time Independent data
 Each `d<A>_<B>` has 7 fields:
 
 * xlabel = eventID_subblock
-* avgTD = Average of time independent trace A
-* minTD = Minimum of time independent trace A
-* maxTD = Maximum of time independent trace A
-* avgTI = Average of time independent trace B
-* minTI = Minimum of time independent trace B
-* maxTI = Maximum of time independent trace B
+* avgTD = Average of time dependent trace A
+* minTD = Minimum of time dependent trace A
+* maxTD = Maximum of time dependent trace A
+* avgTI = Average of time dependent trace B
+* minTI = Minimum of time dependent trace B
+* maxTI = Maximum of time dependent trace B
 
 ```{r Read datasets}
 

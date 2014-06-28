@@ -27,7 +27,7 @@
    + Will show if there is some variability when class or number of
      processes changes
    + first step towards some extrapolation
-** TODO make the variability graphs more readable
+** TODO Make the variability graphs more readable
    + Those on http://rpubs.com/anshulgupta0803/varibality
    + Try linerange
    + split events by bins as for the estimation of the

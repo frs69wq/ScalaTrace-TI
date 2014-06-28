@@ -1,5 +1,5 @@
 ---
-title: "Comm 4b ratios of TD vs TI"
+title: "COMM 4b ratios of TD vs TI"
 author: "Anshul Gupta"
 date: "27/06/2014"
 output: html_document
@@ -16,7 +16,6 @@ See _org/analysis.org_
 
 ```{r Init}
 setwd('..')
-library(ggplot2)
 dataset.td.lu.16.I<-read.table("datasets/td.lu.C.16.comm.4b.I", header=TRUE)
 dataset.td.lu.16.II<-read.table("datasets/td.lu.C.16.comm.4b.II", header=TRUE)
 dataset.td.lu.16.III<-read.table("datasets/td.lu.C.16.comm.4b.III", header=TRUE)
@@ -294,7 +293,7 @@ print(mean.min)
 
 ### The mean maxs are calculated as:
 
-```{r Calculate Man Maxs}
+```{r Calculate Mean Maxs}
 mean.max<-matrix(0, 5, 5)
 mean.max[1,]<-c(mean(dI_I$ratiomax), mean(dI_II$ratiomax), mean(dI_III$ratiomax), mean(dI_IV$ratiomax), mean(dI_V$ratiomax))
 mean.max[2,]<-c(mean(dII_I$ratiomax), mean(dII_II$ratiomax), mean(dII_III$ratiomax), mean(dII_IV$ratiomax), mean(dII_V$ratiomax))
