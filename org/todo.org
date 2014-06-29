@@ -20,7 +20,7 @@
    + let size depends on the number of elements in the event
    + Try to have more rows in the data frame by splitting events in bins
      + will identify the different modes in a given event
-     + get rid of emptty bins in the process
+     + get rid of emptty bins in the process (Don't know how)
      + name event_id-subblock-bin_number
 ** TODO Complete this graph with a facet grid one
    + 4 facets for 4 traces: B-8, B-16, C-8, and C-16
