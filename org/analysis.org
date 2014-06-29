@@ -4,7 +4,7 @@
 #+STARTUP: overview
 #+STARTUP: indent
 
-* Plot COMM 4b ratios of TD vs TI
+* COMM 4b ratios of TD vs TI
 See [[file:~/git/ScalaTrace-TI/R-analysis/comm.4b.ratio.td.ti.Rmd][comm.4b.ratio.td.ti.Rmd]]
 ** Motive
 The idea behind checking the ratios of multiple traces is that
@@ -21,6 +21,7 @@ System.out.println ("eventID opcode subblock events avg min max");
 System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + global_average + " " + global_minimum + " " + global_maximum);
 #+END_EXAMPLE
 ** Get the datasets
+The value of 2nd case of switch must be set to /COMM 4b/
 #+BEGIN_SRC sh :results silent
 cd ../scripts
 java Expand ../traces/td/lu/C/16/I/0 > ../datasets/td.lu.C.16.comm.4b.I
@@ -294,6 +295,15 @@ mean.avg[4,]<-c(mean(dIV_I$ratioavg), mean(dIV_II$ratioavg), mean(dIV_III$ratioa
 mean.avg[5,]<-c(mean(dV_I$ratioavg), mean(dV_II$ratioavg), mean(dV_III$ratioavg), mean(dV_IV$ratioavg), mean(dV_V$ratioavg))
 print(mean.avg)
 #+END_SRC
+
+#+RESULTS:
+:           [,1]      [,2]      [,3]      [,4]      [,5]
+: [1,] 0.7495389 0.7148496 1.0342408 0.7459249 0.9805636
+: [2,] 0.7771679 0.7031781 1.0158230 0.7104106 0.9503621
+: [3,] 0.7198316 0.6881710 1.0000000 0.7031072 0.9191043
+: [4,] 0.7766260 0.6902595 1.0261407 0.7200809 0.9208353
+: [5,] 0.7193860 0.6798221 0.9880754 0.7057117 0.8670206
+
 ** Mean Mins
 #+BEGIN_SRC R :results output :session comm.4b.ratio.td.ti :exports both
 mean.min<-matrix(0, 5, 5)
@@ -304,6 +314,15 @@ mean.min[4,]<-c(mean(dIV_I$ratiomin), mean(dIV_II$ratiomin), mean(dIV_III$ratiom
 mean.min[5,]<-c(mean(dV_I$ratiomin), mean(dV_II$ratiomin), mean(dV_III$ratiomin), mean(dV_IV$ratiomin), mean(dV_V$ratiomin))
 print(mean.min)
 #+END_SRC
+
+#+RESULTS:
+:          [,1]     [,2] [,3]     [,4]      [,5]
+: [1,] 1.108328 1.362207  NaN 1.118130 0.9657259
+: [2,] 1.223807 1.488171  NaN 1.216092 0.8990169
+: [3,] 1.188552 1.443744  NaN 1.196724 0.9575741
+: [4,] 1.123897 1.355129  NaN 1.127264 0.9172106
+: [5,] 1.198961 1.451248  NaN 1.209938 0.9992939
+
 ** Mean Maxs
 #+BEGIN_SRC R :results output :session comm.4b.ratio.td.ti :exports both
 mean.max<-matrix(0, 5, 5)
@@ -314,10 +333,19 @@ mean.max[4,]<-c(mean(dIV_I$ratiomax), mean(dIV_II$ratiomax), mean(dIV_III$ratiom
 mean.max[5,]<-c(mean(dV_I$ratiomax), mean(dV_II$ratiomax), mean(dV_III$ratiomax), mean(dV_IV$ratiomax), mean(dV_V$ratiomax))
 print(mean.max)
 #+END_SRC
+
+#+RESULTS:
+:           [,1]      [,2]     [,3]      [,4]     [,5]
+: [1,] 0.7868566 0.7567056 1.149522 0.7194873 1.662842
+: [2,] 0.8339478 0.7568601 1.207191 0.7098592 1.578807
+: [3,] 0.7185902 0.6918116 1.000000 0.6637959 1.528781
+: [4,] 0.8124803 0.7053302 1.121275 0.6810224 1.566124
+: [5,] 0.6999034 0.6570043 1.026403 0.6409676 1.375243
+
 ** Conclusion
 The ratios vary from trace to trace. Depending on the network
 congestion, some executions take more time.
-* Plot COMP 4b ratios of TD vs TD
+* COMP 4b ratios of TD vs TD
 See [[file:~/git/ScalaTrace-TI/R-analysis/comp.4b.ratio.td.td.Rmd][comp.4b.ratio.td.td.Rmd]]
 ** Motive
 The idea behind checking the ratios of multiple time dependent
@@ -333,6 +361,7 @@ System.out.println ("eventID opcode subblock events avg min max");
 System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + global_average + " " + global_minimum + " " + global_maximum);
 #+END_EXAMPLE
 ** Get the datasets
+The value of 2nd case of switch must be set to /COMP 4b/
 #+BEGIN_SRC sh :results silent
 cd ../scripts
 java Expand ../traces/td/lu/C/16/I/0 > ../datasets/td.lu.C.16.comp.4b.I
@@ -593,6 +622,15 @@ mean.avg[4,]<-c(mean(dIV_I$ratioavg), mean(dIV_II$ratioavg), mean(dIV_III$ratioa
 mean.avg[5,]<-c(mean(dV_I$ratioavg), mean(dV_II$ratioavg), mean(dV_III$ratioavg), mean(dV_IV$ratioavg), mean(dV_V$ratioavg))
 print(mean.avg)
 #+END_SRC
+
+#+RESULTS:
+:           [,1]      [,2]     [,3]      [,4]      [,5]
+: [1,] 1.0000000 0.9984286 1.005314 0.9984847 1.0001570
+: [2,] 1.0045386 1.0000000 1.009260 1.0017329 1.0035174
+: [3,] 0.9974095 0.9952806 1.000000 0.9944277 0.9950813
+: [4,] 1.0139975 1.0108054 1.017677 1.0000000 1.0105457
+: [5,] 1.0054752 1.0025272 1.008553 1.0008474 1.0000000
+
 ** Mean Mins
 #+BEGIN_SRC R :results output :session comp.4b.ratio.ti.ti :exports both
 mean.min<-matrix(0, 5, 5)
@@ -603,6 +641,15 @@ mean.min[4,]<-c(mean(dIV_I$ratiomin), mean(dIV_II$ratiomin), mean(dIV_III$ratiom
 mean.min[5,]<-c(mean(dV_I$ratiomin), mean(dV_II$ratiomin), mean(dV_III$ratiomin), mean(dV_IV$ratiomin), mean(dV_V$ratiomin))
 print(mean.min)
 #+END_SRC
+
+#+RESULTS:
+:          [,1]     [,2]     [,3]      [,4]      [,5]
+: [1,] 1.000000 1.001791 1.002766 0.9956147 1.0006442
+: [2,] 1.002000 1.000000 1.003561 0.9955510 1.0002064
+: [3,] 1.000441 1.001023 1.000000 0.9938471 0.9991322
+: [4,] 1.016324 1.015903 1.016734 1.0000000 1.0138514
+: [5,] 1.004893 1.004167 1.005782 0.9975405 1.0000000
+
 ** Mean Maxs
 #+BEGIN_SRC R :results output :session comp.4b.ratio.ti.ti :exports both
 mean.max<-matrix(0, 5, 5)
@@ -613,10 +660,19 @@ mean.max[4,]<-c(mean(dIV_I$ratiomax), mean(dIV_II$ratiomax), mean(dIV_III$ratiom
 mean.max[5,]<-c(mean(dV_I$ratiomax), mean(dV_II$ratiomax), mean(dV_III$ratiomax), mean(dV_IV$ratiomax), mean(dV_V$ratiomax))
 print(mean.max)
 #+END_SRC
+
+#+RESULTS:
+:           [,1]      [,2]     [,3]     [,4]      [,5]
+: [1,] 1.0000000 1.0086859 1.066964 1.051551 1.0315148
+: [2,] 1.0298134 1.0000000 1.078150 1.070226 1.0397819
+: [3,] 0.9893656 0.9809011 1.000000 1.025979 0.9871245
+: [4,] 1.0039507 1.0002140 1.046869 1.000000 1.0076254
+: [5,] 1.0394037 1.0236284 1.059869 1.070998 1.0000000
+
 ** Conclusion
 The ratios are almost close to 1, which shows that the CPU processing
 is almost constant for every execution.
-* Plot COMP 4b ratios of TD and TIC
+* COMP 4b ratios of TD and TIC
 See [[file:~/git/ScalaTrace-TI/R-analysis/comp.4b.ratio.td.tic.Rmd][comp.4b.ratio.td.tic.Rmd]]
 ** Motive
 TIC traces are the ones having both COMP 4b and COMP 4c values of an
@@ -635,6 +691,7 @@ System.out.println (current_event + " " + opcode + " " + current_subblock + " " 
 #+END_EXAMPLE
 ** Get the datasets
 #+BEGIN_SRC sh :results silent
+The value of 2nd case of switch must be set to /COMP 4b/
 cd ../scripts
 java Expand ../traces/td/lu/C/16/I/0 > ../datasets/td.lu.C.16.comp.4b.I
 java Expand ../traces/td/lu/C/16/II/0 > ../datasets/td.lu.C.16.comp.4b.II
@@ -858,6 +915,15 @@ mean.avg[4,]<-c(mean(dIV_I$ratioavg), mean(dIV_II$ratioavg), mean(dIV_III$ratioa
 mean.avg[5,]<-c(mean(dV_I$ratioavg), mean(dV_II$ratioavg), mean(dV_III$ratioavg), mean(dV_IV$ratioavg), mean(dV_V$ratioavg))
 print(mean.avg)
 #+END_SRC
+
+#+RESULTS:
+:           [,1]      [,2]      [,3]      [,4]      [,5]
+: [1,] 0.8712654 0.8769590 0.8788809 0.8783247 0.8762274
+: [2,] 0.8724207 0.8778666 0.8797489 0.8795243 0.8773196
+: [3,] 0.8672520 0.8727927 0.8745157 0.8740932 0.8719821
+: [4,] 0.8754578 0.8817545 0.8839393 0.8836482 0.8816709
+: [5,] 0.8715373 0.8762999 0.8791017 0.8783283 0.8762103
+
 ** Mean Mins
 #+BEGIN_SRC R :results output :session comp.4b.ratio.td.tic :exports both
 mean.min<-matrix(0, 5, 5)
@@ -868,6 +934,15 @@ mean.min[4,]<-c(mean(dIV_I$ratiomin), mean(dIV_II$ratiomin), mean(dIV_III$ratiom
 mean.min[5,]<-c(mean(dV_I$ratiomin), mean(dV_II$ratiomin), mean(dV_III$ratiomin), mean(dV_IV$ratiomin), mean(dV_V$ratiomin))
 print(mean.min)
 #+END_SRC
+
+#+RESULTS:
+:           [,1]      [,2]      [,3]      [,4]      [,5]
+: [1,] 0.8038048 0.8087498 0.8081923 0.8072649 0.8080058
+: [2,] 0.8032913 0.8080258 0.8075915 0.8066098 0.8075747
+: [3,] 0.8027845 0.8079572 0.8071874 0.8064576 0.8071505
+: [4,] 0.8107070 0.8164100 0.8156647 0.8150580 0.8160370
+: [5,] 0.8040919 0.8083710 0.8085203 0.8072629 0.8084369
+
 ** Mean Maxs
 #+BEGIN_SRC R :results output :session comp.4b.ratio.td.tic :exports both
 mean.max<-matrix(0, 5, 5)
@@ -878,6 +953,15 @@ mean.max[4,]<-c(mean(dIV_I$ratiomax), mean(dIV_II$ratiomax), mean(dIV_III$ratiom
 mean.max[5,]<-c(mean(dV_I$ratiomax), mean(dV_II$ratiomax), mean(dV_III$ratiomax), mean(dV_IV$ratiomax), mean(dV_V$ratiomax))
 print(mean.max)
 #+END_SRC
+
+#+RESULTS:
+:           [,1]      [,2]      [,3]      [,4]      [,5]
+: [1,] 0.9333874 0.9455443 0.9594180 0.9537452 0.9195724
+: [2,] 0.9450190 0.9532477 0.9714258 0.9662535 0.9279515
+: [3,] 0.9084446 0.9147094 0.9268423 0.9300893 0.8978360
+: [4,] 0.9125739 0.9230237 0.9356621 0.9332027 0.9015411
+: [5,] 0.9414490 0.9486580 0.9633469 0.9636762 0.9266622
+
 ** Conclusion
 The TIC execution is a little slow compared to TD but the ratios are
 quite stable. This is accounted be the extra time taken by
@@ -885,3 +969,224 @@ insturmentation (PAPI Counters).
 If this becomes an accuracy issue at some point, either we apply some
 correction factor or use two distinct traces (one for the
 instructions, one for timings).
+* Rough Estimation of Instruction Rate
+See [[file:~/git/ScalaTrace-TI/R-analysis/rough.estimation.of.instruction.rate.Rmd][rough.estimation.of.instruction.rate.Rmd]]
+** Motive
+Calculate the instruction rate of execution using TIC traces.
+
+** Overview
+5 traces with TIC instrumentation of LU benchmark, class C and 16
+processes were acquired on graphene cluster.
+Their *COMP 4b* and *COMP 4c* global average values and involved
+processes were parsed using the [[file:~/git/ScalaTrace-TI/scripts/Expand.java][Expand.java]] code with this format.
+#+BEGIN_EXAMPLE
+System.out.println ("eventID opcode subblock events avg min max");
+System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + global_average + " " + global_minimum + " " + global_maximum);
+#+END_EXAMPLE
+
+** Get the datasets
+The value of 2nd case of switch must be set to /COMP 4b/
+#+BEGIN_SRC sh :results silent
+cd ../scripts
+java Expand ../traces/tic/lu/B/8/I/0 > ../datasets/tic.lu.B.8.comp.4b.I
+java Expand ../traces/tic/lu/B/8/II/0 > ../datasets/tic.lu.B.8.comp.4b.II
+java Expand ../traces/tic/lu/B/8/III/0 > ../datasets/tic.lu.B.8.comp.4b.III
+java Expand ../traces/tic/lu/B/8/IV/0 > ../datasets/tic.lu.B.8.comp.4b.IV
+java Expand ../traces/tic/lu/B/8/V/0 > ../datasets/tic.lu.B.8.comp.4b.V
+
+java Expand ../traces/tic/lu/B/16/I/0 > ../datasets/tic.lu.B.16.comp.4b.I
+java Expand ../traces/tic/lu/B/16/II/0 > ../datasets/tic.lu.B.16.comp.4b.II
+java Expand ../traces/tic/lu/B/16/III/0 > ../datasets/tic.lu.B.16.comp.4b.III
+java Expand ../traces/tic/lu/B/16/IV/0 > ../datasets/tic.lu.B.16.comp.4b.IV
+java Expand ../traces/tic/lu/B/16/V/0 > ../datasets/tic.lu.B.16.comp.4b.V
+
+java Expand ../traces/tic/lu/C/8/I/0 > ../datasets/tic.lu.C.8.comp.4b.I
+java Expand ../traces/tic/lu/C/8/II/0 > ../datasets/tic.lu.C.8.comp.4b.II
+java Expand ../traces/tic/lu/C/8/III/0 > ../datasets/tic.lu.C.8.comp.4b.III
+java Expand ../traces/tic/lu/C/8/IV/0 > ../datasets/tic.lu.C.8.comp.4b.IV
+java Expand ../traces/tic/lu/C/8/V/0 > ../datasets/tic.lu.C.8.comp.4b.V
+
+java Expand ../traces/tic/lu/C/16/I/0 > ../datasets/tic.lu.C.16.comp.4b.I
+java Expand ../traces/tic/lu/C/16/II/0 > ../datasets/tic.lu.C.16.comp.4b.II
+java Expand ../traces/tic/lu/C/16/III/0 > ../datasets/tic.lu.C.16.comp.4b.III
+java Expand ../traces/tic/lu/C/16/IV/0 > ../datasets/tic.lu.C.16.comp.4b.IV
+java Expand ../traces/tic/lu/C/16/V/0 > ../datasets/tic.lu.C.16.comp.4b.V
+#+END_SRC
+
+The value of 2nd case of switch must be set to /COMP 4c/
+#+BEGIN_SRC sh :results silent
+cd ../scripts
+java Expand ../traces/tic/lu/B/8/I/0 > ../datasets/tic.lu.B.8.comp.4c.I
+java Expand ../traces/tic/lu/B/8/II/0 > ../datasets/tic.lu.B.8.comp.4c.II
+java Expand ../traces/tic/lu/B/8/III/0 > ../datasets/tic.lu.B.8.comp.4c.III
+java Expand ../traces/tic/lu/B/8/IV/0 > ../datasets/tic.lu.B.8.comp.4c.IV
+java Expand ../traces/tic/lu/B/8/V/0 > ../datasets/tic.lu.B.8.comp.4c.V
+
+java Expand ../traces/tic/lu/B/16/I/0 > ../datasets/tic.lu.B.16.comp.4c.I
+java Expand ../traces/tic/lu/B/16/II/0 > ../datasets/tic.lu.B.16.comp.4c.II
+java Expand ../traces/tic/lu/B/16/III/0 > ../datasets/tic.lu.B.16.comp.4c.III
+java Expand ../traces/tic/lu/B/16/IV/0 > ../datasets/tic.lu.B.16.comp.4c.IV
+java Expand ../traces/tic/lu/B/16/V/0 > ../datasets/tic.lu.B.16.comp.4c.V
+
+java Expand ../traces/tic/lu/C/8/I/0 > ../datasets/tic.lu.C.8.comp.4c.I
+java Expand ../traces/tic/lu/C/8/II/0 > ../datasets/tic.lu.C.8.comp.4c.II
+java Expand ../traces/tic/lu/C/8/III/0 > ../datasets/tic.lu.C.8.comp.4c.III
+java Expand ../traces/tic/lu/C/8/IV/0 > ../datasets/tic.lu.C.8.comp.4c.IV
+java Expand ../traces/tic/lu/C/8/V/0 > ../datasets/tic.lu.C.8.comp.4c.V
+
+java Expand ../traces/tic/lu/C/16/I/0 > ../datasets/tic.lu.C.16.comp.4c.I
+java Expand ../traces/tic/lu/C/16/II/0 > ../datasets/tic.lu.C.16.comp.4c.II
+java Expand ../traces/tic/lu/C/16/III/0 > ../datasets/tic.lu.C.16.comp.4c.III
+java Expand ../traces/tic/lu/C/16/IV/0 > ../datasets/tic.lu.C.16.comp.4c.IV
+java Expand ../traces/tic/lu/C/16/V/0 > ../datasets/tic.lu.C.16.comp.4c.V
+#+END_SRC
+
+** Read the datasets into R
+#+BEGIN_SRC R :results silent :session rough.estimation.inst.rate :exports both
+setwd('..')
+library(ggplot2)
+dataset.tic.lu.16.comp.4b.I<-read.table("datasets/tic.lu.C.16.comp.4b.I", header=TRUE)
+dataset.tic.lu.16.comp.4b.II<-read.table("datasets/tic.lu.C.16.comp.4b.II", header=TRUE)
+dataset.tic.lu.16.comp.4b.III<-read.table("datasets/tic.lu.C.16.comp.4b.III", header=TRUE)
+dataset.tic.lu.16.comp.4b.IV<-read.table("datasets/tic.lu.C.16.comp.4b.IV", header=TRUE)
+dataset.tic.lu.16.comp.4b.V<-read.table("datasets/tic.lu.C.16.comp.4b.V", header=TRUE)
+dataset.tic.lu.16.comp.4c.I<-read.table("datasets/tic.lu.C.16.comp.4c.I", header=TRUE)
+dataset.tic.lu.16.comp.4c.II<-read.table("datasets/tic.lu.C.16.comp.4c.II", header=TRUE)
+dataset.tic.lu.16.comp.4c.III<-read.table("datasets/tic.lu.C.16.comp.4c.III", header=TRUE)
+dataset.tic.lu.16.comp.4c.IV<-read.table("datasets/tic.lu.C.16.comp.4c.IV", header=TRUE)
+dataset.tic.lu.16.comp.4c.V<-read.table("datasets/tic.lu.C.16.comp.4c.V", header=TRUE)
+#+END_SRC
+The variables are named as *d.<A>.<B>.4b.4c.<X>*,  
+where *<X>* is the TIC dataset,   
+*<A>* is the class,  
+and *<B>* is the number of processes.  
+Each *d.<A>.<B>.4b.4c.<X>* has 6 fields:
++ eventID = Event ID
++ opcode = Opcode of the event
++ subblock = Subblock ID of the event
++ events = Number of elements involved in the event
++ COMP.4b.avg = Average of COMP 4b
++ COMP.4c.avg = Average of COMP 4c
+
+#+BEGIN_SRC R :results silent :session rough.estimation.inst.rate :exports both
+d.4b.4c.I<-cbind(dataset.tic.lu.16.comp.4b.I[,1:4], dataset.tic.lu.16.comp.4b.I$avg/1e6, dataset.tic.lu.16.comp.4c.I$avg*1e3)
+d.4b.4c.II<-cbind(dataset.tic.lu.16.comp.4b.II[,1:4], dataset.tic.lu.16.comp.4b.II$avg/1e6, dataset.tic.lu.16.comp.4c.II$avg*1e3)
+d.4b.4c.III<-cbind(dataset.tic.lu.16.comp.4b.III[,1:4], dataset.tic.lu.16.comp.4b.III$avg/1e6, dataset.tic.lu.16.comp.4c.III$avg*1e3)
+d.4b.4c.IV<-cbind(dataset.tic.lu.16.comp.4b.IV[,1:4], dataset.tic.lu.16.comp.4b.IV$avg/1e6, dataset.tic.lu.16.comp.4c.IV$avg*1e3)
+d.4b.4c.V<-cbind(dataset.tic.lu.16.comp.4b.V[,1:4], dataset.tic.lu.16.comp.4b.V$avg/1e6, dataset.tic.lu.16.comp.4c.V$avg*1e3)
+
+colnames(d.4b.4c.I)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.4b.4c.II)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.4b.4c.III)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.4b.4c.IV)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.4b.4c.V)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+#+END_SRC
+
+** Get the average instruction rate
+Having COMP 4b averages and COMP 4c averages, instruction rate is
+calculated by:
+\begin{equation}
+instruction\ rate = mean(\frac{COMP.4c.average}{COMP.4b.average})
+\end{equation}
+
+#+BEGIN_SRC R :results output :session rough.estimation.inst.rate :exports both
+inst_rate<-c(mean(d.4b.4c.I$COMP.4c.avg/d.4b.4c.I$COMP.4b.avg),
+     mean(d.4b.4c.II$COMP.4c.avg/d.4b.4c.II$COMP.4b.avg),
+     mean(d.4b.4c.III$COMP.4c.avg/d.4b.4c.III$COMP.4b.avg),
+     mean(d.4b.4c.IV$COMP.4c.avg/d.4b.4c.IV$COMP.4b.avg),
+     mean(d.4b.4c.V$COMP.4c.avg/d.4b.4c.V$COMP.4b.avg))
+
+names(inst_rate)<-c('dataset1','dataset2','dataset3','dataset4','dataset5')
+print(inst_rate)
+#+END_SRC
+
+#+RESULTS:
+:   dataset1   dataset2   dataset3   dataset4   dataset5 
+: 3388801183 3415770594 3414210891 3419327902 3407884545
+
+** Plots
+On x-axis, we have the eventID_subblock.  
+On y-axis, we have the Instruction Rate (COMP.4c.avg/COMP.4b.avg).  
+The size of each point represents the number of elements involved in
+the current event_subblock.
+Color represents the average number of instructions (COMP.4c.avg).  
+
+*Dataset 1*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/inst.rate.dataset.1.png" :exports both :width 600 :height 400 :session rough.estimation.inst.rate
+ggplot(d.4b.4c.I, aes(x=1:nrow(d.4b.4c.I),
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst_rate[1])
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/inst.rate.dataset.1.png]]
+
+*Dataset 2*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/inst.rate.dataset.2.png" :exports both :width 600 :height 400 :session rough.estimation.inst.rate
+ggplot(d.4b.4c.II, aes(x=1:nrow(d.4b.4c.II),
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst_rate[2])
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/inst.rate.dataset.2.png]]
+
+*Dataset 3*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/inst.rate.dataset.3.png" :exports both :width 600 :height 400 :session rough.estimation.inst.rate
+ggplot(d.4b.4c.III, aes(x=1:nrow(d.4b.4c.III),
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst_rate[3])
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/inst.rate.dataset.3.png]]
+
+*Dataset 4*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/inst.rate.dataset.4.png" :exports both :width 600 :height 400 :session rough.estimation.inst.rate
+ggplot(d.4b.4c.IV, aes(x=1:nrow(d.4b.4c.IV),
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst_rate[4])
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/inst.rate.dataset.4.png]]
+
+*Dataset 5*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/inst.rate.dataset.5.png" :exports both :width 600 :height 400 :session rough.estimation.inst.rate
+ggplot(d.4b.4c.V, aes(x=1:nrow(d.4b.4c.V),
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst_rate[5])
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/inst.rate.dataset.5.png]]
+
+** Results
+Instruction rate is almost *3.4e9 Instructions per sec*
+
+** Conclusion
+It is clear from the plots that the executions are quite stable as CPU
+bursts on each execution occur at same places.
+
+* Rough Estimation of Instruction Rate (with individual bins)
+

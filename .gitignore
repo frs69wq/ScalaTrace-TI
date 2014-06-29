@@ -13,3 +13,5 @@ test/1dstencil/trace_*
 test/looplcs/looplcs
 test/looplcs/trace_*
 scripts/Expand.class
+.Rhistory
+.RData

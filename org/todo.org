@@ -21,7 +21,7 @@
    + Try to have more rows in the data frame by splitting events in bins
      + will identify the different modes in a given event
      + get rid of emptty bins in the process
-     + name event_id-subblok-bin_number
+     + name event_id-subblock-bin_number
 ** TODO Complete this graph with a facet grid one
    + 4 facets for 4 traces: B-8, B-16, C-8, and C-16
    + Will show if there is some variability when class or number of
