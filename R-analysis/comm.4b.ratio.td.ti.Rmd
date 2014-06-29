@@ -1,0 +1,307 @@
+---
+title: "COMM 4b ratios of TD vs TI"
+author: "Anshul Gupta"
+date: "27/06/2014"
+output: html_document
+---
+
+## Motive
+The idea behind checking the ratios of multiple traces is that although we have the independent CPUs to process but the network is shared and vulnerable so execution time may vary depending on the network congestion.
+
+## Overview
+Multiple time dependent and time independent traces were acquired on graphene cluster for LU benchmark, class C and 16 Processes.  
+Their **COMM 4b** global values were parsed using the _scripts/Expand.java_ code
+with this format.  
+See _org/analysis.org_
+
+```{r Init}
+setwd('..')
+dataset.td.lu.16.I<-read.table("datasets/td.lu.C.16.comm.4b.I", header=TRUE)
+dataset.td.lu.16.II<-read.table("datasets/td.lu.C.16.comm.4b.II", header=TRUE)
+dataset.td.lu.16.III<-read.table("datasets/td.lu.C.16.comm.4b.III", header=TRUE)
+dataset.td.lu.16.IV<-read.table("datasets/td.lu.C.16.comm.4b.IV", header=TRUE)
+dataset.td.lu.16.V<-read.table("datasets/td.lu.C.16.comm.4b.V", header=TRUE)
+dataset.ti.lu.16.I<-read.table("datasets/ti.lu.C.16.comm.4b.I", header=TRUE)
+dataset.ti.lu.16.II<-read.table("datasets/ti.lu.C.16.comm.4b.II", header=TRUE)
+dataset.ti.lu.16.III<-read.table("datasets/td.lu.C.16.comm.4b.III", header=TRUE)
+dataset.ti.lu.16.IV<-read.table("datasets/ti.lu.C.16.comm.4b.IV", header=TRUE)
+dataset.ti.lu.16.V<-read.table("datasets/ti.lu.C.16.comm.4b.V", header=TRUE)
+```
+
+The variables are named as `d<A>_<B>`,  
+where `<A>` is the Time Dependent dataset and `<B>` is the Time Independent dataset.   
+Each `d<A>_<B>` has 7 fields:
+
+* xlabel = eventID_subblock
+* avgTD = Average of time dependent trace A
+* minTD = Minimum of time dependent trace A
+* maxTD = Maximum of time dependent trace A
+* avgTI = Average of time independent trace B
+* minTI = Minimum of time independent trace B
+* maxTI = Maximum of time independent trace B
+
+```{r Read datasets}
+dI_I<-data.frame(xlabel=paste(dataset.td.lu.16.I$eventID,
+dataset.td.lu.16.I$subblock, sep="_"), avgTD=dataset.td.lu.16.I$avg,
+minTD=dataset.td.lu.16.I$min, maxTD=dataset.td.lu.16.I$max,
+avgTI=dataset.ti.lu.16.I$avg, minTI=dataset.ti.lu.16.I$min,
+maxTI=dataset.ti.lu.16.I$max,
+ratioavg=dataset.td.lu.16.I$avg/dataset.ti.lu.16.I$avg,
+ratiomin=dataset.td.lu.16.I$min/dataset.ti.lu.16.I$min,
+ratiomax=dataset.td.lu.16.I$max/dataset.ti.lu.16.I$max)
+
+dI_II<-data.frame(xlabel=paste(dataset.td.lu.16.I$eventID,
+dataset.td.lu.16.I$subblock, sep="_"), avgTD=dataset.td.lu.16.I$avg,
+minTD=dataset.td.lu.16.I$min, maxTD=dataset.td.lu.16.I$max,
+avgTI=dataset.ti.lu.16.II$avg, minTI=dataset.ti.lu.16.II$min,
+maxTI=dataset.ti.lu.16.II$max,
+ratioavg=dataset.td.lu.16.I$avg/dataset.ti.lu.16.II$avg,
+ratiomin=dataset.td.lu.16.I$min/dataset.ti.lu.16.II$min,
+ratiomax=dataset.td.lu.16.I$max/dataset.ti.lu.16.II$max)
+
+dI_III<-data.frame(xlabel=paste(dataset.td.lu.16.I$eventID,
+dataset.td.lu.16.I$subblock, sep="_"), avgTD=dataset.td.lu.16.I$avg,
+minTD=dataset.td.lu.16.I$min, maxTD=dataset.td.lu.16.I$max,
+avgTI=dataset.ti.lu.16.III$avg, minTI=dataset.ti.lu.16.III$min,
+maxTI=dataset.ti.lu.16.III$max,
+ratioavg=dataset.td.lu.16.I$avg/dataset.ti.lu.16.III$avg,
+ratiomin=dataset.td.lu.16.I$min/dataset.ti.lu.16.III$min,
+ratiomax=dataset.td.lu.16.I$max/dataset.ti.lu.16.III$max)
+
+dI_IV<-data.frame(xlabel=paste(dataset.td.lu.16.I$eventID,
+dataset.td.lu.16.I$subblock, sep="_"), avgTD=dataset.td.lu.16.I$avg,
+minTD=dataset.td.lu.16.I$min, maxTD=dataset.td.lu.16.I$max,
+avgTI=dataset.ti.lu.16.IV$avg, minTI=dataset.ti.lu.16.IV$min,
+maxTI=dataset.ti.lu.16.IV$max,
+ratioavg=dataset.td.lu.16.I$avg/dataset.ti.lu.16.IV$avg,
+ratiomin=dataset.td.lu.16.I$min/dataset.ti.lu.16.IV$min,
+ratiomax=dataset.td.lu.16.I$max/dataset.ti.lu.16.IV$max)
+
+dI_V<-data.frame(xlabel=paste(dataset.td.lu.16.I$eventID,
+dataset.td.lu.16.I$subblock, sep="_"), avgTD=dataset.td.lu.16.I$avg,
+minTD=dataset.td.lu.16.I$min, maxTD=dataset.td.lu.16.I$max,
+avgTI=dataset.ti.lu.16.V$avg, minTI=dataset.ti.lu.16.V$min,
+maxTI=dataset.ti.lu.16.V$max,
+ratioavg=dataset.td.lu.16.I$avg/dataset.ti.lu.16.V$avg,
+ratiomin=dataset.td.lu.16.I$min/dataset.ti.lu.16.V$min,
+ratiomax=dataset.td.lu.16.I$max/dataset.ti.lu.16.V$max)
+
+dII_I<-data.frame(xlabel=paste(dataset.td.lu.16.II$eventID,
+dataset.td.lu.16.II$subblock, sep="_"), avgTD=dataset.td.lu.16.II$avg,
+minTD=dataset.td.lu.16.II$min, maxTD=dataset.td.lu.16.II$max,
+avgTI=dataset.ti.lu.16.I$avg, minTI=dataset.ti.lu.16.I$min,
+maxTI=dataset.ti.lu.16.I$max,
+ratioavg=dataset.td.lu.16.II$avg/dataset.ti.lu.16.I$avg,
+ratiomin=dataset.td.lu.16.II$min/dataset.ti.lu.16.I$min,
+ratiomax=dataset.td.lu.16.II$max/dataset.ti.lu.16.I$max)
+
+dII_II<-data.frame(xlabel=paste(dataset.td.lu.16.II$eventID,
+dataset.td.lu.16.II$subblock, sep="_"), avgTD=dataset.td.lu.16.II$avg,
+minTD=dataset.td.lu.16.II$min, maxTD=dataset.td.lu.16.II$max,
+avgTI=dataset.ti.lu.16.II$avg, minTI=dataset.ti.lu.16.II$min,
+maxTI=dataset.ti.lu.16.II$max,
+ratioavg=dataset.td.lu.16.II$avg/dataset.ti.lu.16.II$avg,
+ratiomin=dataset.td.lu.16.II$min/dataset.ti.lu.16.II$min,
+ratiomax=dataset.td.lu.16.II$max/dataset.ti.lu.16.II$max)
+
+dII_III<-data.frame(xlabel=paste(dataset.td.lu.16.II$eventID,
+dataset.td.lu.16.II$subblock, sep="_"), avgTD=dataset.td.lu.16.II$avg,
+minTD=dataset.td.lu.16.II$min, maxTD=dataset.td.lu.16.II$max,
+avgTI=dataset.ti.lu.16.III$avg, minTI=dataset.ti.lu.16.III$min,
+maxTI=dataset.ti.lu.16.III$max,
+ratioavg=dataset.td.lu.16.II$avg/dataset.ti.lu.16.III$avg,
+ratiomin=dataset.td.lu.16.II$min/dataset.ti.lu.16.III$min,
+ratiomax=dataset.td.lu.16.II$max/dataset.ti.lu.16.III$max)
+
+dII_IV<-data.frame(xlabel=paste(dataset.td.lu.16.II$eventID,
+dataset.td.lu.16.II$subblock, sep="_"), avgTD=dataset.td.lu.16.II$avg,
+minTD=dataset.td.lu.16.II$min, maxTD=dataset.td.lu.16.II$max,
+avgTI=dataset.ti.lu.16.IV$avg, minTI=dataset.ti.lu.16.IV$min,
+maxTI=dataset.ti.lu.16.IV$max,
+ratioavg=dataset.td.lu.16.II$avg/dataset.ti.lu.16.IV$avg,
+ratiomin=dataset.td.lu.16.II$min/dataset.ti.lu.16.IV$min,
+ratiomax=dataset.td.lu.16.II$max/dataset.ti.lu.16.IV$max)
+
+dII_V<-data.frame(xlabel=paste(dataset.td.lu.16.II$eventID,
+dataset.td.lu.16.II$subblock, sep="_"), avgTD=dataset.td.lu.16.II$avg,
+minTD=dataset.td.lu.16.II$min, maxTD=dataset.td.lu.16.II$max,
+avgTI=dataset.ti.lu.16.V$avg, minTI=dataset.ti.lu.16.V$min,
+maxTI=dataset.ti.lu.16.V$max,
+ratioavg=dataset.td.lu.16.II$avg/dataset.ti.lu.16.V$avg,
+ratiomin=dataset.td.lu.16.II$min/dataset.ti.lu.16.V$min,
+ratiomax=dataset.td.lu.16.II$max/dataset.ti.lu.16.V$max)
+
+dIII_I<-data.frame(xlabel=paste(dataset.td.lu.16.III$eventID,
+dataset.td.lu.16.III$subblock, sep="_"),
+avgTD=dataset.td.lu.16.III$avg, minTD=dataset.td.lu.16.III$min,
+maxTD=dataset.td.lu.16.III$max, avgTI=dataset.ti.lu.16.I$avg,
+minTI=dataset.ti.lu.16.I$min, maxTI=dataset.ti.lu.16.I$max,
+ratioavg=dataset.td.lu.16.III$avg/dataset.ti.lu.16.I$avg,
+ratiomin=dataset.td.lu.16.III$min/dataset.ti.lu.16.I$min,
+ratiomax=dataset.td.lu.16.III$max/dataset.ti.lu.16.I$max)
+
+dIII_II<-data.frame(xlabel=paste(dataset.td.lu.16.III$eventID,
+dataset.td.lu.16.III$subblock, sep="_"),
+avgTD=dataset.td.lu.16.III$avg, minTD=dataset.td.lu.16.III$min,
+maxTD=dataset.td.lu.16.III$max, avgTI=dataset.ti.lu.16.II$avg,
+minTI=dataset.ti.lu.16.II$min, maxTI=dataset.ti.lu.16.II$max,
+ratioavg=dataset.td.lu.16.III$avg/dataset.ti.lu.16.II$avg,
+ratiomin=dataset.td.lu.16.III$min/dataset.ti.lu.16.II$min,
+ratiomax=dataset.td.lu.16.III$max/dataset.ti.lu.16.II$max)
+
+dIII_III<-data.frame(xlabel=paste(dataset.td.lu.16.III$eventID,
+dataset.td.lu.16.III$subblock, sep="_"),
+avgTD=dataset.td.lu.16.III$avg, minTD=dataset.td.lu.16.III$min,
+maxTD=dataset.td.lu.16.III$max, avgTI=dataset.ti.lu.16.III$avg,
+minTI=dataset.ti.lu.16.III$min, maxTI=dataset.ti.lu.16.III$max,
+ratioavg=dataset.td.lu.16.III$avg/dataset.ti.lu.16.III$avg,
+ratiomin=dataset.td.lu.16.III$min/dataset.ti.lu.16.III$min,
+ratiomax=dataset.td.lu.16.III$max/dataset.ti.lu.16.III$max)
+
+dIII_IV<-data.frame(xlabel=paste(dataset.td.lu.16.III$eventID,
+dataset.td.lu.16.III$subblock, sep="_"),
+avgTD=dataset.td.lu.16.III$avg, minTD=dataset.td.lu.16.III$min,
+maxTD=dataset.td.lu.16.III$max, avgTI=dataset.ti.lu.16.IV$avg,
+minTI=dataset.ti.lu.16.IV$min, maxTI=dataset.ti.lu.16.IV$max,
+ratioavg=dataset.td.lu.16.III$avg/dataset.ti.lu.16.IV$avg,
+ratiomin=dataset.td.lu.16.III$min/dataset.ti.lu.16.IV$min,
+ratiomax=dataset.td.lu.16.III$max/dataset.ti.lu.16.IV$max)
+
+dIII_V<-data.frame(xlabel=paste(dataset.td.lu.16.III$eventID,
+dataset.td.lu.16.III$subblock, sep="_"),
+avgTD=dataset.td.lu.16.III$avg, minTD=dataset.td.lu.16.III$min,
+maxTD=dataset.td.lu.16.III$max, avgTI=dataset.ti.lu.16.V$avg,
+minTI=dataset.ti.lu.16.V$min, maxTI=dataset.ti.lu.16.V$max,
+ratioavg=dataset.td.lu.16.III$avg/dataset.ti.lu.16.V$avg,
+ratiomin=dataset.td.lu.16.III$min/dataset.ti.lu.16.V$min,
+ratiomax=dataset.td.lu.16.III$max/dataset.ti.lu.16.V$max)
+
+dIV_I<-data.frame(xlabel=paste(dataset.td.lu.16.IV$eventID,
+dataset.td.lu.16.IV$subblock, sep="_"), avgTD=dataset.td.lu.16.IV$avg,
+minTD=dataset.td.lu.16.IV$min, maxTD=dataset.td.lu.16.IV$max,
+avgTI=dataset.ti.lu.16.I$avg, minTI=dataset.ti.lu.16.I$min,
+maxTI=dataset.ti.lu.16.I$max,
+ratioavg=dataset.td.lu.16.IV$avg/dataset.ti.lu.16.I$avg,
+ratiomin=dataset.td.lu.16.IV$min/dataset.ti.lu.16.I$min,
+ratiomax=dataset.td.lu.16.IV$max/dataset.ti.lu.16.I$max)
+
+dIV_II<-data.frame(xlabel=paste(dataset.td.lu.16.IV$eventID,
+dataset.td.lu.16.IV$subblock, sep="_"), avgTD=dataset.td.lu.16.IV$avg,
+minTD=dataset.td.lu.16.IV$min, maxTD=dataset.td.lu.16.IV$max,
+avgTI=dataset.ti.lu.16.II$avg, minTI=dataset.ti.lu.16.II$min,
+maxTI=dataset.ti.lu.16.II$max,
+ratioavg=dataset.td.lu.16.IV$avg/dataset.ti.lu.16.II$avg,
+ratiomin=dataset.td.lu.16.IV$min/dataset.ti.lu.16.II$min,
+ratiomax=dataset.td.lu.16.IV$max/dataset.ti.lu.16.II$max)
+
+dIV_III<-data.frame(xlabel=paste(dataset.td.lu.16.IV$eventID,
+dataset.td.lu.16.IV$subblock, sep="_"), avgTD=dataset.td.lu.16.IV$avg,
+minTD=dataset.td.lu.16.IV$min, maxTD=dataset.td.lu.16.IV$max,
+avgTI=dataset.ti.lu.16.III$avg, minTI=dataset.ti.lu.16.III$min,
+maxTI=dataset.ti.lu.16.III$max,
+ratioavg=dataset.td.lu.16.IV$avg/dataset.ti.lu.16.III$avg,
+ratiomin=dataset.td.lu.16.IV$min/dataset.ti.lu.16.III$min,
+ratiomax=dataset.td.lu.16.IV$max/dataset.ti.lu.16.III$max)
+
+dIV_IV<-data.frame(xlabel=paste(dataset.td.lu.16.IV$eventID,
+dataset.td.lu.16.IV$subblock, sep="_"), avgTD=dataset.td.lu.16.IV$avg,
+minTD=dataset.td.lu.16.IV$min, maxTD=dataset.td.lu.16.IV$max,
+avgTI=dataset.ti.lu.16.IV$avg, minTI=dataset.ti.lu.16.IV$min,
+maxTI=dataset.ti.lu.16.IV$max,
+ratioavg=dataset.td.lu.16.IV$avg/dataset.ti.lu.16.IV$avg,
+ratiomin=dataset.td.lu.16.IV$min/dataset.ti.lu.16.IV$min,
+ratiomax=dataset.td.lu.16.IV$max/dataset.ti.lu.16.IV$max)
+
+dIV_V<-data.frame(xlabel=paste(dataset.td.lu.16.IV$eventID,
+dataset.td.lu.16.IV$subblock, sep="_"), avgTD=dataset.td.lu.16.IV$avg,
+minTD=dataset.td.lu.16.IV$min, maxTD=dataset.td.lu.16.IV$max,
+avgTI=dataset.ti.lu.16.V$avg, minTI=dataset.ti.lu.16.V$min,
+maxTI=dataset.ti.lu.16.V$max,
+ratioavg=dataset.td.lu.16.IV$avg/dataset.ti.lu.16.V$avg,
+ratiomin=dataset.td.lu.16.IV$min/dataset.ti.lu.16.V$min,
+ratiomax=dataset.td.lu.16.IV$max/dataset.ti.lu.16.V$max)
+
+dV_I<-data.frame(xlabel=paste(dataset.td.lu.16.V$eventID,
+dataset.td.lu.16.V$subblock, sep="_"), avgTD=dataset.td.lu.16.V$avg,
+minTD=dataset.td.lu.16.V$min, maxTD=dataset.td.lu.16.V$max,
+avgTI=dataset.ti.lu.16.I$avg, minTI=dataset.ti.lu.16.I$min,
+maxTI=dataset.ti.lu.16.I$max,
+ratioavg=dataset.td.lu.16.V$avg/dataset.ti.lu.16.I$avg,
+ratiomin=dataset.td.lu.16.V$min/dataset.ti.lu.16.I$min,
+ratiomax=dataset.td.lu.16.V$max/dataset.ti.lu.16.I$max)
+
+dV_II<-data.frame(xlabel=paste(dataset.td.lu.16.V$eventID,
+dataset.td.lu.16.V$subblock, sep="_"), avgTD=dataset.td.lu.16.V$avg,
+minTD=dataset.td.lu.16.V$min, maxTD=dataset.td.lu.16.V$max,
+avgTI=dataset.ti.lu.16.II$avg, minTI=dataset.ti.lu.16.II$min,
+maxTI=dataset.ti.lu.16.II$max,
+ratioavg=dataset.td.lu.16.V$avg/dataset.ti.lu.16.II$avg,
+ratiomin=dataset.td.lu.16.V$min/dataset.ti.lu.16.II$min,
+ratiomax=dataset.td.lu.16.V$max/dataset.ti.lu.16.II$max)
+
+dV_III<-data.frame(xlabel=paste(dataset.td.lu.16.V$eventID,
+dataset.td.lu.16.V$subblock, sep="_"), avgTD=dataset.td.lu.16.V$avg,
+minTD=dataset.td.lu.16.V$min, maxTD=dataset.td.lu.16.V$max,
+avgTI=dataset.ti.lu.16.III$avg, minTI=dataset.ti.lu.16.III$min,
+maxTI=dataset.ti.lu.16.III$max,
+ratioavg=dataset.td.lu.16.V$avg/dataset.ti.lu.16.III$avg,
+ratiomin=dataset.td.lu.16.V$min/dataset.ti.lu.16.III$min,
+ratiomax=dataset.td.lu.16.V$max/dataset.ti.lu.16.III$max)
+
+dV_IV<-data.frame(xlabel=paste(dataset.td.lu.16.V$eventID,
+dataset.td.lu.16.V$subblock, sep="_"), avgTD=dataset.td.lu.16.V$avg,
+minTD=dataset.td.lu.16.V$min, maxTD=dataset.td.lu.16.V$max,
+avgTI=dataset.ti.lu.16.IV$avg, minTI=dataset.ti.lu.16.IV$min,
+maxTI=dataset.ti.lu.16.IV$max,
+ratioavg=dataset.td.lu.16.V$avg/dataset.ti.lu.16.IV$avg,
+ratiomin=dataset.td.lu.16.V$min/dataset.ti.lu.16.IV$min,
+ratiomax=dataset.td.lu.16.V$max/dataset.ti.lu.16.IV$max)
+
+dV_V<-data.frame(xlabel=paste(dataset.td.lu.16.V$eventID,
+dataset.td.lu.16.V$subblock, sep="_"), avgTD=dataset.td.lu.16.V$avg,
+minTD=dataset.td.lu.16.V$min, maxTD=dataset.td.lu.16.V$max,
+avgTI=dataset.ti.lu.16.V$avg, minTI=dataset.ti.lu.16.V$min,
+maxTI=dataset.ti.lu.16.V$max,
+ratioavg=dataset.td.lu.16.V$avg/dataset.ti.lu.16.V$avg,
+ratiomin=dataset.td.lu.16.V$min/dataset.ti.lu.16.V$min,
+ratiomax=dataset.td.lu.16.V$max/dataset.ti.lu.16.V$max)
+```
+
+### The mean averages are calculated as:
+
+```{r Calculate Mean Averages}
+mean.avg<-matrix(0, 5, 5)
+mean.avg[1,]<-c(mean(dI_I$ratioavg), mean(dI_II$ratioavg), mean(dI_III$ratioavg), mean(dI_IV$ratioavg), mean(dI_V$ratioavg))
+mean.avg[2,]<-c(mean(dII_I$ratioavg), mean(dII_II$ratioavg), mean(dII_III$ratioavg), mean(dII_IV$ratioavg), mean(dII_V$ratioavg))
+mean.avg[3,]<-c(mean(dIII_I$ratioavg), mean(dIII_II$ratioavg), mean(dIII_III$ratioavg), mean(dIII_IV$ratioavg), mean(dIII_V$ratioavg))
+mean.avg[4,]<-c(mean(dIV_I$ratioavg), mean(dIV_II$ratioavg), mean(dIV_III$ratioavg), mean(dIV_IV$ratioavg), mean(dIV_V$ratioavg))
+mean.avg[5,]<-c(mean(dV_I$ratioavg), mean(dV_II$ratioavg), mean(dV_III$ratioavg), mean(dV_IV$ratioavg), mean(dV_V$ratioavg))
+print(mean.avg)
+```
+
+### The mean mins are calculated as: 
+
+```{r Calculate Mean Mins}
+mean.min<-matrix(0, 5, 5)
+mean.min[1,]<-c(mean(dI_I$ratiomin), mean(dI_II$ratiomin), mean(dI_III$ratiomin), mean(dI_IV$ratiomin), mean(dI_V$ratiomin))
+mean.min[2,]<-c(mean(dII_I$ratiomin), mean(dII_II$ratiomin), mean(dII_III$ratiomin), mean(dII_IV$ratiomin), mean(dII_V$ratiomin))
+mean.min[3,]<-c(mean(dIII_I$ratiomin), mean(dIII_II$ratiomin), mean(dIII_III$ratiomin), mean(dIII_IV$ratiomin), mean(dIII_V$ratiomin))
+mean.min[4,]<-c(mean(dIV_I$ratiomin), mean(dIV_II$ratiomin), mean(dIV_III$ratiomin), mean(dIV_IV$ratiomin), mean(dIV_V$ratiomin))
+mean.min[5,]<-c(mean(dV_I$ratiomin), mean(dV_II$ratiomin), mean(dV_III$ratiomin), mean(dV_IV$ratiomin), mean(dV_V$ratiomin))
+print(mean.min)
+```
+
+### The mean maxs are calculated as:
+
+```{r Calculate Mean Maxs}
+mean.max<-matrix(0, 5, 5)
+mean.max[1,]<-c(mean(dI_I$ratiomax), mean(dI_II$ratiomax), mean(dI_III$ratiomax), mean(dI_IV$ratiomax), mean(dI_V$ratiomax))
+mean.max[2,]<-c(mean(dII_I$ratiomax), mean(dII_II$ratiomax), mean(dII_III$ratiomax), mean(dII_IV$ratiomax), mean(dII_V$ratiomax))
+mean.max[3,]<-c(mean(dIII_I$ratiomax), mean(dIII_II$ratiomax), mean(dIII_III$ratiomax), mean(dIII_IV$ratiomax), mean(dIII_V$ratiomax))
+mean.max[4,]<-c(mean(dIV_I$ratiomax), mean(dIV_II$ratiomax), mean(dIV_III$ratiomax), mean(dIV_IV$ratiomax), mean(dIV_V$ratiomax))
+mean.max[5,]<-c(mean(dV_I$ratiomax), mean(dV_II$ratiomax), mean(dV_III$ratiomax), mean(dV_IV$ratiomax), mean(dV_V$ratiomax))
+print(mean.max)
+```
+
+## Conclusion
+The ratios vary from trace to trace. Depending on the network congestion, some executions take more time.

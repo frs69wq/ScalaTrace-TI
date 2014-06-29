@@ -109,7 +109,7 @@ To use ScalaTrace, link ScalaTrace with your application:
 To use ScalaReplay, use an application trace (T) as the input
 
 * SR=/path/to/ScalaTrace/replay
-* mpirun -np <n> $(ST)/replay /path/to/trace/T
+* mpirun -np <n> $(SR)/replay /path/to/trace/T
 
 
 
@@ -118,7 +118,5 @@ To use ScalaReplay, use an application trace (T) as the input
 ##################################################################
 
 See ./test/1dstencil
-
-
 
 

@@ -1,0 +1,175 @@
+#!/bin/bash
+
+#
+# Copyright (c) of this code:
+# Frederic Suter, CNRS / IN2P3 Computing Center <fsuter@cc.in2p3.fr>
+# Henri Casanova, ICS Dept., University of Hawai`i at Manoa <henric@hawaii.edu>
+# Anshul Gupta <anshulgupta0803@gmail.com>
+#
+# Modifications are made under the terms of the GNU LGPL license.
+#
+
+# Prefer the use of Expand.java insted.
+
+#Variables
+BUILD_GRAPH=0
+NEXT_ARG_IS_FILE=0
+OPTIONS_CORRECT=0
+EVENT_COUNT=0
+DEFAULT_IFS=$IFS      # IFS is the delimiter used by grep
+UNWIND="unwind"
+OPCODES=( "MPI_Abort" "MPI_Address" "MPI_Allgather" "MPI_Allgatherv" "MPI_Allreduce" "MPI_Alltoall" "MPI_Alltoallv" "MPI_Attr_delete" "MPI_Attr_get" "MPI_Attr_put" "MPI_Barrier" "MPI_Bcast" "MPI_Bsend" "MPI_Bsend_init" "MPI_Buffer_attach" "MPI_Buffer_detach" "MPI_Cancel" "MPI_Cart_coords" "MPI_Cart_create" "MPI_Cart_get" "MPI_Cart_map" "MPI_Cart_rank" "MPI_Cart_shift" "MPI_Cart_sub" "MPI_Cartdim_get" "MPI_Comm_compare" "MPI_Comm_create" "MPI_Comm_dup" "MPI_Comm_free" "MPI_Comm_get_name" "MPI_Comm_group" "MPI_Comm_rank" "MPI_Comm_remote_group" "MPI_Comm_remote_size" "MPI_Comm_set_name" "MPI_Comm_size" "MPI_Comm_split" "MPI_Comm_test_inter" "MPI_Dims_create" "MPI_Errhandler_create" "MPI_Errhandler_free" "MPI_Errhandler_get" "MPI_Errhandler_set" "MPI_Error_class" "MPI_Error_string" "MPI_Finalize" "MPI_Finalized" "MPI_Gather" "MPI_Gatherv" "MPI_Get_count" "MPI_Get_elements" "MPI_Get_processor_name" "MPI_Get_version" "MPI_Graph_create" "MPI_Graph_get" "MPI_Graph_map" "MPI_Graph_neighbors" "MPI_Graph_neighbors_count" "MPI_Graphdims_get" "MPI_Group_compare" "MPI_Group_difference" "MPI_Group_excl" "MPI_Group_free" "MPI_Group_incl" "MPI_Group_intersection" "MPI_Group_range_excl" "MPI_Group_range_incl" "MPI_Group_rank" "MPI_Group_size" "MPI_Group_translate_ranks" "MPI_Group_union" "MPI_Handle2int" "MPI_Ibsend" "MPI_Info_c2f" "MPI_Info_create" "MPI_Info_delete" "MPI_Info_dup" "MPI_Info_f2c" "MPI_Info_free" "MPI_Info_get" "MPI_Info_get_nkeys" "MPI_Info_get_nthkey" "MPI_Info_get_valuelen" "MPI_Info_set" "MPI_Init" "MPI_Initialized" "MPI_Int2handle" "MPI_Intercomm_create" "MPI_Intercomm_merge" "MPI_Iprobe" "MPI_Irecv" "MPI_Irsend" "MPI_Isend" "MPI_Issend" "MPI_Keyval_create" "MPI_Keyval_free" "MPI_Op_create" "MPI_Op_free" "MPI_Pack" "MPI_Pack_size" "MPI_Pcontrol" "MPI_Probe" "MPI_Recv" "MPI_Recv_init" "MPI_Reduce" "MPI_Reduce_scatter" "MPI_Request_c2f" "MPI_Request_free" "MPI_Rsend" "MPI_Rsend_init" "MPI_Scan" "MPI_Scatter" "MPI_Scatterv" "MPI_Send" "MPI_Send_init" "MPI_Sendrecv" "MPI_Sendrecv_replace" "MPI_Ssend" "MPI_Ssend_init" "MPI_Start" "MPI_Startall" "MPI_Status_c2f" "MPI_Status_f2c" "MPI_Test" "MPI_Test_cancelled" "MPI_Testall" "MPI_Testany" "MPI_Testsome" "MPI_Topo_test" "MPI_Type_commit" "MPI_Type_contiguous" "MPI_Type_count" "MPI_Type_create_indexed_block" "MPI_Type_create_subarray" "MPI_Type_extent" "MPI_Type_free" "MPI_Type_get_contents" "MPI_Type_get_envelope" "MPI_Type_hindexed" "MPI_Type_create_darray" "MPI_Type_hvector" "MPI_Type_indexed" "MPI_Type_lb" "MPI_Type_size" "MPI_Type_struct" "MPI_Type_ub" "MPI_Type_vector" "MPI_Unpack" "MPI_Wait" "MPI_Waitall" "MPI_Waitany" "MPI_Waitsome" "MPI_Wtick" "MPI_Wtime" "write" "read" "open" "open64" "creat" "close" "MPI_File_open" "MPI_File_set_view" "MPI_File_write_at" "MPI_File_write_all" "MPI_File_read_all" "MPI_File_seek" "MPI_File_close" )
+
+DATAFRAME="dataframe.4b"
+DATAFRAME1="dataframe.4c"
+
+if [ -e $DATAFRAME ]
+then
+  rm -f $DATAFRAME
+fi
+
+function unroll ()
+{
+  echo -e "Begin..."
+
+  if [ $BUILD_GRAPH -eq 1 ]
+  then
+    echo -e "[+] Graphs Generation Enabled"
+  else
+    echo -e "[+] Graphs Generation Disabled"
+  fi
+
+  if [ $NO_UNWIND -eq 1 ]
+  then
+    echo -e "[-] Unwind file not present, not able to unwind the ranks."
+  fi
+  echo -e "[+] Using Trace File: $TRACE_FILE"
+
+  EVENT_COUNT=$(grep "EVENT" $TRACE_FILE | wc -l)
+
+  IFS=$'\n'
+  RANKLIST=( $(grep "RANKS" $TRACE_FILE | awk -F": " '{print $2}') )
+  IFS=$DEFAULT_IFS
+
+  for i in $(seq 0 $(expr $EVENT_COUNT - 1))
+  do
+    OPCODE_INDEX=$(grep -w "EVENT$i" $TRACE_FILE | awk '{print $2 - 1000}')
+    echo -e "EVENT$i: ${OPCODES[$OPCODE_INDEX]}"
+    
+    # if [ $NO_UNWIND -eq 0 ]
+    # then
+    #   ./$UNWIND ${RANKLIST[$i]}
+    # fi
+    
+    echo "awk '/EVENT$i:/, /EVENT$(expr $i + 1):/' $TRACE_FILE" | bash | grep -v RANKS | grep -v EVENT |
+    while read line
+    do
+      #SWITCH=$(echo $line | awk {'print $1'})
+      SWITCH=$(echo $line | awk '{print $1" "$2}' | awk -F- '{print $1}')
+      case $SWITCH in
+        #"COMM" )
+          # echo "COMP"
+          # echo $line | awk '{$1=""; $2=""; $3=""; print $0}' | awk -F')' '{print $2}'
+          #;;
+
+        "COMP 4b" )
+          SUBBLOCK=$(echo $line | cut -d ":" -f 1 | cut -d "-" -f 2)
+	    
+          #DF=$(echo -e -n "$i $(expr $OPCODE_INDEX + 1000) " && echo -e -n "$SUBBLOCK " && echo $line | awk -F'(' '{print $2}' | awk -F')' '{print $1}' | awk '{print $1" "$2" "$4" "$6}')
+	  #echo $DF >> $DATAFRAME
+
+	  DF=$(echo -e -n "$i" && echo -e -n "_$SUBBLOCK")
+          echo -e $DF >> $DATAFRAME && echo $line | awk -F'(' '{print $2}' | awk -F')' '{print $1}' | awk '{print "GLOB: "$1" "$2" "$4" "$6}' >> $DATAFRAME && echo -e $line | awk '{$1=""; $2=""; $3=""; print $0}' | awk -F')' '{print $2}' | sed 's/{//g' | sed 's/}/\n/g' | awk '{print "BIN: "$6" "$3" "$2" "$4}' >> $DATAFRAME
+
+          ;;
+
+	"COMP 4c" )
+          SUBBLOCK=$(echo $line | cut -d ":" -f 1 | cut -d "-" -f 2)
+	    
+          DF=$(echo -e -n "$i $(expr $OPCODE_INDEX + 1000) " && echo -e -n "$SUBBLOCK " && echo $line | awk -F'(' '{print $2}' | awk -F')' '{print $1}' | awk '{print $1" "$2" "$4" "$6}')
+	  echo $DF >> $DATAFRAME1
+	  
+	  # BINS=$(echo -e $line | awk '{$1=""; $2=""; $3=""; print $0}' | awk -F')' '{print $2}' | sed 's/{//g' | sed 's/}/\t\t/g')
+	  #DF=$(echo -e -n "$i" && echo -e -n "_$SUBBLOCK")
+          #echo -e $DF >> $DATAFRAME1 && echo $line | awk -F'(' '{print $2}' | awk -F')' '{print $1}' | awk '{print $1" "$2" "$4" "$6}' >> $DATAFRAME1 && echo -e $line | awk '{$1=""; $2=""; $3=""; print $0}' | awk -F')' '{print $2}' | sed 's/{//g' | sed 's/}/\n/g' >> $DATAFRAME1
+          # echo $line | awk '{$1=""; $2=""; $3=""; print $0}' | awk -F')' '{print $2}'
+          ;;
+      esac
+    done
+  done
+
+  echo -e "End..."
+}
+
+if [ $# -lt 1 ]
+then
+  echo -e "[-] Incorrect arguments"
+  echo -e "[-] See `basename $0` --help"
+  exit
+fi
+
+# Arguments must have either --file or --help flag.
+# Parse the -h or --help option, display the help and exits.
+for i in "$@"
+do
+  if [ "$i" == "-f" ] || [ "$i" == "--file" ]
+  then
+    OPTIONS_CORRECT=1
+  fi
+  if [ "$i" == "-h" ] || [ "$i" == "--help" ]
+  then
+    OPTIONS_CORRECT=1
+# Help Section
+    echo -e "Usage: `basename $0` -f <tracefile>"
+    echo -e "  -f | --file <tracefile>\tInput Trace File"
+    echo -e "  -h | --help\t\t\tDisplays this help"
+    exit
+  fi
+done
+
+# If --file or --help options present, then proceed.
+if [ $OPTIONS_CORRECT -ne 1 ]
+then
+  echo -e "[-] Incorrect arguments"
+  echo -e "[-] See `basename $0` --help"
+  exit
+fi
+
+# If unwind exists, set the NO_UNWIND flag to 0
+if [ -e $UNWIND ]
+then
+  NO_UNWIND=0
+else
+  NO_UNWIND=1
+fi
+
+while [[ $# -ge 1 ]]
+do
+  case $1 in
+# Input trace file
+    "--file" | "-f" )
+      if [ "$2" != "" ]
+      then
+        if [ ! -f $2 ]
+        then
+          echo "[-] Trace file does not exists"
+          exit
+        else
+          TRACE_FILE=$2
+          shift 2
+        fi
+      fi
+      
+    ;;
+
+# Unknown option
+    * )
+      echo -e "[-] Unknown Option $1"
+      echo -e "Usage: `basename $0` [OPTIONS] -f <tracefile>"
+      exit
+    ;;
+
+  esac
+done
+
+unroll

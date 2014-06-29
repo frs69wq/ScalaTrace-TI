@@ -1,0 +1,77 @@
+* TODO Trace analysis todo list [2/5]
+** DONE Give access to traces and shell/R scripts
+   + So that I can modify/complete the R parts
+   + Maybe create traces/ and scripts/ directories on the
+     ScalaTrace-TI GitHub
+** DONE Make the R documents more 'litterate programming' compliant
+   + Add information about the different fields of the data-frame(s)
+   + Be more explanatory between the different steps of the R script
+     + what you expect to find or visualize
+     + what you planned to do and why
+     + How you do implement this, etc
+     + In other words evrything that helps to go through the document
+       with full understanding
+   + Put all of this (R snippets and comments) in org-mode files, and
+     maybe add them to github too in a R-analysis/ directory.
+** TODO Modify the graph of rough estimation of instruction rate
+   + Those on http://rpubs.com/anshulgupta0803/rough_estimation_of_inst_rate
+   + logscale on y-axis
+   + keep color related to the avg number of instructions
+   + let size depends on the number of elements in the event
+   + Try to have more rows in the data frame by splitting events in bins
+     + will identify the different modes in a given event
+     + get rid of emptty bins in the process (Don't know how)
+     + name event_id-subblock-bin_number
+** TODO Complete this graph with a facet grid one
+   + 4 facets for 4 traces: B-8, B-16, C-8, and C-16
+   + Will show if there is some variability when class or number of
+     processes changes
+   + first step towards some extrapolation
+** TODO Make the variability graphs more readable
+   + Those on http://rpubs.com/anshulgupta0803/varibality
+   + Try linerange
+   + split events by bins as for the estimation of the
+     instrumentation rate
+   + color points by event number (using a gradient). This might help
+     to distinguish blocks in the graphs
+   + Maybe try to have a facet plot too (same characteristics)
+* TODO Trace replay todo list [0/3]
+  What follows is absolutely unrelated to the first part of this
+  document but could be useful at some point. I'd like you to redo
+  some of the experiments of the CCPE paper but using ScalaTrace-TI.
+** TODO Table 3 page 10
+   + Get some TD and TI traces for LU classes B and C from 8 to 128 processes
+     + executions for TI can be folded (more than one process per core)
+     + better to not fold those for TD to have coherent timings (but
+       1 process per core should be okay)
+     + use graphene if available as the first choice cluster
+   + measure the trace sizes and report the number of ScalaTrace
+     events too (instead of the number of actions) (global sum of 1st
+     element in the summary)
+** TODO Figure 15 page 21
+   + replay some ScalaTrace traces with the latest version of SimGrid
+     (git is better)
+     + start with the TD traces from the previous items
+   + Measure the simulation time (time to run the simulation)
+     + report the characteristic of the machine used (either your
+       laptop or a node of Greid'5000) as it will be different of
+       that used in the journal article.
+   + Try to replay the TI traces then
+     + You will need a calibrated platform file (the one used by my
+       PhD student for the paper). I can give it to you
+     + report the same information
+   + Compare the simulated times
+     + Hopefully they will be close enough
+** TODO Some large instances in Fig 6 page 12 and Fig 9c page 16
+   + For the revision of the journal article we tried to simulate LU
+     instances larger than the available clusters. One problem was
+     that the simulation time and the trace sizes were
+     prohibitive. More precisely we failed to simulate the execution with 4096
+     processes that was longer than 3 days!
+   + Depending on the trace sizes and simulation times measured
+     above, I'd like to know if we are able to replay such instances
+     thanks to scalatrace (from 512 to 1024 first, and then if
+     possible 20148 and why not 4096)
+   + You can use the StRemi cluster from the Reims site to do
+     that. Nodes have a large amount of memory, then the execution
+     can be folded by a great factor (16 is easy IIRC).

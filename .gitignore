@@ -1,0 +1,17 @@
+*.d
+*.D
+*.o
+record/libsrc/dump
+record/libsrc/node
+record/libsrc/glob
+record/lib
+record/wrapper-engine
+replay/replay
+stackwalk/ver0/libstackwalk.a
+test/1dstencil/stencil
+test/1dstencil/trace_*
+test/looplcs/looplcs
+test/looplcs/trace_*
+scripts/Expand.class
+.Rhistory
+.RData
