@@ -1,4 +1,4 @@
-* TODO Trace analysis todo list [2/5]
+* TODO Trace analysis todo list [3/5]
 ** DONE Give access to traces and shell/R scripts
    + So that I can modify/complete the R parts
    + Maybe create traces/ and scripts/ directories on the
@@ -20,9 +20,9 @@
    + let size depends on the number of elements in the event
    + Try to have more rows in the data frame by splitting events in bins
      + will identify the different modes in a given event
-     + get rid of emptty bins in the process (Don't know how)
+     + get rid of empty bins in the process
      + name event_id-subblock-bin_number
-** TODO Complete this graph with a facet grid one
+** DONE Complete this graph with a facet grid one
    + 4 facets for 4 traces: B-8, B-16, C-8, and C-16
    + Will show if there is some variability when class or number of
      processes changes
@@ -31,7 +31,7 @@
    + Those on http://rpubs.com/anshulgupta0803/varibality
    + Try linerange
    + split events by bins as for the estimation of the
-     instrumentation rate
+     instruction rate
    + color points by event number (using a gradient). This might help
      to distinguish blocks in the graphs
    + Maybe try to have a facet plot too (same characteristics)

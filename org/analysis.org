@@ -1514,6 +1514,37 @@ ggplot(d.C.16.4b.4c.V, aes(x=1:nrow(d.C.16.4b.4c.V),
 #+RESULTS:
 [[file:../R-analysis/plots/inst.rate.dataset.tic.C.16.V.png]]
 
+** Facet Plot
+4 facets for 4 traces: B-8, B-16, C-8, and C-16.
+It will show if there is some variability when class or number of
+processes changes.
+It will be the first step towards some extrapolation.
+  
+On x-axis, we have the event numbers (vary from class to class).
+On y-axis, we have the instruction rate.
+The color gradient represents the event number.
+The facets are seprated by class.
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.png" :exports both :width 600 :height 400 :session rough.estimation.inst.rate
+facet.frame<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.I),
+                 rate=d.B.8.4b.4c.I$COMP.4c.avg/d.B.8.4b.4c.I$COMP.4b.avg,
+                 class="B-8"),
+      data.frame(events=1:nrow(d.B.16.4b.4c.I),
+                 rate=d.B.16.4b.4c.I$COMP.4c.avg/d.B.16.4b.4c.I$COMP.4b.avg,
+                 class="B-16"),
+      data.frame(events=1:nrow(d.C.8.4b.4c.I),
+                 rate=d.C.8.4b.4c.I$COMP.4c.avg/d.C.8.4b.4c.I$COMP.4b.avg,
+                 class="C-8"),
+      data.frame(events=1:nrow(d.C.16.4b.4c.I),
+                 rate=d.C.16.4b.4c.I$COMP.4c.avg/d.C.16.4b.4c.I$COMP.4b.avg,
+                 class="C-16"))
+
+ggplot(data=facet.frame, aes(x=events, y=rate, color=events)) + geom_point() + facet_wrap(~ class, ncol=1)
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.png]]
+
 ** Results
 Instruction rate for *Class B, 8 processes* is around *3.5e9 Instructions per sec*.
 Instruction rate for *Class B, 16 processes* is around *3.4e9 Instructions per sec*.
@@ -1525,5 +1556,49 @@ It is clear from the plots that the executions are quite stable as CPU
 bursts on each execution occur at same places.
 
 * Rough Estimation of Instruction Rate (with individual bins)
+See [[file:~/git/ScalaTrace-TI/R-analysis/rough.estimation.of.instruction.rate.bins.Rmd][rough.estimation.of.instruction.rate.bins.Rmd]]
 ** Motive
+Calculate the instruction rate of execution using TIC traces but
+having the data of individual bins instead of the global values.
+The idea is that global values may hide some information. For some
+events, we have 1 bin with smaller number/time and another with larger
+values. Sometimes it is really different (1 really small and big
+ones), sometime we can guess that for some iterations (or processes)
+there were less computations to do.
 ** Overview
+5 traces with TIC instrumentation of LU benchmark, class C and 16
+processes were acquired on graphene cluster.
+Their *COMP 4b* and *COMP 4c* global average values and involved
+processes were parsed using the [[file:~/git/ScalaTrace-TI/scripts/Expand.java][Expand.java]] code with this format.
+#+BEGIN_EXAMPLE
+System.out.println ("eventID subblock binID elements minimum average maximum");
+System.out.printf ("%d %d %d %d %.2f %.2f %.2f\n", current_event, current_subblock, i + 1,  bin_events[i], bin_minimum[i], bin_average[i], bin_maximum[i]);
+#+END_EXAMPLE
+
+** Get the datasets
+The value of 2nd case of switch must be set to /COMP 4b/
+#+BEGIN_SRC sh :results silent
+cd ../scripts
+java Expand ../traces/tic/lu/C/16/I/0 > ../datasets/tic.lu.C.16.comp.4b.bins.I
+java Expand ../traces/tic/lu/C/16/II/0 > ../datasets/tic.lu.C.16.comp.4b.bins.II
+java Expand ../traces/tic/lu/C/16/III/0 > ../datasets/tic.lu.C.16.comp.4b.bins.III
+java Expand ../traces/tic/lu/C/16/IV/0 > ../datasets/tic.lu.C.16.comp.4b.bins.IV
+java Expand ../traces/tic/lu/C/16/V/0 > ../datasets/tic.lu.C.16.comp.4b.bins.V
+#+END_SRC
+
+The value of 2nd case of switch must be set to /COMP 4c/
+#+BEGIN_SRC sh :results silent
+cd ../scripts
+java Expand ../traces/tic/lu/C/16/I/0 > ../datasets/tic.lu.C.16.comp.4c.bins.I
+java Expand ../traces/tic/lu/C/16/II/0 > ../datasets/tic.lu.C.16.comp.4c.bins.II
+java Expand ../traces/tic/lu/C/16/III/0 > ../datasets/tic.lu.C.16.comp.4c.bins.III
+java Expand ../traces/tic/lu/C/16/IV/0 > ../datasets/tic.lu.C.16.comp.4c.bins.IV
+java Expand ../traces/tic/lu/C/16/V/0 > ../datasets/tic.lu.C.16.comp.4c.bins.V
+#+END_SRC
+
+** Read the datasets into R
+#+BEGIN_SRC R :results silent :session rough.estimation.inst.rate.bins :exports both
+setwd('..')
+library(ggplot2)
+
+#+END_SRC

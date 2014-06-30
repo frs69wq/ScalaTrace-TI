@@ -194,7 +194,7 @@ ggplot(d.B.8.4b.4c.I, aes(x=1:nrow(d.B.8.4b.4c.I),
                       color=COMP.4c.avg,
                       size=events)) +
   geom_point() + xlab("Event") + ylab("Instruction Rate") +
-  geom_hline(yintercept=inst.rate.B.8[1])
+  geom_hline(yintercept=inst.rate.B.8[1]) + scale_y_log10()
 ```
 
 **Dataset.tic.B.8.II**  
@@ -406,6 +406,32 @@ ggplot(d.C.16.4b.4c.V, aes(x=1:nrow(d.C.16.4b.4c.V),
   geom_hline(yintercept=inst.rate.C.16[5])
 ```
 
+## Facet Plot
+4 facets for 4 traces: B-8, B-16, C-8, and C-16.  
+It will show if there is some variability when class or number of processes changes.  
+It will be the first step towards some extrapolation.  
+  
+On x-axis, we have the event numbers (vary from class to class).  
+On y-axis, we have the instruction rate.  
+The color gradient represents the event number.  
+The facets are seprated by class.  
+
+```{r Facet Plot}
+facet.frame<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.I),
+                 rate=d.B.8.4b.4c.I$COMP.4c.avg/d.B.8.4b.4c.I$COMP.4b.avg,
+                 class="B-8"),
+      data.frame(events=1:nrow(d.B.16.4b.4c.I),
+                 rate=d.B.16.4b.4c.I$COMP.4c.avg/d.B.16.4b.4c.I$COMP.4b.avg,
+                 class="B-16"),
+      data.frame(events=1:nrow(d.C.8.4b.4c.I),
+                 rate=d.C.8.4b.4c.I$COMP.4c.avg/d.C.8.4b.4c.I$COMP.4b.avg,
+                 class="C-8"),
+      data.frame(events=1:nrow(d.C.16.4b.4c.I),
+                 rate=d.C.16.4b.4c.I$COMP.4c.avg/d.C.16.4b.4c.I$COMP.4b.avg,
+                 class="C-16"))
+
+ggplot(data=facet.frame, aes(x=events, y=rate, color=events)) + geom_point() + facet_wrap(~ class, ncol=1)
+```
 
 ## Results
 Instruction rate for **Class B, 8 processes** is around **3.5e9 Instructions per sec**.  
@@ -415,4 +441,3 @@ Instruction rate for **Class C, 16 processes** is around **3.4e9 Instructions pe
 
 ## Conclusions
 It is clear from the plots that the executions are quite stable as CPU bursts on each execution occur at same places.
-

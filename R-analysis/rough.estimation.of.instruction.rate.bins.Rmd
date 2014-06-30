@@ -1,0 +1,111 @@
+---
+title: "Rough Estimation of Instruction Rate with indivudial bins"
+author: "Anshul Gupta"
+date: "29/06/2014"
+output: html_document
+---
+
+## Motive
+Calculate the instruction rate of execution using TIC traces but having the data of individual bins instead of the global values.  
+The idea is that global values may hide some information. For some events, we have 1 bin with smaller number/time and another with larger values.  
+Sometimes it is really different (1 really small and big ones), sometime we can guess that for some iterations (or processes) there were less computations to do.
+
+## Overview
+5 traces with TIC instrumentation of LU benchmark, class C and 16
+processes were acquired on graphene cluster.
+Their **COMP 4b** and **COMP 4c** global average values and involved
+processes were parsed using the _scripts/Expand.java_ code with this format.
+See _org/analysis.org_
+
+```{r Init}
+setwd('..')
+library(ggplot2)
+tic.lu.C.16.comp.4b.bins.I<-read.table("datasets/tic.lu.C.16.comp.4b.bins.I", header=TRUE)
+tic.lu.C.16.comp.4b.bins.II<-read.table("datasets/tic.lu.C.16.comp.4b.bins.II", header=TRUE)
+tic.lu.C.16.comp.4b.bins.III<-read.table("datasets/tic.lu.C.16.comp.4b.bins.III", header=TRUE)
+tic.lu.C.16.comp.4b.bins.IV<-read.table("datasets/tic.lu.C.16.comp.4b.bins.IV", header=TRUE)
+tic.lu.C.16.comp.4b.bins.V<-read.table("datasets/tic.lu.C.16.comp.4b.bins.V", header=TRUE)
+
+tic.lu.C.16.comp.4c.bins.I<-read.table("datasets/tic.lu.C.16.comp.4c.bins.I", header=TRUE)
+tic.lu.C.16.comp.4c.bins.II<-read.table("datasets/tic.lu.C.16.comp.4c.bins.II", header=TRUE)
+tic.lu.C.16.comp.4c.bins.III<-read.table("datasets/tic.lu.C.16.comp.4c.bins.III", header=TRUE)
+tic.lu.C.16.comp.4c.bins.IV<-read.table("datasets/tic.lu.C.16.comp.4c.bins.IV", header=TRUE)
+tic.lu.C.16.comp.4c.bins.V<-read.table("datasets/tic.lu.C.16.comp.4c.bins.V", header=TRUE)
+```
+
+```{r Read datasets}
+d.C.16.4b.4c.bins.I<-data.frame(eventID=tic.lu.C.16.comp.4b.bins.I$eventID,
+                                subblock=tic.lu.C.16.comp.4b.bins.I$subblock,
+                                binID=tic.lu.C.16.comp.4b.bins.I$binID,
+                                time.elements=tic.lu.C.16.comp.4b.bins.I$elements,
+                                time.min=tic.lu.C.16.comp.4b.bins.I$minimum,
+                                time.avg=tic.lu.C.16.comp.4b.bins.I$average,
+                                time.max=tic.lu.C.16.comp.4b.bins.I$maximum,
+                                inst.elements=tic.lu.C.16.comp.4c.bins.I$elements,
+                                inst.min=tic.lu.C.16.comp.4c.bins.I$minimum,
+                                inst.avg=tic.lu.C.16.comp.4c.bins.I$average,
+                                inst.max=tic.lu.C.16.comp.4c.bins.I$maximum)
+
+d.C.16.4b.4c.bins.I<-d.C.16.4b.4c.bins.I[!(d.C.16.4b.4c.bins.I$time.elements==0 & d.C.16.4b.4c.bins.I$inst.elements==0),]
+
+d.C.16.4b.4c.bins.II<-data.frame(eventID=tic.lu.C.16.comp.4b.bins.II$eventID,
+                                subblock=tic.lu.C.16.comp.4b.bins.II$subblock,
+                                binID=tic.lu.C.16.comp.4b.bins.II$binID,
+                                time.elements=tic.lu.C.16.comp.4b.bins.II$elements,
+                                time.min=tic.lu.C.16.comp.4b.bins.II$minimum,
+                                time.avg=tic.lu.C.16.comp.4b.bins.II$average,
+                                time.max=tic.lu.C.16.comp.4b.bins.II$maximum,
+                                inst.elements=tic.lu.C.16.comp.4c.bins.II$elements,
+                                inst.min=tic.lu.C.16.comp.4c.bins.II$minimum,
+                                inst.avg=tic.lu.C.16.comp.4c.bins.II$average,
+                                inst.max=tic.lu.C.16.comp.4c.bins.II$maximum)
+
+d.C.16.4b.4c.bins.II<-d.C.16.4b.4c.bins.II[!(d.C.16.4b.4c.bins.II$time.elements==0 & d.C.16.4b.4c.bins.II$inst.elements==0),]
+
+d.C.16.4b.4c.bins.III<-data.frame(eventID=tic.lu.C.16.comp.4b.bins.III$eventID,
+                                subblock=tic.lu.C.16.comp.4b.bins.III$subblock,
+                                binID=tic.lu.C.16.comp.4b.bins.III$binID,
+                                time.elements=tic.lu.C.16.comp.4b.bins.III$elements,
+                                time.min=tic.lu.C.16.comp.4b.bins.III$minimum,
+                                time.avg=tic.lu.C.16.comp.4b.bins.III$average,
+                                time.max=tic.lu.C.16.comp.4b.bins.III$maximum,
+                                inst.elements=tic.lu.C.16.comp.4c.bins.III$elements,
+                                inst.min=tic.lu.C.16.comp.4c.bins.III$minimum,
+                                inst.avg=tic.lu.C.16.comp.4c.bins.III$average,
+                                inst.max=tic.lu.C.16.comp.4c.bins.III$maximum)
+
+d.C.16.4b.4c.bins.III<-d.C.16.4b.4c.bins.III[!(d.C.16.4b.4c.bins.III$time.elements==0 & d.C.16.4b.4c.bins.III$inst.elements==0),]
+
+d.C.16.4b.4c.bins.IV<-data.frame(eventID=tic.lu.C.16.comp.4b.bins.IV$eventID,
+                                subblock=tic.lu.C.16.comp.4b.bins.IV$subblock,
+                                binID=tic.lu.C.16.comp.4b.bins.IV$binID,
+                                time.elements=tic.lu.C.16.comp.4b.bins.IV$elements,
+                                time.min=tic.lu.C.16.comp.4b.bins.IV$minimum,
+                                time.avg=tic.lu.C.16.comp.4b.bins.IV$average,
+                                time.max=tic.lu.C.16.comp.4b.bins.IV$maximum,
+                                inst.elements=tic.lu.C.16.comp.4c.bins.IV$elements,
+                                inst.min=tic.lu.C.16.comp.4c.bins.IV$minimum,
+                                inst.avg=tic.lu.C.16.comp.4c.bins.IV$average,
+                                inst.max=tic.lu.C.16.comp.4c.bins.IV$maximum)
+
+d.C.16.4b.4c.bins.IV<-d.C.16.4b.4c.bins.IV[!(d.C.16.4b.4c.bins.IV$time.elements==0 & d.C.16.4b.4c.bins.IV$inst.elements==0),]
+
+d.C.16.4b.4c.bins.V<-data.frame(eventID=tic.lu.C.16.comp.4b.bins.V$eventID,
+                                subblock=tic.lu.C.16.comp.4b.bins.V$subblock,
+                                binID=tic.lu.C.16.comp.4b.bins.V$binID,
+                                time.elements=tic.lu.C.16.comp.4b.bins.V$elements,
+                                time.min=tic.lu.C.16.comp.4b.bins.V$minimum,
+                                time.avg=tic.lu.C.16.comp.4b.bins.V$average,
+                                time.max=tic.lu.C.16.comp.4b.bins.V$maximum,
+                                inst.elements=tic.lu.C.16.comp.4c.bins.V$elements,
+                                inst.min=tic.lu.C.16.comp.4c.bins.V$minimum,
+                                inst.avg=tic.lu.C.16.comp.4c.bins.V$average,
+                                inst.max=tic.lu.C.16.comp.4c.bins.V$maximum)
+
+d.C.16.4b.4c.bins.V<-d.C.16.4b.4c.bins.V[!(d.C.16.4b.4c.bins.V$time.elements==0 & d.C.16.4b.4c.bins.V$inst.elements==0),]
+```
+
+```{r}
+ggplot(d.C.16.4b.4c.bins.I, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=eventID)) + geom_point() + geom_linerange() + geom_errorbar(width=d.C.16.4b.4c.bins.I$inst.max-d.C.16.4b.4c.bins.I$inst.min)
+```
+
