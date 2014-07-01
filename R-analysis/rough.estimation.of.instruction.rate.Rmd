@@ -2,7 +2,7 @@
 title: 'Rough Estimation of Instruction Rate '
 author: "Anshul Gupta"
 date: "28/06/2014"
-output: html_document
+output: pdf_document
 ---
 
 ## Motive

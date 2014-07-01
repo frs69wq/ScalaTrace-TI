@@ -40,7 +40,8 @@ public class Expand {
 	    Integer current_subblock = 0;
 	    Integer opcode = 0;
 
-	    System.out.println ("eventID opcode subblock events avg min max");
+	    // System.out.println ("eventID opcode subblock events avg min max");
+	    System.out.println ("eventID subblock binID elements minimum average maximum");
 	    while ((line = br.readLine ()) != null) {
 		if (line.length() > 7) {
 		    key = line.substring (0, 7);
@@ -145,7 +146,7 @@ public class Expand {
 				    if (bin_maximum[i] >= maximum)
 					maximum = bin_maximum[i];
 				}
-				// System.out.printf ("%d %d %d %.2f %.2f %.2f\n", current_event, current_subblock, bin_events[i], bin_minimum[i], bin_average[i], bin_maximum[i]);
+				System.out.printf ("%d %d %d %d %.2f %.2f %.2f\n", current_event, current_subblock, i + 1,  bin_events[i], bin_minimum[i], bin_average[i], bin_maximum[i]);
 			    }
 
 			    Integer new_global_events = global_events;
@@ -155,7 +156,7 @@ public class Expand {
 			    Integer new_global_max_rank = global_max_rank;
 			    Double new_global_maximum = maximum;
 
-			    System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + global_average + " " + global_minimum + " " + global_maximum);
+			    // System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + global_average + " " + global_minimum + " " + global_maximum);
 			    // System.out.printf("%d %d %d %.2f %.2f\n", current_event, current_subblock, bin_events[i], bin_minimum[i], bin_average[i], bin_maximum[i]);
 			    break;
 			    

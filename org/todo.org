@@ -54,7 +54,7 @@
      + start with the TD traces from the previous items
    + Measure the simulation time (time to run the simulation)
      + report the characteristic of the machine used (either your
-       laptop or a node of Greid'5000) as it will be different of
+       laptop or a node of Grid'5000) as it will be different of
        that used in the journal article.
    + Try to replay the TI traces then
      + You will need a calibrated platform file (the one used by my
@@ -71,7 +71,7 @@
    + Depending on the trace sizes and simulation times measured
      above, I'd like to know if we are able to replay such instances
      thanks to scalatrace (from 512 to 1024 first, and then if
-     possible 20148 and why not 4096)
+     possible 2048 and why not 4096)
    + You can use the StRemi cluster from the Reims site to do
      that. Nodes have a large amount of memory, then the execution
      can be folded by a great factor (16 is easy IIRC).
