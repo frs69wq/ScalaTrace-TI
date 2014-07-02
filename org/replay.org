@@ -4,3 +4,52 @@
 #+STARTUP: overview
 #+STARTUP: indent
 
+* Pushing your public key to multiple hosts
+** Disable the (yes/no) prompt
+
+#+BEGIN_SRC sh :results silent
+if [ ! -d ~/.ssh/config ];
+then
+touch ~/.ssh/config
+fi
+
+echo "StrictHostKeyChecking no" >> ~/.ssh/config
+echo "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+#+END_SRC
+
+** Copying the keys
+
+#+BEGIN_SRC sh :results silent
+NODEFILE="nodefile"
+PASSWORD="trace"
+
+for X in `cat $NODEFILE`
+do
+sshpass -p $PASSWORD ssh-copy-id root@${X}
+done
+#+END_SRC
+* Table 3 Page 10
+All the processes were executed without folding.
+** Time Dependent
+|            | Trace Size  (in KiB)  |       #Events       |
+|------------+-----------+-----------+----------+----------|
+| #Processes | Class B   | Class C   | Class B  | Class C  |
+|------------+-----------+-----------+----------+----------|
+|          8 | 99        | 111       | 1019470  | 1621870  |
+|         16 | 119       | 137       | 2446636  | 3892396  |
+|         32 | 123       | 144       | 5300968  | 8433448  |
+|         64 | 118       | 133       | 11417316 | 18164196 |
+|        128 | 128       | 146       | 23650012 | 37625692 |
+|------------+-----------+-----------+----------+----------|
+
+** Time Independent
+|            | Trace Size  (in KiB)  |       #Events       |
+|------------+-----------+-----------+----------+----------|
+| #Processes | Class B   | Class C   | Class B  | Class C  |
+|------------+-----------+-----------+----------+----------|
+|          8 | 100       | 112       | 1019470  | 1621870  |
+|         16 | 122       | 139       | 2446636  | 3892396  |
+|         32 | 125       | 147       | 5300968  | 8433448  |
+|         64 | 120       | 136       | 11417316 | 18164196 |
+|        128 |           |           |          |          |
+|------------+-----------+-----------+----------+----------|
