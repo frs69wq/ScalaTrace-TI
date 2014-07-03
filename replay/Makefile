@@ -12,7 +12,7 @@ RAND_DEST=6
 PREALLOC_MEM=y
 
 # Added for SMPI integration
-SMPI_SIMULATION=n
+SMPI_SIMULATION=y
 SMPI_SIMULATION_TIME_INDEPENDENT=y
 
 top_srcdir=$(shell pwd)/..

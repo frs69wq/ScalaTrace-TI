@@ -2003,4 +2003,14 @@ d.C.16.4b.4c.bins.V<-data.frame(eventID=tic.lu.C.16.comp.4b.bins.V$eventID,
 d.C.16.4b.4c.bins.V<-d.C.16.4b.4c.bins.V[!(d.C.16.4b.4c.bins.V$time.elements==0 & d.C.16.4b.4c.bins.V$inst.elements==0),]
 #+END_SRC
 
+** Plots
+** Conclusion
 
+* Variablity
+See [[file:~/git/ScalaTrace-TI/R-analysis/variablity.Rmd][variablity.Rmd]]
+** Motive
+** Overview
+** Get the datasets
+** Read the datasets into R
+** Plots
+** Conclusion

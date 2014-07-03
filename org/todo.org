@@ -35,11 +35,11 @@
    + color points by event number (using a gradient). This might help
      to distinguish blocks in the graphs
    + Maybe try to have a facet plot too (same characteristics)
-* TODO Trace replay todo list [0/3]
+* TODO Trace replay todo list [1/3]
   What follows is absolutely unrelated to the first part of this
   document but could be useful at some point. I'd like you to redo
   some of the experiments of the CCPE paper but using ScalaTrace-TI.
-** TODO Table 3 page 10
+** DONE Table 3 page 10
    + Get some TD and TI traces for LU classes B and C from 8 to 128 processes
      + executions for TI can be folded (more than one process per core)
      + better to not fold those for TD to have coherent timings (but
