@@ -31,25 +31,122 @@ done
 * Table 3 Page 10
 All the processes were executed without folding.
 ** Time Dependent
-|            | Trace Size  (in KiB)  |       #Events       |
-|------------+-----------+-----------+----------+----------|
-| #Processes | Class B   | Class C   | Class B  | Class C  |
-|------------+-----------+-----------+----------+----------|
-|          8 | 99        | 111       | 1019470  | 1621870  |
-|         16 | 119       | 137       | 2446636  | 3892396  |
-|         32 | 123       | 144       | 5300968  | 8433448  |
-|         64 | 118       | 133       | 11417316 | 18164196 |
-|        128 | 128       | 146       | 23650012 | 37625692 |
-|------------+-----------+-----------+----------+----------|
+|            | Trace Size  (in KiB)           |  #Events            |
+|------------+----------------------+---------+----------+----------|
+| #Processes |              Class B | Class C |  Class B |  Class C |
+|------------+----------------------+---------+----------+----------|
+|          8 |                   99 |     111 |  1019470 |  1621870 |
+|         16 |                  119 |     137 |  2446636 |  3892396 |
+|         32 |                  123 |     144 |  5300968 |  8433448 |
+|         64 |                  118 |     133 | 11417316 | 18164196 |
+|        128 |                  128 |     146 | 23650012 | 37625692 |
+|------------+----------------------+---------+----------+----------|
 
 ** Time Independent
-|            | Trace Size  (in KiB)  |       #Events       |
-|------------+-----------+-----------+----------+----------|
-| #Processes | Class B   | Class C   | Class B  | Class C  |
-|------------+-----------+-----------+----------+----------|
-|          8 | 100       | 112       | 1019470  | 1621870  |
-|         16 | 122       | 139       | 2446636  | 3892396  |
-|         32 | 125       | 147       | 5300968  | 8433448  |
-|         64 | 120       | 136       | 11417316 | 18164196 |
-|        128 | 131       | 148       | 23650012 | 37625692 |
-|------------+-----------+-----------+----------+----------|
+|            | Trace Size  (in KiB)           |  #Events            |
+|------------+----------------------+---------+----------+----------|
+| #Processes |              Class B | Class C |  Class B |  Class C |
+|------------+----------------------+---------+----------+----------|
+|          8 |                  100 |     112 |  1019470 |  1621870 |
+|         16 |                  122 |     139 |  2446636 |  3892396 |
+|         32 |                  125 |     147 |  5300968 |  8433448 |
+|         64 |                  120 |     136 | 11417316 | 18164196 |
+|        128 |                  131 |     148 | 23650012 | 37625692 |
+|------------+----------------------+---------+----------+----------|
+
+* Figure 15 Page 5
+I am using [[file:~/git/ScalaTrace-TI/scripts/graphene.xml][graphene.xml]] as platform file.
+I found it on [[http://graal.ens-lyon.fr/~gmarkoma/nancy/graphene.xml]]
+I am using the latest version of Simgrid (git).
+
+** Errors in replaying on local machine
+*** Replaying LU Class A 4 Processes
+In *MPI_Bcast*, it encounters paramtype 14, and ends up in
+segmentation fault.
+
+#+BEGIN_SRC sh
+cd $SCALATRACE_ROOT
+smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg=smpi/running_power:1e9 -np 4 -platform scripts/graphene.xml -hostfile traces/ti/lu/A/4/hostfile.I replay/replay traces/ti/lu/A/4/I/0
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+... output trimmed ...
+
+Histo replay
+Pre-allocating 268435456 bytes sendbuffer and recvbuffer
+MPI_Bcast error: MPI_Type_size failed - probably invalid type: 14
+Access violation detected.
+
+... output trimmed ...
+
+Finally, if nothing of the above applies, this can result from a stack overflow.
+Try to increase stack size with --cfg=contexts/stack_size (current size is 8192 KiB).
+Segmentation fault
+#+END_EXAMPLE
+
+*** Replaying CG Class A 4 Processes
+In this case, I don't get any *--cfg=contexts/stack_size error*.
+It start simulating the initial events, but somewhere it encounters a
+paramtype 16 on *MPI_ISend* (but in the trace file, I couldn't find
+any 1092 events).
+
+#+BEGIN_SRC sh
+cd $SCALATRACE_ROOT
+smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg=smpi/running_power:1e9 -np 4 -platform scripts/graphene.xml -hostfile traces/ti/cg/A/4/hostfile.I replay/replay traces/ti/cg/A/4/I/0
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+... output trimmed ...
+
+Histo replay
+Pre-allocating 268435456 bytes sendbuffer and recvbuffer
+Simulating 7.2701e+07 flops
+Simulating 7.2701e+07 flops
+Simulating 7.2701e+07 flops
+Simulating 7.2701e+07 flops
+MPI_Isend error: MPI_Type_size failed - probably invalid type: 16
+Segmentation fault.
+Segmentation fault
+#+END_EXAMPLE
+
+** Errors in replayinng on graphene node
+*** Replaying LU Class A 4 Processes
+All the errors are same as before, except I dont get a
+*--cfg=contexts/stack_size* error but some different error.
+
+#+BEGIN_SRC sh
+cd $SCALATRACE_ROOT
+smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg=smpi/running_power:1e9 -np 4 -platform scripts/graphene.xml -hostfile traces/ti/lu/A/4/hostfile.I replay/replay traces/ti/lu/A/4/I/0
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+... output trimmed ...
+
+Histo replay
+Pre-allocating 268435456 bytes sendbuffer and recvbuffer
+MPI_Bcast error: MPI_Type_size failed - probably invalid type: 14
+Segmentation fault.
+/usr/local/src/Simgrid/bin/smpirun: line 438:  7614 Segmentation fault      ${EXEC} ${TRACEOPTIONS} ${SIMOPTS} ${PLATFORMTMP} ${APPLICATIONTMP}
+#+END_EXAMPLE
+
+*** Replaying CG Class A 4 Processes
+Same error here too.
+
+#+BEGIN_SRC sh
+cd $SCALATRACE_ROOT
+smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg=smpi/running_power:1e9 -np 4 -platform scripts/graphene.xml -hostfile traces/ti/cg/A/4/hostfile.I replay/replay traces/ti/cg/A/4/I/0
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+... output trimmed ...
+
+Histo replay
+Pre-allocating 268435456 bytes sendbuffer and recvbuffer
+Simulating 7.2701e+07 flops
+Simulating 7.2701e+07 flops
+Simulating 7.2701e+07 flops
+Simulating 7.2701e+07 flops
+MPI_Isend error: MPI_Type_size failed - probably invalid type: 16
+Segmentation fault.
+/usr/local/src/Simgrid/bin/smpirun: line 438:  7656 Segmentation fault      ${EXEC} ${TRACEOPTIONS} ${SIMOPTS} ${PLATFORMTMP} ${APPLICATIONTMP}
+#+END_EXAMPLE
