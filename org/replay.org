@@ -54,7 +54,7 @@ All the processes were executed without folding.
 |        128 |                  131 |     148 | 23650012 | 37625692 |
 |------------+----------------------+---------+----------+----------|
 
-* Figure 15 Page 5
+* Figure 15 Page 21
 I am using [[file:~/git/ScalaTrace-TI/scripts/graphene.xml][graphene.xml]] as platform file.
 I found it on [[http://graal.ens-lyon.fr/~gmarkoma/nancy/graphene.xml]]
 I am using the latest version of Simgrid (git).
