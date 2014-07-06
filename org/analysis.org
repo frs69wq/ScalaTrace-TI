@@ -2006,11 +2006,570 @@ d.C.16.4b.4c.bins.V<-d.C.16.4b.4c.bins.V[!(d.C.16.4b.4c.bins.V$time.elements==0 
 ** Plots
 ** Conclusion
 
-* Variablity
-See [[file:~/git/ScalaTrace-TI/R-analysis/variablity.Rmd][variablity.Rmd]]
+* Variability
+See [[file:~/git/ScalaTrace-TI/R-analysis/variability.Rmd][variability.Rmd]]
+** Motive
+Plot the variablity of execution in TIC traces.
+
+** Overview
+5 traces with TIC instrumentation of LU benchmark, class C and 16
+processes were acquired on graphene cluster.
+Their *COMP 4b* and *COMP 4c* global average values and involved
+processes were parsed using the [[file:~/git/ScalaTrace-TI/scripts/Expand.java][Expand.java]] code with this format.
+The global values in the traces are modified according to 10%
+threshold of events in indivudial bins.
+
+#+BEGIN_EXAMPLE
+System.out.println ("eventID opcode subblock events avg min max");
+System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + new_global_average + " " + new_global_minimum + " " + new_global_maximum);
+#+END_EXAMPLE
+
+** Get the datasets
+The value of 2nd case of switch must be set to /COMP 4b/
+#+BEGIN_SRC sh :results silent
+cd ../scripts
+java Expand ../traces/tic/lu/B/8/I/0 > ../datasets/tic.lu.B.8.comp.4b.processed.I
+java Expand ../traces/tic/lu/B/8/II/0 > ../datasets/tic.lu.B.8.comp.4b.processed.II
+java Expand ../traces/tic/lu/B/8/III/0 > ../datasets/tic.lu.B.8.comp.4b.processed.III
+java Expand ../traces/tic/lu/B/8/IV/0 > ../datasets/tic.lu.B.8.comp.4b.processed.IV
+java Expand ../traces/tic/lu/B/8/V/0 > ../datasets/tic.lu.B.8.comp.4b.processed.V
+
+java Expand ../traces/tic/lu/B/16/I/0 > ../datasets/tic.lu.B.16.comp.4b.processed.I
+java Expand ../traces/tic/lu/B/16/II/0 > ../datasets/tic.lu.B.16.comp.4b.processed.II
+java Expand ../traces/tic/lu/B/16/III/0 > ../datasets/tic.lu.B.16.comp.4b.processed.III
+java Expand ../traces/tic/lu/B/16/IV/0 > ../datasets/tic.lu.B.16.comp.4b.processed.IV
+java Expand ../traces/tic/lu/B/16/V/0 > ../datasets/tic.lu.B.16.comp.4b.processed.V
+
+java Expand ../traces/tic/lu/C/8/I/0 > ../datasets/tic.lu.C.8.comp.4b.processed.I
+java Expand ../traces/tic/lu/C/8/II/0 > ../datasets/tic.lu.C.8.comp.4b.processed.II
+java Expand ../traces/tic/lu/C/8/III/0 > ../datasets/tic.lu.C.8.comp.4b.processed.III
+java Expand ../traces/tic/lu/C/8/IV/0 > ../datasets/tic.lu.C.8.comp.4b.processed.IV
+java Expand ../traces/tic/lu/C/8/V/0 > ../datasets/tic.lu.C.8.comp.4b.processed.V
+
+java Expand ../traces/tic/lu/C/16/I/0 > ../datasets/tic.lu.C.16.comp.4b.processed.I
+java Expand ../traces/tic/lu/C/16/II/0 > ../datasets/tic.lu.C.16.comp.4b.processed.II
+java Expand ../traces/tic/lu/C/16/III/0 > ../datasets/tic.lu.C.16.comp.4b.processed.III
+java Expand ../traces/tic/lu/C/16/IV/0 > ../datasets/tic.lu.C.16.comp.4b.processed.IV
+java Expand ../traces/tic/lu/C/16/V/0 > ../datasets/tic.lu.C.16.comp.4b.processed.V
+#+END_SRC
+
+The value of 2nd case of switch must be set to /COMP 4c/
+#+BEGIN_SRC sh :results silent
+cd ../scripts
+java Expand ../traces/tic/lu/B/8/I/0 > ../datasets/tic.lu.B.8.comp.4c.processed.I
+java Expand ../traces/tic/lu/B/8/II/0 > ../datasets/tic.lu.B.8.comp.4c.processed.II
+java Expand ../traces/tic/lu/B/8/III/0 > ../datasets/tic.lu.B.8.comp.4c.processed.III
+java Expand ../traces/tic/lu/B/8/IV/0 > ../datasets/tic.lu.B.8.comp.4c.processed.IV
+java Expand ../traces/tic/lu/B/8/V/0 > ../datasets/tic.lu.B.8.comp.4c.processed.V
+
+java Expand ../traces/tic/lu/B/16/I/0 > ../datasets/tic.lu.B.16.comp.4c.processed.I
+java Expand ../traces/tic/lu/B/16/II/0 > ../datasets/tic.lu.B.16.comp.4c.processed.II
+java Expand ../traces/tic/lu/B/16/III/0 > ../datasets/tic.lu.B.16.comp.4c.processed.III
+java Expand ../traces/tic/lu/B/16/IV/0 > ../datasets/tic.lu.B.16.comp.4c.processed.IV
+java Expand ../traces/tic/lu/B/16/V/0 > ../datasets/tic.lu.B.16.comp.4c.processed.V
+
+java Expand ../traces/tic/lu/C/8/I/0 > ../datasets/tic.lu.C.8.comp.4c.processed.I
+java Expand ../traces/tic/lu/C/8/II/0 > ../datasets/tic.lu.C.8.comp.4c.processed.II
+java Expand ../traces/tic/lu/C/8/III/0 > ../datasets/tic.lu.C.8.comp.4c.processed.III
+java Expand ../traces/tic/lu/C/8/IV/0 > ../datasets/tic.lu.C.8.comp.4c.processed.IV
+java Expand ../traces/tic/lu/C/8/V/0 > ../datasets/tic.lu.C.8.comp.4c.processed.V
+
+java Expand ../traces/tic/lu/C/16/I/0 > ../datasets/tic.lu.C.16.comp.4c.processed.I
+java Expand ../traces/tic/lu/C/16/II/0 > ../datasets/tic.lu.C.16.comp.4c.processed.II
+java Expand ../traces/tic/lu/C/16/III/0 > ../datasets/tic.lu.C.16.comp.4c.processed.III
+java Expand ../traces/tic/lu/C/16/IV/0 > ../datasets/tic.lu.C.16.comp.4c.processed.IV
+java Expand ../traces/tic/lu/C/16/V/0 > ../datasets/tic.lu.C.16.comp.4c.processed.V
+#+END_SRC
+
+** Read the datasets into R
+#+BEGIN_SRC R :results silent :session variability :exports both
+setwd("..")
+library(ggplot2)
+dataset.tic.lu.B.8.comp.4c.I<-read.table("datasets/tic.lu.B.8.comp.4c.processed.I", header=TRUE)
+dataset.tic.lu.B.8.comp.4c.II<-read.table("datasets/tic.lu.B.8.comp.4c.processed.II", header=TRUE)
+dataset.tic.lu.B.8.comp.4c.III<-read.table("datasets/tic.lu.B.8.comp.4c.processed.III", header=TRUE)
+dataset.tic.lu.B.8.comp.4c.IV<-read.table("datasets/tic.lu.B.8.comp.4c.processed.IV", header=TRUE)
+dataset.tic.lu.B.8.comp.4c.V<-read.table("datasets/tic.lu.B.8.comp.4c.processed.V", header=TRUE)
+
+dataset.tic.lu.B.8.comp.4b.I<-read.table("datasets/tic.lu.B.8.comp.4b.processed.I", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.II<-read.table("datasets/tic.lu.B.8.comp.4b.processed.II", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.III<-read.table("datasets/tic.lu.B.8.comp.4b.processed.III", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.IV<-read.table("datasets/tic.lu.B.8.comp.4b.processed.IV", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.V<-read.table("datasets/tic.lu.B.8.comp.4b.processed.V", header=TRUE)
+
+dataset.tic.lu.B.16.comp.4c.I<-read.table("datasets/tic.lu.B.16.comp.4c.processed.I", header=TRUE)
+dataset.tic.lu.B.16.comp.4c.II<-read.table("datasets/tic.lu.B.16.comp.4c.processed.II", header=TRUE)
+dataset.tic.lu.B.16.comp.4c.III<-read.table("datasets/tic.lu.B.16.comp.4c.processed.III", header=TRUE)
+dataset.tic.lu.B.16.comp.4c.IV<-read.table("datasets/tic.lu.B.16.comp.4c.processed.IV", header=TRUE)
+dataset.tic.lu.B.16.comp.4c.V<-read.table("datasets/tic.lu.B.16.comp.4c.processed.V", header=TRUE)
+
+dataset.tic.lu.B.16.comp.4b.I<-read.table("datasets/tic.lu.B.16.comp.4b.processed.I", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.II<-read.table("datasets/tic.lu.B.16.comp.4b.processed.II", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.III<-read.table("datasets/tic.lu.B.16.comp.4b.processed.III", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.IV<-read.table("datasets/tic.lu.B.16.comp.4b.processed.IV", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.V<-read.table("datasets/tic.lu.B.16.comp.4b.processed.V", header=TRUE)
+
+dataset.tic.lu.C.8.comp.4c.I<-read.table("datasets/tic.lu.C.8.comp.4c.processed.I", header=TRUE)
+dataset.tic.lu.C.8.comp.4c.II<-read.table("datasets/tic.lu.C.8.comp.4c.processed.II", header=TRUE)
+dataset.tic.lu.C.8.comp.4c.III<-read.table("datasets/tic.lu.C.8.comp.4c.processed.III", header=TRUE)
+dataset.tic.lu.C.8.comp.4c.IV<-read.table("datasets/tic.lu.C.8.comp.4c.processed.IV", header=TRUE)
+dataset.tic.lu.C.8.comp.4c.V<-read.table("datasets/tic.lu.C.8.comp.4c.processed.V", header=TRUE)
+
+dataset.tic.lu.C.8.comp.4b.I<-read.table("datasets/tic.lu.C.8.comp.4b.processed.I", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.II<-read.table("datasets/tic.lu.C.8.comp.4b.processed.II", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.III<-read.table("datasets/tic.lu.C.8.comp.4b.processed.III", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.IV<-read.table("datasets/tic.lu.C.8.comp.4b.processed.IV", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.V<-read.table("datasets/tic.lu.C.8.comp.4b.processed.V", header=TRUE)
+
+dataset.tic.lu.C.16.comp.4c.I<-read.table("datasets/tic.lu.C.16.comp.4c.processed.I", header=TRUE)
+dataset.tic.lu.C.16.comp.4c.II<-read.table("datasets/tic.lu.C.16.comp.4c.processed.II", header=TRUE)
+dataset.tic.lu.C.16.comp.4c.III<-read.table("datasets/tic.lu.C.16.comp.4c.processed.III", header=TRUE)
+dataset.tic.lu.C.16.comp.4c.IV<-read.table("datasets/tic.lu.C.16.comp.4c.processed.IV", header=TRUE)
+dataset.tic.lu.C.16.comp.4c.V<-read.table("datasets/tic.lu.C.16.comp.4c.processed.V", header=TRUE)
+
+dataset.tic.lu.C.16.comp.4b.I<-read.table("datasets/tic.lu.C.16.comp.4b.processed.I", header=TRUE)
+dataset.tic.lu.C.16.comp.4b.II<-read.table("datasets/tic.lu.C.16.comp.4b.processed.II", header=TRUE)
+dataset.tic.lu.C.16.comp.4b.III<-read.table("datasets/tic.lu.C.16.comp.4b.processed.III", header=TRUE)
+dataset.tic.lu.C.16.comp.4b.IV<-read.table("datasets/tic.lu.C.16.comp.4b.processed.IV", header=TRUE)
+dataset.tic.lu.C.16.comp.4b.V<-read.table("datasets/tic.lu.C.16.comp.4b.processed.V", header=TRUE)
+#+END_SRC
+
+The variables are named as *d.<A>.<B>.4b.4c.<X>*,  
+where *<X>* is the TIC dataset,   
+*<A>* is the class,  
+and *<B>* is the number of processes.  
+Each *d.<A>.<B>.4b.4c.<X>* has 6 fields:
+
++ elements = Number of elements
++ time.avg = Average time after processing
++ subblock = Subblock ID of the event
++ events = Number of elements involved in the event
++ COMP.4b.avg = Average of COMP 4b
++ COMP.4c.avg = Average of COMP 4c
+
+#+BEGIN_SRC R :results silent :session variability :exports both
+d.B.8.4b.4c.I<-data.frame(elements=dataset.tic.lu.B.8.comp.4b.I$events,
+                           time.avg=dataset.tic.lu.B.8.comp.4b.I$avg/1e6,
+                           time.min=dataset.tic.lu.B.8.comp.4b.I$min/1e6,
+                           time.max=dataset.tic.lu.B.8.comp.4b.I$max/1e6,
+                           inst.avg=dataset.tic.lu.B.8.comp.4c.I$avg*1000,
+                           inst.min=dataset.tic.lu.B.8.comp.4c.I$min*1000,
+                           inst.max=dataset.tic.lu.B.8.comp.4c.I$max*1000)
+
+d.B.8.4b.4c.II<-data.frame(elements=dataset.tic.lu.B.8.comp.4b.II$events,
+                           time.avg=dataset.tic.lu.B.8.comp.4b.II$avg/1e6,
+                           time.min=dataset.tic.lu.B.8.comp.4b.II$min/1e6,
+                           time.max=dataset.tic.lu.B.8.comp.4b.II$max/1e6,
+                           inst.avg=dataset.tic.lu.B.8.comp.4c.II$avg*1000,
+                           inst.min=dataset.tic.lu.B.8.comp.4c.II$min*1000,
+                           inst.max=dataset.tic.lu.B.8.comp.4c.II$max*1000)
+
+d.B.8.4b.4c.III<-data.frame(elements=dataset.tic.lu.B.8.comp.4b.III$events,
+                           time.avg=dataset.tic.lu.B.8.comp.4b.III$avg/1e6,
+                           time.min=dataset.tic.lu.B.8.comp.4b.III$min/1e6,
+                           time.max=dataset.tic.lu.B.8.comp.4b.III$max/1e6,
+                           inst.avg=dataset.tic.lu.B.8.comp.4c.III$avg*1000,
+                           inst.min=dataset.tic.lu.B.8.comp.4c.III$min*1000,
+                           inst.max=dataset.tic.lu.B.8.comp.4c.III$max*1000)
+
+d.B.8.4b.4c.IV<-data.frame(elements=dataset.tic.lu.B.8.comp.4b.IV$events,
+                           time.avg=dataset.tic.lu.B.8.comp.4b.IV$avg/1e6,
+                           time.min=dataset.tic.lu.B.8.comp.4b.IV$min/1e6,
+                           time.max=dataset.tic.lu.B.8.comp.4b.IV$max/1e6,
+                           inst.avg=dataset.tic.lu.B.8.comp.4c.IV$avg*1000,
+                           inst.min=dataset.tic.lu.B.8.comp.4c.IV$min*1000,
+                           inst.max=dataset.tic.lu.B.8.comp.4c.IV$max*1000)
+
+d.B.8.4b.4c.V<-data.frame(elements=dataset.tic.lu.B.8.comp.4b.V$events,
+                           time.avg=dataset.tic.lu.B.8.comp.4b.V$avg/1e6,
+                           time.min=dataset.tic.lu.B.8.comp.4b.V$min/1e6,
+                           time.max=dataset.tic.lu.B.8.comp.4b.V$max/1e6,
+                           inst.avg=dataset.tic.lu.B.8.comp.4c.V$avg*1000,
+                           inst.min=dataset.tic.lu.B.8.comp.4c.V$min*1000,
+                           inst.max=dataset.tic.lu.B.8.comp.4c.V$max*1000)
+                           
+d.B.16.4b.4c.I<-data.frame(elements=dataset.tic.lu.B.16.comp.4b.I$events,
+                           time.avg=dataset.tic.lu.B.16.comp.4b.I$avg/1e6,
+                           time.min=dataset.tic.lu.B.16.comp.4b.I$min/1e6,
+                           time.max=dataset.tic.lu.B.16.comp.4b.I$max/1e6,
+                           inst.avg=dataset.tic.lu.B.16.comp.4c.I$avg*1000,
+                           inst.min=dataset.tic.lu.B.16.comp.4c.I$min*1000,
+                           inst.max=dataset.tic.lu.B.16.comp.4c.I$max*1000)
+
+d.B.16.4b.4c.II<-data.frame(elements=dataset.tic.lu.B.16.comp.4b.II$events,
+                           time.avg=dataset.tic.lu.B.16.comp.4b.II$avg/1e6,
+                           time.min=dataset.tic.lu.B.16.comp.4b.II$min/1e6,
+                           time.max=dataset.tic.lu.B.16.comp.4b.II$max/1e6,
+                           inst.avg=dataset.tic.lu.B.16.comp.4c.II$avg*1000,
+                           inst.min=dataset.tic.lu.B.16.comp.4c.II$min*1000,
+                           inst.max=dataset.tic.lu.B.16.comp.4c.II$max*1000)
+
+d.B.16.4b.4c.III<-data.frame(elements=dataset.tic.lu.B.16.comp.4b.III$events,
+                           time.avg=dataset.tic.lu.B.16.comp.4b.III$avg/1e6,
+                           time.min=dataset.tic.lu.B.16.comp.4b.III$min/1e6,
+                           time.max=dataset.tic.lu.B.16.comp.4b.III$max/1e6,
+                           inst.avg=dataset.tic.lu.B.16.comp.4c.III$avg*1000,
+                           inst.min=dataset.tic.lu.B.16.comp.4c.III$min*1000,
+                           inst.max=dataset.tic.lu.B.16.comp.4c.III$max*1000)
+
+d.B.16.4b.4c.IV<-data.frame(elements=dataset.tic.lu.B.16.comp.4b.IV$events,
+                           time.avg=dataset.tic.lu.B.16.comp.4b.IV$avg/1e6,
+                           time.min=dataset.tic.lu.B.16.comp.4b.IV$min/1e6,
+                           time.max=dataset.tic.lu.B.16.comp.4b.IV$max/1e6,
+                           inst.avg=dataset.tic.lu.B.16.comp.4c.IV$avg*1000,
+                           inst.min=dataset.tic.lu.B.16.comp.4c.IV$min*1000,
+                           inst.max=dataset.tic.lu.B.16.comp.4c.IV$max*1000)
+
+d.B.16.4b.4c.V<-data.frame(elements=dataset.tic.lu.B.16.comp.4b.V$events,
+                           time.avg=dataset.tic.lu.B.16.comp.4b.V$avg/1e6,
+                           time.min=dataset.tic.lu.B.16.comp.4b.V$min/1e6,
+                           time.max=dataset.tic.lu.B.16.comp.4b.V$max/1e6,
+                           inst.avg=dataset.tic.lu.B.16.comp.4c.V$avg*1000,
+                           inst.min=dataset.tic.lu.B.16.comp.4c.V$min*1000,
+                           inst.max=dataset.tic.lu.B.16.comp.4c.V$max*1000)
+                           
+d.C.8.4b.4c.I<-data.frame(elements=dataset.tic.lu.C.8.comp.4b.I$events,
+                           time.avg=dataset.tic.lu.C.8.comp.4b.I$avg/1e6,
+                           time.min=dataset.tic.lu.C.8.comp.4b.I$min/1e6,
+                           time.max=dataset.tic.lu.C.8.comp.4b.I$max/1e6,
+                           inst.avg=dataset.tic.lu.C.8.comp.4c.I$avg*1000,
+                           inst.min=dataset.tic.lu.C.8.comp.4c.I$min*1000,
+                           inst.max=dataset.tic.lu.C.8.comp.4c.I$max*1000)
+
+d.C.8.4b.4c.II<-data.frame(elements=dataset.tic.lu.C.8.comp.4b.II$events,
+                           time.avg=dataset.tic.lu.C.8.comp.4b.II$avg/1e6,
+                           time.min=dataset.tic.lu.C.8.comp.4b.II$min/1e6,
+                           time.max=dataset.tic.lu.C.8.comp.4b.II$max/1e6,
+                           inst.avg=dataset.tic.lu.C.8.comp.4c.II$avg*1000,
+                           inst.min=dataset.tic.lu.C.8.comp.4c.II$min*1000,
+                           inst.max=dataset.tic.lu.C.8.comp.4c.II$max*1000)
+
+d.C.8.4b.4c.III<-data.frame(elements=dataset.tic.lu.C.8.comp.4b.III$events,
+                           time.avg=dataset.tic.lu.C.8.comp.4b.III$avg/1e6,
+                           time.min=dataset.tic.lu.C.8.comp.4b.III$min/1e6,
+                           time.max=dataset.tic.lu.C.8.comp.4b.III$max/1e6,
+                           inst.avg=dataset.tic.lu.C.8.comp.4c.III$avg*1000,
+                           inst.min=dataset.tic.lu.C.8.comp.4c.III$min*1000,
+                           inst.max=dataset.tic.lu.C.8.comp.4c.III$max*1000)
+
+d.C.8.4b.4c.IV<-data.frame(elements=dataset.tic.lu.C.8.comp.4b.IV$events,
+                           time.avg=dataset.tic.lu.C.8.comp.4b.IV$avg/1e6,
+                           time.min=dataset.tic.lu.C.8.comp.4b.IV$min/1e6,
+                           time.max=dataset.tic.lu.C.8.comp.4b.IV$max/1e6,
+                           inst.avg=dataset.tic.lu.C.8.comp.4c.IV$avg*1000,
+                           inst.min=dataset.tic.lu.C.8.comp.4c.IV$min*1000,
+                           inst.max=dataset.tic.lu.C.8.comp.4c.IV$max*1000)
+
+d.C.8.4b.4c.V<-data.frame(elements=dataset.tic.lu.C.8.comp.4b.V$events,
+                           time.avg=dataset.tic.lu.C.8.comp.4b.V$avg/1e6,
+                           time.min=dataset.tic.lu.C.8.comp.4b.V$min/1e6,
+                           time.max=dataset.tic.lu.C.8.comp.4b.V$max/1e6,
+                           inst.avg=dataset.tic.lu.C.8.comp.4c.V$avg*1000,
+                           inst.min=dataset.tic.lu.C.8.comp.4c.V$min*1000,
+                           inst.max=dataset.tic.lu.C.8.comp.4c.V$max*1000)
+                           
+d.C.16.4b.4c.I<-data.frame(elements=dataset.tic.lu.C.16.comp.4b.I$events,
+                           time.avg=dataset.tic.lu.C.16.comp.4b.I$avg/1e6,
+                           time.min=dataset.tic.lu.C.16.comp.4b.I$min/1e6,
+                           time.max=dataset.tic.lu.C.16.comp.4b.I$max/1e6,
+                           inst.avg=dataset.tic.lu.C.16.comp.4c.I$avg*1000,
+                           inst.min=dataset.tic.lu.C.16.comp.4c.I$min*1000,
+                           inst.max=dataset.tic.lu.C.16.comp.4c.I$max*1000)
+
+d.C.16.4b.4c.II<-data.frame(elements=dataset.tic.lu.C.16.comp.4b.II$events,
+                           time.avg=dataset.tic.lu.C.16.comp.4b.II$avg/1e6,
+                           time.min=dataset.tic.lu.C.16.comp.4b.II$min/1e6,
+                           time.max=dataset.tic.lu.C.16.comp.4b.II$max/1e6,
+                           inst.avg=dataset.tic.lu.C.16.comp.4c.II$avg*1000,
+                           inst.min=dataset.tic.lu.C.16.comp.4c.II$min*1000,
+                           inst.max=dataset.tic.lu.C.16.comp.4c.II$max*1000)
+
+d.C.16.4b.4c.III<-data.frame(elements=dataset.tic.lu.C.16.comp.4b.III$events,
+                           time.avg=dataset.tic.lu.C.16.comp.4b.III$avg/1e6,
+                           time.min=dataset.tic.lu.C.16.comp.4b.III$min/1e6,
+                           time.max=dataset.tic.lu.C.16.comp.4b.III$max/1e6,
+                           inst.avg=dataset.tic.lu.C.16.comp.4c.III$avg*1000,
+                           inst.min=dataset.tic.lu.C.16.comp.4c.III$min*1000,
+                           inst.max=dataset.tic.lu.C.16.comp.4c.III$max*1000)
+
+d.C.16.4b.4c.IV<-data.frame(elements=dataset.tic.lu.C.16.comp.4b.IV$events,
+                           time.avg=dataset.tic.lu.C.16.comp.4b.IV$avg/1e6,
+                           time.min=dataset.tic.lu.C.16.comp.4b.IV$min/1e6,
+                           time.max=dataset.tic.lu.C.16.comp.4b.IV$max/1e6,
+                           inst.avg=dataset.tic.lu.C.16.comp.4c.IV$avg*1000,
+                           inst.min=dataset.tic.lu.C.16.comp.4c.IV$min*1000,
+                           inst.max=dataset.tic.lu.C.16.comp.4c.IV$max*1000)
+
+d.C.16.4b.4c.V<-data.frame(elements=dataset.tic.lu.C.16.comp.4b.V$events,
+                           time.avg=dataset.tic.lu.C.16.comp.4b.V$avg/1e6,
+                           time.min=dataset.tic.lu.C.16.comp.4b.V$min/1e6,
+                           time.max=dataset.tic.lu.C.16.comp.4b.V$max/1e6,
+                           inst.avg=dataset.tic.lu.C.16.comp.4c.V$avg*1000,
+                           inst.min=dataset.tic.lu.C.16.comp.4c.V$min*1000,
+                           inst.max=dataset.tic.lu.C.16.comp.4c.V$max*1000)
+#+END_SRC
+
+** Plots
+On x-axis, we have the Instructions.
+On y-axis, we have the Time (COMP.4c.avg/COMP.4b.avg).
+The color represents the number of elements involved in the current
+event_subblock.
+
+*Dataset.tic.B.8.Processed.I*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.B.8.processed.I.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.B.8.4b.4c.I, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.B.8.4b.4c.I$inst.max - d.B.8.4b.4c.I$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.B.8.processed.I.png]]
+
+*Dataset.tic.B.8.Processed.II*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.B.8.processed.II.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.B.8.4b.4c.II, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.B.8.4b.4c.II$inst.max - d.B.8.4b.4c.II$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.B.8.processed.II.png]]
+
+*Dataset.tic.B.8.Processed.III*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.B.8.processed.III.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.B.8.4b.4c.III, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.B.8.4b.4c.III$inst.max - d.B.8.4b.4c.III$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.B.8.processed.III.png]]
+
+*Dataset.tic.B.8.Processed.IV*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.B.8.processed.IV.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.B.8.4b.4c.IV, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.B.8.4b.4c.IV$inst.max - d.B.8.4b.4c.IV$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.B.8.processed.IV.png]]
+
+*Dataset.tic.B.8.Processed.V*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.B.8.processed.V.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.B.8.4b.4c.V, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.B.8.4b.4c.V$inst.max - d.B.8.4b.4c.V$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.B.8.processed.V.png]]
+
+*Dataset.tic.B.16.Processed.I*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.B.16.processed.I.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.B.16.4b.4c.I, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.B.16.4b.4c.I$inst.max - d.B.16.4b.4c.I$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.B.16.processed.I.png]]
+
+*Dataset.tic.B.16.Processed.II*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.B.16.processed.II.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.B.16.4b.4c.II, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.B.16.4b.4c.II$inst.max - d.B.16.4b.4c.II$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.B.16.processed.II.png]]
+
+*Dataset.tic.B.16.Processed.III*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.B.16.processed.III.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.B.16.4b.4c.III, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.B.16.4b.4c.III$inst.max - d.B.16.4b.4c.III$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.B.16.processed.III.png]]
+
+*Dataset.tic.B.16.Processed.IV*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.B.16.processed.IV.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.B.16.4b.4c.IV, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.B.16.4b.4c.IV$inst.max - d.B.16.4b.4c.IV$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.B.16.processed.IV.png]]
+
+*Dataset.tic.B.16.Processed.V*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.B.16.processed.V.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.B.16.4b.4c.V, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.B.16.4b.4c.V$inst.max - d.B.16.4b.4c.V$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.B.16.processed.V.png]]
+
+*Dataset.tic.C.8.Processed.I*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.C.8.processed.I.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.C.8.4b.4c.I, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.C.8.4b.4c.I$inst.max - d.C.8.4b.4c.I$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.C.8.processed.I.png]]
+
+*Dataset.tic.C.8.Processed.II*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.C.8.processed.II.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.C.8.4b.4c.II, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.C.8.4b.4c.II$inst.max - d.C.8.4b.4c.II$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.C.8.processed.II.png]]
+
+*Dataset.tic.C.8.Processed.III*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.C.8.processed.III.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.C.8.4b.4c.III, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.C.8.4b.4c.III$inst.max - d.C.8.4b.4c.III$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.C.8.processed.III.png]]
+
+*Dataset.tic.C.8.Processed.IV*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.C.8.processed.IV.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.C.8.4b.4c.IV, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.C.8.4b.4c.IV$inst.max - d.C.8.4b.4c.IV$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.C.8.processed.IV.png]]
+
+*Dataset.tic.C.8.Processed.V*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.C.8.processed.V.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.C.8.4b.4c.V, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.C.8.4b.4c.V$inst.max - d.C.8.4b.4c.V$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.C.8.processed.V.png]]
+
+*Dataset.tic.C.16.Processed.I*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.C.16.processed.I.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.C.16.4b.4c.I, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.C.16.4b.4c.I$inst.max - d.C.16.4b.4c.I$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.C.16.processed.I.png]]
+
+*Dataset.tic.C.16.Processed.II*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.C.16.processed.II.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.C.16.4b.4c.II, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.C.16.4b.4c.II$inst.max - d.C.16.4b.4c.II$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.C.16.processed.II.png]]
+
+*Dataset.tic.C.16.Processed.III*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.C.16.processed.III.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.C.16.4b.4c.III, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.C.16.4b.4c.III$inst.max - d.C.16.4b.4c.III$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.C.16.processed.III.png]]
+
+*Dataset.tic.C.16.Processed.IV*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.C.16.processed.IV.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.C.16.4b.4c.IV, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.C.16.4b.4c.IV$inst.max - d.C.16.4b.4c.IV$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.C.16.processed.IV.png]]
+
+*Dataset.tic.C.16.Processed.V*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/variability.dataset.tic.C.16.processed.V.png" :exports both :width 600 :height 400 :session variability
+ggplot(d.C.16.4b.4c.V, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=(elements))) + geom_point() + geom_linerange() + geom_errorbar(width=d.C.16.4b.4c.V$inst.max - d.C.16.4b.4c.V$inst.min) + scale_y_log10()
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/variability.dataset.tic.C.16.processed.V.png]]
+
+** Facet Plot
+4 facets for 4 traces: B-8, B-16, C-8, and C-16.
+
+On x-axis, we have the average instuctions.
+On y-axis, we have the average time.
+The color gradient represents number of elements.
+The facets are seprated by class.
+
+#+BEGIN_SRC R :results silent :session variability :exports both
+facet.frame.I<-rbind(data.frame(d.B.8.4b.4c.I, class="B-8"),
+                   data.frame(d.B.16.4b.4c.I, class="B-16"),
+                   data.frame(d.C.8.4b.4c.I, class="C-8"),
+                   data.frame(d.C.16.4b.4c.I, class="C-16"))
+
+facet.frame.II<-rbind(data.frame(d.B.8.4b.4c.II, class="B-8"),
+                   data.frame(d.B.16.4b.4c.II, class="B-16"),
+                   data.frame(d.C.8.4b.4c.II, class="C-8"),
+                   data.frame(d.C.16.4b.4c.II, class="C-16"))
+
+facet.frame.III<-rbind(data.frame(d.B.8.4b.4c.III, class="B-8"),
+                   data.frame(d.B.16.4b.4c.III, class="B-16"),
+                   data.frame(d.C.8.4b.4c.III, class="C-8"),
+                   data.frame(d.C.16.4b.4c.III, class="C-16"))
+
+facet.frame.IV<-rbind(data.frame(d.B.8.4b.4c.IV, class="B-8"),
+                   data.frame(d.B.16.4b.4c.IV, class="B-16"),
+                   data.frame(d.C.8.4b.4c.IV, class="C-8"),
+                   data.frame(d.C.16.4b.4c.IV, class="C-16"))
+
+facet.frame.V<-rbind(data.frame(d.B.8.4b.4c.V, class="B-8"),
+                   data.frame(d.B.16.4b.4c.V, class="B-16"),
+                   data.frame(d.C.8.4b.4c.V, class="C-8"),
+                   data.frame(d.C.16.4b.4c.V, class="C-16"))
+#+END_SRC
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/facet.variability.tic.B8.B16.C8.C16.I.png" :exports both :width 600 :height 400 :session variability
+ggplot(facet.frame.I, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=elements)) + geom_point() + geom_linerange() + scale_y_log10() + facet_wrap(~ class)
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/facet.variability.tic.B8.B16.C8.C16.I.png]]
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/facet.variability.tic.B8.B16.C8.C16.II.png" :exports both :width 600 :height 400 :session variability
+ggplot(facet.frame.II, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=elements)) + geom_point() + geom_linerange() + scale_y_log10() + facet_wrap(~ class)
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/facet.variability.tic.B8.B16.C8.C16.II.png]]
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/facet.variability.tic.B8.B16.C8.C16.III.png" :exports both :width 600 :height 400 :session variability
+ggplot(facet.frame.III, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=elements)) + geom_point() + geom_linerange() + scale_y_log10() + facet_wrap(~ class)
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/facet.variability.tic.B8.B16.C8.C16.III.png]]
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/facet.variability.tic.B8.B16.C8.C16.IV.png" :exports both :width 600 :height 400 :session variability
+ggplot(facet.frame.IV, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=elements)) + geom_point() + geom_linerange() + scale_y_log10() + facet_wrap(~ class)
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/facet.variability.tic.B8.B16.C8.C16.IV.png]]
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/facet.variability.tic.B8.B16.C8.C16.V.png" :exports both :width 600 :height 400 :session variability
+ggplot(facet.frame.V, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, color=elements)) + geom_point() + geom_linerange() + scale_y_log10() + facet_wrap(~ class)
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/facet.variability.tic.B8.B16.C8.C16.V.png]]
+
+* Variabilily (with individual bins)
+See [[../R-analysis/variability.bins.Rmd][variability.bins.Rmd]]
 ** Motive
 ** Overview
 ** Get the datasets
 ** Read the datasets into R
 ** Plots
-** Conclusion
+
