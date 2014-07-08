@@ -416,21 +416,141 @@ On y-axis, we have the instruction rate.
 The color gradient represents the event number.  
 The facets are seprated by class.  
 
-```{r Facet Plot}
-facet.frame<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.I),
+```{r Facet Plot Datasets}
+facet.frame.I<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.I),
+                 comp.4c.avg=d.B.8.4b.4c.I$COMP.4c.avg,
+                 elements=d.B.8.4b.4c.I$events,
                  rate=d.B.8.4b.4c.I$COMP.4c.avg/d.B.8.4b.4c.I$COMP.4b.avg,
                  class="B-8"),
       data.frame(events=1:nrow(d.B.16.4b.4c.I),
+                 comp.4c.avg=d.B.16.4b.4c.I$COMP.4c.avg,
+                 elements=d.B.16.4b.4c.I$events,
                  rate=d.B.16.4b.4c.I$COMP.4c.avg/d.B.16.4b.4c.I$COMP.4b.avg,
                  class="B-16"),
       data.frame(events=1:nrow(d.C.8.4b.4c.I),
+                 comp.4c.avg=d.C.8.4b.4c.I$COMP.4c.avg,
+                 elements=d.C.8.4b.4c.I$events,
                  rate=d.C.8.4b.4c.I$COMP.4c.avg/d.C.8.4b.4c.I$COMP.4b.avg,
                  class="C-8"),
       data.frame(events=1:nrow(d.C.16.4b.4c.I),
+                 comp.4c.avg=d.C.16.4b.4c.I$COMP.4c.avg,
+                 elements=d.C.16.4b.4c.I$events,
                  rate=d.C.16.4b.4c.I$COMP.4c.avg/d.C.16.4b.4c.I$COMP.4b.avg,
                  class="C-16"))
 
-ggplot(data=facet.frame, aes(x=events, y=rate, color=events)) + geom_point() + facet_wrap(~ class, ncol=1)
+facet.frame.II<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.II),
+                 comp.4c.avg=d.B.8.4b.4c.II$COMP.4c.avg,
+                 elements=d.B.8.4b.4c.II$events,
+                 rate=d.B.8.4b.4c.II$COMP.4c.avg/d.B.8.4b.4c.II$COMP.4b.avg,
+                 class="B-8"),
+      data.frame(events=1:nrow(d.B.16.4b.4c.II),
+                 comp.4c.avg=d.B.16.4b.4c.II$COMP.4c.avg,
+                 elements=d.B.16.4b.4c.II$events,
+                 rate=d.B.16.4b.4c.II$COMP.4c.avg/d.B.16.4b.4c.II$COMP.4b.avg,
+                 class="B-16"),
+      data.frame(events=1:nrow(d.C.8.4b.4c.II),
+                 comp.4c.avg=d.C.8.4b.4c.II$COMP.4c.avg,
+                 elements=d.C.8.4b.4c.II$events,
+                 rate=d.C.8.4b.4c.II$COMP.4c.avg/d.C.8.4b.4c.II$COMP.4b.avg,
+                 class="C-8"),
+      data.frame(events=1:nrow(d.C.16.4b.4c.II),
+                 comp.4c.avg=d.C.16.4b.4c.II$COMP.4c.avg,
+                 elements=d.C.16.4b.4c.II$events,
+                 rate=d.C.16.4b.4c.II$COMP.4c.avg/d.C.16.4b.4c.II$COMP.4b.avg,
+                 class="C-16"))
+
+facet.frame.III<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.III),
+                 comp.4c.avg=d.B.8.4b.4c.III$COMP.4c.avg,
+                 elements=d.B.8.4b.4c.III$events,
+                 rate=d.B.8.4b.4c.III$COMP.4c.avg/d.B.8.4b.4c.III$COMP.4b.avg,
+                 class="B-8"),
+      data.frame(events=1:nrow(d.B.16.4b.4c.III),
+                 comp.4c.avg=d.B.16.4b.4c.III$COMP.4c.avg,
+                 elements=d.B.16.4b.4c.III$events,
+                 rate=d.B.16.4b.4c.III$COMP.4c.avg/d.B.16.4b.4c.III$COMP.4b.avg,
+                 class="B-16"),
+      data.frame(events=1:nrow(d.C.8.4b.4c.III),
+                 comp.4c.avg=d.C.8.4b.4c.III$COMP.4c.avg,
+                 elements=d.C.8.4b.4c.III$events,
+                 rate=d.C.8.4b.4c.III$COMP.4c.avg/d.C.8.4b.4c.III$COMP.4b.avg,
+                 class="C-8"),
+      data.frame(events=1:nrow(d.C.16.4b.4c.III),
+                 comp.4c.avg=d.C.16.4b.4c.III$COMP.4c.avg,
+                 elements=d.C.16.4b.4c.III$events,
+                 rate=d.C.16.4b.4c.III$COMP.4c.avg/d.C.16.4b.4c.III$COMP.4b.avg,
+                 class="C-16"))
+
+facet.frame.IV<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.IV),
+                 comp.4c.avg=d.B.8.4b.4c.IV$COMP.4c.avg,
+                 elements=d.B.8.4b.4c.IV$events,
+                 rate=d.B.8.4b.4c.IV$COMP.4c.avg/d.B.8.4b.4c.IV$COMP.4b.avg,
+                 class="B-8"),
+      data.frame(events=1:nrow(d.B.16.4b.4c.IV),
+                 comp.4c.avg=d.B.16.4b.4c.IV$COMP.4c.avg,
+                 elements=d.B.16.4b.4c.IV$events,
+                 rate=d.B.16.4b.4c.IV$COMP.4c.avg/d.B.16.4b.4c.IV$COMP.4b.avg,
+                 class="B-16"),
+      data.frame(events=1:nrow(d.C.8.4b.4c.IV),
+                 comp.4c.avg=d.C.8.4b.4c.IV$COMP.4c.avg,
+                 elements=d.C.8.4b.4c.IV$events,
+                 rate=d.C.8.4b.4c.IV$COMP.4c.avg/d.C.8.4b.4c.IV$COMP.4b.avg,
+                 class="C-8"),
+      data.frame(events=1:nrow(d.C.16.4b.4c.IV),
+                 comp.4c.avg=d.C.16.4b.4c.IV$COMP.4c.avg,
+                 elements=d.C.16.4b.4c.IV$events,
+                 rate=d.C.16.4b.4c.IV$COMP.4c.avg/d.C.16.4b.4c.IV$COMP.4b.avg,
+                 class="C-16"))
+
+facet.frame.V<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.V),
+                 comp.4c.avg=d.B.8.4b.4c.V$COMP.4c.avg,
+                 elements=d.B.8.4b.4c.V$events,
+                 rate=d.B.8.4b.4c.V$COMP.4c.avg/d.B.8.4b.4c.V$COMP.4b.avg,
+                 class="B-8"),
+      data.frame(events=1:nrow(d.B.16.4b.4c.V),
+                 comp.4c.avg=d.B.16.4b.4c.V$COMP.4c.avg,
+                 elements=d.B.16.4b.4c.V$events,
+                 rate=d.B.16.4b.4c.V$COMP.4c.avg/d.B.16.4b.4c.V$COMP.4b.avg,
+                 class="B-16"),
+      data.frame(events=1:nrow(d.C.8.4b.4c.V),
+                 comp.4c.avg=d.C.8.4b.4c.V$COMP.4c.avg,
+                 elements=d.C.8.4b.4c.V$events,
+                 rate=d.C.8.4b.4c.V$COMP.4c.avg/d.C.8.4b.4c.V$COMP.4b.avg,
+                 class="C-8"),
+      data.frame(events=1:nrow(d.C.16.4b.4c.V),
+                 comp.4c.avg=d.C.16.4b.4c.V$COMP.4c.avg,
+                 elements=d.C.16.4b.4c.V$events,
+                 rate=d.C.16.4b.4c.V$COMP.4c.avg/d.C.16.4b.4c.V$COMP.4b.avg,
+                 class="C-16"))
+```
+
+## Facet Plot for Dataset I
+
+```{r Facet Plot Dataset I}
+ggplot(data=facet.frame.I, aes(x=events, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class)
+```
+
+## Facet Plot for Dataset II
+
+```{r Facet Plot Dataset II}
+ggplot(data=facet.frame.II, aes(x=events, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class)
+```
+
+## Facet Plot for Dataset III
+
+```{r Facet Plot for Dataset III}
+ggplot(data=facet.frame.III, aes(x=events, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class)
+```
+
+## Facet Plot for Dataset IV
+
+```{r Facet Plot Dataset IV}
+ggplot(data=facet.frame.IV, aes(x=events, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class)
+```
+
+## Facet Plot for Dataset V
+
+```{r Facet Plot Dataset III}
+ggplot(data=facet.frame.V, aes(x=events, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class)
 ```
 
 ## Results

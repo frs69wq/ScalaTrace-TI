@@ -1529,7 +1529,7 @@ ggplot(d.C.16.4b.4c.V, aes(x=1:nrow(d.C.16.4b.4c.V),
 #+RESULTS:
 [[file:../R-analysis/plots/inst.rate.dataset.tic.C.16.V.png]]
 
-** Facet Plot
+** Facet Plot Datasets
 4 facets for 4 traces: B-8, B-16, C-8, and C-16.
 It will show if there is some variability when class or number of
 processes changes.
@@ -1540,25 +1540,158 @@ On y-axis, we have the instruction rate.
 The color gradient represents the event number.
 The facets are seprated by class.
 
-#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.png" :exports both :width 600 :height 400 :session rough.estimation.inst.rate
-facet.frame<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.I),
+#+BEGIN_SRC R :results silent :session rough.estimation.inst.rate
+facet.frame.I<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.I),
+                 comp.4c.avg=d.B.8.4b.4c.I$COMP.4c.avg,
+                 elements=d.B.8.4b.4c.I$events,
                  rate=d.B.8.4b.4c.I$COMP.4c.avg/d.B.8.4b.4c.I$COMP.4b.avg,
                  class="B-8"),
       data.frame(events=1:nrow(d.B.16.4b.4c.I),
+                 comp.4c.avg=d.B.16.4b.4c.I$COMP.4c.avg,
+                 elements=d.B.16.4b.4c.I$events,
                  rate=d.B.16.4b.4c.I$COMP.4c.avg/d.B.16.4b.4c.I$COMP.4b.avg,
                  class="B-16"),
       data.frame(events=1:nrow(d.C.8.4b.4c.I),
+                 comp.4c.avg=d.C.8.4b.4c.I$COMP.4c.avg,
+                 elements=d.C.8.4b.4c.I$events,
                  rate=d.C.8.4b.4c.I$COMP.4c.avg/d.C.8.4b.4c.I$COMP.4b.avg,
                  class="C-8"),
       data.frame(events=1:nrow(d.C.16.4b.4c.I),
+                 comp.4c.avg=d.C.16.4b.4c.I$COMP.4c.avg,
+                 elements=d.C.16.4b.4c.I$events,
                  rate=d.C.16.4b.4c.I$COMP.4c.avg/d.C.16.4b.4c.I$COMP.4b.avg,
                  class="C-16"))
 
-ggplot(data=facet.frame, aes(x=events, y=rate, color=events)) + geom_point() + facet_wrap(~ class, ncol=1)
+facet.frame.II<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.II),
+                 comp.4c.avg=d.B.8.4b.4c.II$COMP.4c.avg,
+                 elements=d.B.8.4b.4c.II$events,
+                 rate=d.B.8.4b.4c.II$COMP.4c.avg/d.B.8.4b.4c.II$COMP.4b.avg,
+                 class="B-8"),
+      data.frame(events=1:nrow(d.B.16.4b.4c.II),
+                 comp.4c.avg=d.B.16.4b.4c.II$COMP.4c.avg,
+                 elements=d.B.16.4b.4c.II$events,
+                 rate=d.B.16.4b.4c.II$COMP.4c.avg/d.B.16.4b.4c.II$COMP.4b.avg,
+                 class="B-16"),
+      data.frame(events=1:nrow(d.C.8.4b.4c.II),
+                 comp.4c.avg=d.C.8.4b.4c.II$COMP.4c.avg,
+                 elements=d.C.8.4b.4c.II$events,
+                 rate=d.C.8.4b.4c.II$COMP.4c.avg/d.C.8.4b.4c.II$COMP.4b.avg,
+                 class="C-8"),
+      data.frame(events=1:nrow(d.C.16.4b.4c.II),
+                 comp.4c.avg=d.C.16.4b.4c.II$COMP.4c.avg,
+                 elements=d.C.16.4b.4c.II$events,
+                 rate=d.C.16.4b.4c.II$COMP.4c.avg/d.C.16.4b.4c.II$COMP.4b.avg,
+                 class="C-16"))
+
+facet.frame.III<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.III),
+                 comp.4c.avg=d.B.8.4b.4c.III$COMP.4c.avg,
+                 elements=d.B.8.4b.4c.III$events,
+                 rate=d.B.8.4b.4c.III$COMP.4c.avg/d.B.8.4b.4c.III$COMP.4b.avg,
+                 class="B-8"),
+      data.frame(events=1:nrow(d.B.16.4b.4c.III),
+                 comp.4c.avg=d.B.16.4b.4c.III$COMP.4c.avg,
+                 elements=d.B.16.4b.4c.III$events,
+                 rate=d.B.16.4b.4c.III$COMP.4c.avg/d.B.16.4b.4c.III$COMP.4b.avg,
+                 class="B-16"),
+      data.frame(events=1:nrow(d.C.8.4b.4c.III),
+                 comp.4c.avg=d.C.8.4b.4c.III$COMP.4c.avg,
+                 elements=d.C.8.4b.4c.III$events,
+                 rate=d.C.8.4b.4c.III$COMP.4c.avg/d.C.8.4b.4c.III$COMP.4b.avg,
+                 class="C-8"),
+      data.frame(events=1:nrow(d.C.16.4b.4c.III),
+                 comp.4c.avg=d.C.16.4b.4c.III$COMP.4c.avg,
+                 elements=d.C.16.4b.4c.III$events,
+                 rate=d.C.16.4b.4c.III$COMP.4c.avg/d.C.16.4b.4c.III$COMP.4b.avg,
+                 class="C-16"))
+
+facet.frame.IV<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.IV),
+                 comp.4c.avg=d.B.8.4b.4c.IV$COMP.4c.avg,
+                 elements=d.B.8.4b.4c.IV$events,
+                 rate=d.B.8.4b.4c.IV$COMP.4c.avg/d.B.8.4b.4c.IV$COMP.4b.avg,
+                 class="B-8"),
+      data.frame(events=1:nrow(d.B.16.4b.4c.IV),
+                 comp.4c.avg=d.B.16.4b.4c.IV$COMP.4c.avg,
+                 elements=d.B.16.4b.4c.IV$events,
+                 rate=d.B.16.4b.4c.IV$COMP.4c.avg/d.B.16.4b.4c.IV$COMP.4b.avg,
+                 class="B-16"),
+      data.frame(events=1:nrow(d.C.8.4b.4c.IV),
+                 comp.4c.avg=d.C.8.4b.4c.IV$COMP.4c.avg,
+                 elements=d.C.8.4b.4c.IV$events,
+                 rate=d.C.8.4b.4c.IV$COMP.4c.avg/d.C.8.4b.4c.IV$COMP.4b.avg,
+                 class="C-8"),
+      data.frame(events=1:nrow(d.C.16.4b.4c.IV),
+                 comp.4c.avg=d.C.16.4b.4c.IV$COMP.4c.avg,
+                 elements=d.C.16.4b.4c.IV$events,
+                 rate=d.C.16.4b.4c.IV$COMP.4c.avg/d.C.16.4b.4c.IV$COMP.4b.avg,
+                 class="C-16"))
+
+facet.frame.V<-rbind(data.frame(events=1:nrow(d.B.8.4b.4c.V),
+                 comp.4c.avg=d.B.8.4b.4c.V$COMP.4c.avg,
+                 elements=d.B.8.4b.4c.V$events,
+                 rate=d.B.8.4b.4c.V$COMP.4c.avg/d.B.8.4b.4c.V$COMP.4b.avg,
+                 class="B-8"),
+      data.frame(events=1:nrow(d.B.16.4b.4c.V),
+                 comp.4c.avg=d.B.16.4b.4c.V$COMP.4c.avg,
+                 elements=d.B.16.4b.4c.V$events,
+                 rate=d.B.16.4b.4c.V$COMP.4c.avg/d.B.16.4b.4c.V$COMP.4b.avg,
+                 class="B-16"),
+      data.frame(events=1:nrow(d.C.8.4b.4c.V),
+                 comp.4c.avg=d.C.8.4b.4c.V$COMP.4c.avg,
+                 elements=d.C.8.4b.4c.V$events,
+                 rate=d.C.8.4b.4c.V$COMP.4c.avg/d.C.8.4b.4c.V$COMP.4b.avg,
+                 class="C-8"),
+      data.frame(events=1:nrow(d.C.16.4b.4c.V),
+                 comp.4c.avg=d.C.16.4b.4c.V$COMP.4c.avg,
+                 elements=d.C.16.4b.4c.V$events,
+                 rate=d.C.16.4b.4c.V$COMP.4c.avg/d.C.16.4b.4c.V$COMP.4b.avg,
+                 class="C-16"))
+#+END_SRC
+
+** Facet Plots
+*Facet Plot for Dataset I*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.I.png" :exports both :width 600 :height 400 :session rough.estimation.inst.rate
+ggplot(data=facet.frame.I, aes(x=events, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class)
 #+END_SRC
 
 #+RESULTS:
-[[file:../R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.png]]
+[[file:../R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.I.png]]
+
+*Facet Plot for Dataset II*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.II.png" :exports both :width 600 :height 400 :session rough.estimation.inst.rate
+ggplot(data=facet.frame.II, aes(x=events, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class)
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.II.png]]
+
+*Facet Plot for Dataset III*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.III.png" :exports both :width 600 :height 400 :session rough.estimation.inst.rate
+ggplot(data=facet.frame.III, aes(x=events, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class)
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.III.png]]
+
+*Facet Plot for Dataset IV*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.IV.png" :exports both :width 600 :height 400 :session rough.estimation.inst.rate
+ggplot(data=facet.frame.IV, aes(x=events, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class)
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.IV.png]]
+
+*Facet Plot for Dataset V*
+
+#+BEGIN_SRC R :results output graphics :file "R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.V.png" :exports both :width 600 :height 400 :session rough.estimation.inst.rate
+ggplot(data=facet.frame.V, aes(x=events, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class)
+#+END_SRC
+
+#+RESULTS:
+[[file:../R-analysis/plots/facet.inst.rate.tic.B8.B16.C8.C16.V.png]]
 
 ** Results
 Instruction rate for *Class B, 8 processes* is around *3.5e9 Instructions per sec*.

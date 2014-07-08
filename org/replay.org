@@ -8,13 +8,7 @@
 ** Disable the (yes/no) prompt
 
 #+BEGIN_SRC sh :results silent
-if [ ! -d ~/.ssh/config ];
-then
-touch ~/.ssh/config
-fi
-
 echo "StrictHostKeyChecking no" >> ~/.ssh/config
-echo "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
 #+END_SRC
 
 ** Copying the keys
@@ -55,9 +49,9 @@ All the processes were executed without folding.
 |------------+----------------------+---------+----------+----------|
 
 * Figure 15 Page 21
-I am using [[file:~/git/ScalaTrace-TI/scripts/graphene.xml][graphene.xml]] as platform file.
-I found it on [[http://graal.ens-lyon.fr/~gmarkoma/nancy/graphene.xml]]
-I am using the latest version of Simgrid (git).
+Using [[file:~/git/ScalaTrace-TI/scripts/graphene.xml][graphene.xml]] as platform file.
+Found it on [[http://graal.ens-lyon.fr/~gmarkoma/nancy/graphene.xml]]
+Using the latest version of Simgrid (git).
 
 ** Errors in replaying on local machine
 *** Replaying LU Class A 4 Processes
@@ -66,7 +60,7 @@ segmentation fault.
 
 #+BEGIN_SRC sh
 cd $SCALATRACE_ROOT
-smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg=smpi/running_power:1e9 -np 4 -platform scripts/graphene.xml -hostfile traces/ti/lu/A/4/hostfile.I replay/replay traces/ti/lu/A/4/I/0
+smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg="smpi/running_power:1e9" -np 4 -platform scripts/graphene.xml -hostfile traces/ti/lu/A/4/hostfile.I replay/replay traces/ti/lu/A/4/I/0
 #+END_SRC
 
 #+BEGIN_EXAMPLE
@@ -92,7 +86,7 @@ any 1092 events).
 
 #+BEGIN_SRC sh
 cd $SCALATRACE_ROOT
-smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg=smpi/running_power:1e9 -np 4 -platform scripts/graphene.xml -hostfile traces/ti/cg/A/4/hostfile.I replay/replay traces/ti/cg/A/4/I/0
+smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg="smpi/running_power:1e9" -np 4 -platform scripts/graphene.xml -hostfile traces/ti/cg/A/4/hostfile.I replay/replay traces/ti/cg/A/4/I/0
 #+END_SRC
 
 #+BEGIN_EXAMPLE
@@ -116,7 +110,7 @@ All the errors are same as before, except I dont get a
 
 #+BEGIN_SRC sh
 cd $SCALATRACE_ROOT
-smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg=smpi/running_power:1e9 -np 4 -platform scripts/graphene.xml -hostfile traces/ti/lu/A/4/hostfile.I replay/replay traces/ti/lu/A/4/I/0
+smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg="smpi/running_power:1e9" -np 4 -platform scripts/graphene.xml -hostfile traces/ti/lu/A/4/hostfile.I replay/replay traces/ti/lu/A/4/I/0
 #+END_SRC
 
 #+BEGIN_EXAMPLE
@@ -134,7 +128,7 @@ Same error here too.
 
 #+BEGIN_SRC sh
 cd $SCALATRACE_ROOT
-smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg=smpi/running_power:1e9 -np 4 -platform scripts/graphene.xml -hostfile traces/ti/cg/A/4/hostfile.I replay/replay traces/ti/cg/A/4/I/0
+smpirun --cfg="smpi/simulate_computation:no" --cfg="smpi/privatize_global_variables:yes" --cfg="smpi/running_power:1e9" -np 4 -platform scripts/graphene.xml -hostfile traces/ti/cg/A/4/hostfile.I replay/replay traces/ti/cg/A/4/I/0
 #+END_SRC
 
 #+BEGIN_EXAMPLE
@@ -150,3 +144,17 @@ MPI_Isend error: MPI_Type_size failed - probably invalid type: 16
 Segmentation fault.
 /usr/local/src/Simgrid/bin/smpirun: line 438:  7656 Segmentation fault      ${EXEC} ${TRACEOPTIONS} ${SIMOPTS} ${PLATFORMTMP} ${APPLICATIONTMP}
 #+END_EXAMPLE
+
+* Figure 6 Page 12 and Figure 9c Page 16
+** Warnings
+While compiling LU for class B and 2048 processes
+#+BEGIN_EXAMPLE
+Warning: Array reference at (1) is out of bounds (5 > 4) in dimension 2
+#+END_EXAMPLE
+
+While compiling LU for class B and 4096 processes
+#+BEGIN_EXAMPLE
+Warning: Array reference at (1) is out of bounds (5 > 4) in dimension 2
+Warning: Array reference at (1) is out of bounds (5 > 4) in dimension 3
+#+END_EXAMPLE
+
