@@ -76,18 +76,18 @@
      that. Nodes have a large amount of memory, then the execution
      can be folded by a great factor (16 is easy IIRC).
 
-* TODO 11th July 2014 [0/10]
+* TODO 11th July 2014 [2/10]
 ** TODO COMM TD TD Ratio
 ** TODO Folded execution 2 4 8 16
    compare comp 4b avg min max b/w folded and regular.
 ** TODO TD vs TIC ratio B-16, C-8
    check if it is constant b/w diff runs.
    determine if the ratio is same b/w classes and processes.
-** TODO B-32, B-64, C-32, C-64 traces
-** TODO track from the trace for the 3 missing event
-** TODO Plot B-16 and C-16 on same graph (inst rate)
 ** TODO Identify different phases in the execution from the traces
+** TODO Track from the trace for the 3 missing event
+** DONE B-32, B-64, C-32, C-64 traces
+** TODO Plot B-16 and C-16 on same graph (inst rate)
 ** TODO Figure 14 CCPE
    But with more information.
-** TODO get a trace with sig_diff and loop_lcs enabled B-16
-** TODO LU C-1024 No instrumentation (4 nodes/4 cores)
+** TODO Get a trace with SIG_DIFF and LOOP_LCS enabled B-16
+** DONE LU C-1024 No instrumentation (4 nodes/4 cores)
