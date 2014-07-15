@@ -58,7 +58,7 @@ public class Expand {
 			    break;
 
 			/* Can be changed to COMP 4c, COMP 4b or COMM 4b */
-  		        case "COMP 4b":
+  		        case "COMM 4b":
 			    /* Parse the subblock ID */
 			    current_subblock = Integer.parseInt (line.substring (8, line.indexOf (':')));
 
@@ -157,7 +157,8 @@ public class Expand {
 			    Integer new_global_max_rank = global_max_rank;
 			    Double new_global_maximum = maximum;
 
-			    System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + new_global_average + " " + new_global_minimum + " " + new_global_maximum);
+			    System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + global_average + " " + global_minimum + " " + global_maximum);
+			    // System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + new_global_average + " " + new_global_minimum + " " + new_global_maximum);
 			    // System.out.printf("%d %d %d %.2f %.2f\n", current_event, current_subblock, bin_events[i], bin_minimum[i], bin_average[i], bin_maximum[i]);
 			    break;
 			    
