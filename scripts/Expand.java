@@ -58,7 +58,7 @@ public class Expand {
 			    break;
 
 			/* Can be changed to COMP 4c, COMP 4b or COMM 4b */
-  		        case "COMM 4b":
+  		        case "COMP 4b":
 			    /* Parse the subblock ID */
 			    current_subblock = Integer.parseInt (line.substring (8, line.indexOf (':')));
 

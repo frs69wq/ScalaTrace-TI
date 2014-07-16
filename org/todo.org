@@ -76,9 +76,9 @@
      that. Nodes have a large amount of memory, then the execution
      can be folded by a great factor (16 is easy IIRC).
 
-* TODO 11th July 2014 [2/10]
-** TODO COMM TD TD Ratio
-** TODO Folded execution 2 4 8 16
+* TODO 11th July 2014 [4/10]
+** DONE COMM TD TD Ratio
+** DONE Folded execution 2 4 8 16
    compare comp 4b avg min max b/w folded and regular.
 ** TODO TD vs TIC ratio B-16, C-8
    check if it is constant b/w diff runs.

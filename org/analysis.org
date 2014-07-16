@@ -381,7 +381,7 @@ java Expand ../traces/td/lu/C/16/V/0 > ../datasets/td.lu.C.16.comp.4b.V
 
 ** Read the datasets into R
 The variables are named as *d<A>_<B>*,
-where *<A>* and *<B>* both are Time Independent dataset
+where *<A>* and *<B>* both are Time Dependent dataset
 Each *d<A>_<B>* has 7 fields:
 + xlabel = eventID_subblock
 + avgTD = Average of time dependent trace A
@@ -2705,4 +2705,685 @@ See [[../R-analysis/variability.bins.Rmd][variability.bins.Rmd]]
 ** Get the datasets
 ** Read the datasets into R
 ** Plots
+* Folded Execution of C-64
+See [[file:~/git/ScalaTrace-TI/R-analysis/folded.execution.c.64.Rmd][folded.execution.c.64.Rmd]]
+** Motive
+The objective is to compare COMP 4b min, max and avg between
+the folded and regular execution.
+
+** Overview
+Executions of TD C-64 with folding factor of 2, 4, 8, 16 and 32 were taken on
+graphene.
+Their *COMP 4b* global values were parsed using the [[file:~/git/ScalaTrace-TI/scripts/Expand.java][Expand.java]] code
+with this format.
+#+BEGIN_EXAMPLE
+System.out.println ("eventID opcode subblock events avg min max");
+System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + global_average + " " + global_minimum + " " + global_maximum);
+#+END_EXAMPLE
+
+** Get the datasets
+The value of second case of switch must be set to /COMP 4b/
+#+BEGIN_SRC sh :results silent
+cd ../scripts
+java Expand ../traces/td/lu/C/64/I/0  > ../datasets/td.lu.C.64.comp.4b.I
+java Expand ../traces/td/lu/C/64/folded/2.I/0  > ../datasets/td.lu.C.64.folded.2.comp.4b.I
+java Expand ../traces/td/lu/C/64/folded/4.I/0  > ../datasets/td.lu.C.64.folded.4.comp.4b.I
+java Expand ../traces/td/lu/C/64/folded/8.I/0  > ../datasets/td.lu.C.64.folded.8.comp.4b.I
+java Expand ../traces/td/lu/C/64/folded/16.I/0  > ../datasets/td.lu.C.64.folded.16.comp.4b.I
+java Expand ../traces/td/lu/C/64/folded/32.I/0  > ../datasets/td.lu.C.64.folded.32.comp.4b.I
+
+java Expand ../traces/td/lu/C/64/II/0  > ../datasets/td.lu.C.64.comp.4b.II
+java Expand ../traces/td/lu/C/64/folded/2.II/0  > ../datasets/td.lu.C.64.folded.2.comp.4b.II
+java Expand ../traces/td/lu/C/64/folded/4.II/0  > ../datasets/td.lu.C.64.folded.4.comp.4b.II
+java Expand ../traces/td/lu/C/64/folded/8.II/0  > ../datasets/td.lu.C.64.folded.8.comp.4b.II
+java Expand ../traces/td/lu/C/64/folded/16.II/0  > ../datasets/td.lu.C.64.folded.16.comp.4b.II
+java Expand ../traces/td/lu/C/64/folded/32.II/0  > ../datasets/td.lu.C.64.folded.32.comp.4b.II
+
+java Expand ../traces/td/lu/C/64/III/0  > ../datasets/td.lu.C.64.comp.4b.III
+java Expand ../traces/td/lu/C/64/folded/2.III/0  > ../datasets/td.lu.C.64.folded.2.comp.4b.III
+java Expand ../traces/td/lu/C/64/folded/4.III/0  > ../datasets/td.lu.C.64.folded.4.comp.4b.III
+java Expand ../traces/td/lu/C/64/folded/8.III/0  > ../datasets/td.lu.C.64.folded.8.comp.4b.III
+java Expand ../traces/td/lu/C/64/folded/16.III/0  > ../datasets/td.lu.C.64.folded.16.comp.4b.III
+java Expand ../traces/td/lu/C/64/folded/32.III/0  > ../datasets/td.lu.C.64.folded.32.comp.4b.III
+#+END_SRC
+
+** Read the datasets into R
+#+BEGIN_SRC R :results silent :session folded.execution
+setwd ('~/git/ScalaTrace-TI')
+dataset.td.lu.C.64.folded.1.comp.4b.I <- read.table('datasets/td.lu.C.64.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.2.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.2.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.4.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.4.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.8.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.8.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.16.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.16.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.32.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.32.comp.4b.I', header=TRUE)
+
+dataset.td.lu.C.64.folded.1.comp.4b.II <- read.table('datasets/td.lu.C.64.comp.4b.II', header=TRUE)
+dataset.td.lu.C.64.folded.2.comp.4b.II <- read.table('datasets/td.lu.C.64.folded.2.comp.4b.II', header=TRUE)
+dataset.td.lu.C.64.folded.4.comp.4b.II <- read.table('datasets/td.lu.C.64.folded.4.comp.4b.II', header=TRUE)
+dataset.td.lu.C.64.folded.8.comp.4b.II <- read.table('datasets/td.lu.C.64.folded.8.comp.4b.II', header=TRUE)
+dataset.td.lu.C.64.folded.16.comp.4b.II <- read.table('datasets/td.lu.C.64.folded.16.comp.4b.II', header=TRUE)
+dataset.td.lu.C.64.folded.32.comp.4b.II <- read.table('datasets/td.lu.C.64.folded.32.comp.4b.II', header=TRUE)
+
+dataset.td.lu.C.64.folded.1.comp.4b.III <- read.table('datasets/td.lu.C.64.comp.4b.III', header=TRUE)
+dataset.td.lu.C.64.folded.2.comp.4b.III <- read.table('datasets/td.lu.C.64.folded.2.comp.4b.III', header=TRUE)
+dataset.td.lu.C.64.folded.4.comp.4b.III <- read.table('datasets/td.lu.C.64.folded.4.comp.4b.III', header=TRUE)
+dataset.td.lu.C.64.folded.8.comp.4b.III <- read.table('datasets/td.lu.C.64.folded.8.comp.4b.III', header=TRUE)
+dataset.td.lu.C.64.folded.16.comp.4b.III <- read.table('datasets/td.lu.C.64.folded.16.comp.4b.III', header=TRUE)
+dataset.td.lu.C.64.folded.32.comp.4b.III <- read.table('datasets/td.lu.C.64.folded.32.comp.4b.III', header=TRUE)
+#+END_SRC
+
+** Calculate Average, Minimum and Maximum
+#+BEGIN_SRC R :results silent :session folded.execution
+mean.avg.I<-matrix(0, 3, 5)
+mean.avg.I[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg))
+
+mean.avg.I[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg))
+
+mean.avg.I[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg))
+
+mean.avg.I[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg))
+
+mean.avg.I[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg))
+
+mean.avg.II<-matrix(0, 3, 5)
+mean.avg.II[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg))
+
+mean.avg.II[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg))
+
+mean.avg.II[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg))
+
+mean.avg.II[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg))
+
+mean.avg.II[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg))
+
+mean.avg.III<-matrix(0, 3, 5)
+mean.avg.III[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg))
+
+mean.avg.III[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg))
+
+mean.avg.III[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg))
+
+mean.avg.III[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg))
+
+mean.avg.III[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg))
+
+mean.min.I<-matrix(0, 3, 5)
+mean.min.I[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min))
+
+mean.min.I[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min))
+
+mean.min.I[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min))
+
+mean.min.I[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min))
+
+mean.min.I[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min))
+
+mean.min.II<-matrix(0, 3, 5)
+mean.min.II[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min))
+
+mean.min.II[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min))
+
+mean.min.II[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min))
+
+mean.min.II[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min))
+
+mean.min.II[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min))
+
+mean.min.III<-matrix(0, 3, 5)
+mean.min.III[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min))
+
+mean.min.III[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min))
+
+mean.min.III[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min))
+
+mean.min.III[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min))
+
+mean.min.III[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min))
+
+mean.max.I<-matrix(0, 3, 5)
+mean.max.I[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max))
+
+mean.max.I[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max))
+
+mean.max.I[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max))
+
+mean.max.I[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max))
+
+mean.max.I[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max))
+
+mean.max.II<-matrix(0, 3, 5)
+mean.max.II[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max))
+
+mean.max.II[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max))
+
+mean.max.II[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max))
+
+mean.max.II[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max))
+
+mean.max.II[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max))
+
+mean.max.III<-matrix(0, 3, 5)
+mean.max.III[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max))
+
+mean.max.III[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max))
+
+mean.max.III[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max))
+
+mean.max.III[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max))
+
+mean.max.III[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max))
+#+END_SRC
+
+** The average
+#+BEGIN_SRC R :results output :exports both :session folded.execution
+colnames(mean.avg.I)<-c('2', '4', '8', '16', '32')
+rownames(mean.avg.I)<-c('I', 'II', 'III')
+print(mean.avg.I)
+
+colnames(mean.avg.II)<-c('2', '4', '8', '16', '32')
+rownames(mean.avg.II)<-c('I', 'II', 'III')
+print(mean.avg.II)
+
+colnames(mean.avg.III)<-c('2', '4', '8', '16', '32')
+rownames(mean.avg.III)<-c('I', 'II', 'III')
+print(mean.avg.III)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+           2        4        8       16       32
+I   1.294920 1.801593 3.074491 5.501309 5.654476
+II  1.151803 1.668737 3.713880 6.127892 5.431885
+III 1.137728 1.717412 3.085137 5.381098 9.408975
+           2        4        8       16       32
+I   1.133012 1.767449 2.983069 5.384101 5.468562
+II  1.113535 1.634939 3.642137 5.881729 5.154058
+III 1.121834 1.640258 2.928511 5.104406 9.277681
+           2        4        8       16       32
+I   1.167226 1.774994 2.992704 5.407993 5.491886
+II  1.122771 1.642370 3.608012 5.922191 5.207411
+III 1.126435 1.655857 2.956166 5.151927 9.114802
+#+end_example
+
+** The minimum
+#+BEGIN_SRC R :results output :exports both :session folded.execution
+colnames(mean.min.I)<-c('2', '4', '8', '16', '32')
+rownames(mean.min.I)<-c('I', 'II', 'III')
+print(mean.min.I)
+
+colnames(mean.min.II)<-c('2', '4', '8', '16', '32')
+rownames(mean.min.II)<-c('I', 'II', 'III')
+print(mean.min.II)
+
+colnames(mean.min.III)<-c('2', '4', '8', '16', '32')
+rownames(mean.min.III)<-c('I', 'II', 'III')
+print(mean.min.III)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+            2        4        8       16       32
+I   1.1730068 1.202341 1.733446 2.626703 2.528660
+II  1.0095173 1.229796 1.750035 2.771903 2.744994
+III 0.9992895 1.306544 1.821200 2.698170 2.921214
+           2        4        8       16       32
+I   1.028328 1.188971 1.711927 2.574257 2.424619
+II  1.016334 1.213377 1.697587 2.556673 2.556258
+III 1.006347 1.243142 1.698641 2.464397 2.688905
+            2        4        8       16       32
+I   1.0441091 1.180548 1.710808 2.592405 2.445299
+II  1.0064245 1.207138 1.702581 2.604550 2.599333
+III 0.9953297 1.247000 1.714851 2.508310 2.738458
+#+end_example
+
+** The maximum
+#+BEGIN_SRC R :results output :exports both :session folded.execution
+colnames(mean.max.I)<-c('2', '4', '8', '16', '32')
+rownames(mean.max.I)<-c('I', 'II', 'III')
+print(mean.max.I)
+
+colnames(mean.max.II)<-c('2', '4', '8', '16', '32')
+rownames(mean.max.II)<-c('I', 'II', 'III')
+print(mean.max.II)
+
+colnames(mean.max.III)<-c('2', '4', '8', '16', '32')
+rownames(mean.max.III)<-c('I', 'II', 'III')
+print(mean.max.III)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+           2        4        8       16       32
+I   11.68980 34.10770 38.99242 76.22445 87.04463
+II   8.45547 21.94730 44.06379 89.01496 78.67285
+III 10.77979 24.37946 31.34041 60.94313 94.74737
+            2        4        8       16        32
+I   11.771381 36.97037 42.47139 82.76793  94.71667
+II   8.741905 23.32944 52.36094 97.63431  87.10268
+III 12.862779 26.17173 34.54834 68.21064 115.19983
+            2        4        8       16       32
+I   11.716900 33.28384 37.75865 71.81477 84.96896
+II   8.694936 21.13127 44.98423 85.34437 75.37503
+III 10.372431 24.91502 29.73930 56.34469 88.98524
+#+end_example
+
+* COMM 4b ratios of TD vs TD
+See [[file:~/git/ScalaTrace-TI/R-analysis/comm.4b.ratio.td.td.Rmd][comm.4b.ratio.td.td.Rmd]]
+** Motive
+The idea behind checking the ratios of multiple traces is that
+although we have the independent CPUs to process but the network is
+shared and vulnerable so execution time may vary depending on the
+network congestion.
+
+** Overview
+Multiple time dependent graphene cluster for LU benchmark, class C and
+16 Processes.
+Their *COMM 4b* global values were parsed using the [[file:~/git/ScalaTrace-TI/scripts/Expand.java][Expand.java]] code
+with this format.
+#+BEGIN_EXAMPLE
+System.out.println ("eventID opcode subblock events avg min max");
+System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + global_average + " " + global_minimum + " " + global_maximum);
+#+END_EXAMPLE
+
+** Get the datasets
+The value of 2nd case of switch must be set to /COMM 4b/
+#+BEGIN_SRC sh :results silent
+cd ../scripts
+java Expand ../traces/td/lu/C/16/I/0 > ../datasets/td.lu.C.16.comm.4b.I
+java Expand ../traces/td/lu/C/16/II/0 > ../datasets/td.lu.C.16.comm.4b.II
+java Expand ../traces/td/lu/C/16/III/0 > ../datasets/td.lu.C.16.comm.4b.III
+java Expand ../traces/td/lu/C/16/IV/0 > ../datasets/td.lu.C.16.comm.4b.IV
+java Expand ../traces/td/lu/C/16/V/0 > ../datasets/td.lu.C.16.comm.4b.V
+#+END_SRC
+
+** Read the datasets into R
+The variables are named as *d<A>_<B>*,
+where *<A>* and *<B>* both are Time Dependent dataset
+Each *d<A>_<B>* has 7 fields:
++ xlabel = eventID_subblock
++ avgTD = Average of time dependent trace A
++ minTD = Minimum of time dependent trace A
++ maxTD = Maximum of time dependent trace A
++ avgTI = Average of time dependent trace B
++ minTI = Minimum of time dependent trace B
++ maxTI = Maximum of time dependent trace B
+
+#+BEGIN_SRC R :results silent :session comp.4b.ratio.ti.ti :exports both
+setwd('..')
+dataset.td.lu.16.I<-read.table("datasets/td.lu.C.16.comm.4b.I", header=TRUE)
+dataset.td.lu.16.II<-read.table("datasets/td.lu.C.16.comm.4b.II", header=TRUE)
+dataset.td.lu.16.III<-read.table("datasets/td.lu.C.16.comm.4b.III", header=TRUE)
+dataset.td.lu.16.IV<-read.table("datasets/td.lu.C.16.comm.4b.IV", header=TRUE)
+dataset.td.lu.16.V<-read.table("datasets/td.lu.C.16.comm.4b.V", header=TRUE)
+
+dI_I<-data.frame(xlabel=paste(dataset.td.lu.16.I$eventID, dataset.td.lu.16.I$subblock, sep="_"),
+avgTD=dataset.td.lu.16.I$avg, minTD=dataset.td.lu.16.I$min, maxTD=dataset.td.lu.16.I$max,
+avgTI=dataset.td.lu.16.I$avg, minTI=dataset.td.lu.16.I$min, maxTI=dataset.td.lu.16.I$max,
+ratioavg=dataset.td.lu.16.I$avg/dataset.td.lu.16.I$avg,
+ratiomin=dataset.td.lu.16.I$min/dataset.td.lu.16.I$min,
+ratiomax=dataset.td.lu.16.I$max/dataset.td.lu.16.I$max)
+
+dI_II<-data.frame(xlabel=paste(dataset.td.lu.16.I$eventID,
+dataset.td.lu.16.I$subblock, sep="_"), avgTD=dataset.td.lu.16.I$avg,
+minTD=dataset.td.lu.16.I$min, maxTD=dataset.td.lu.16.I$max,
+avgTI=dataset.td.lu.16.II$avg, minTI=dataset.td.lu.16.II$min,
+maxTI=dataset.td.lu.16.II$max,
+ratioavg=dataset.td.lu.16.I$avg/dataset.td.lu.16.II$avg,
+ratiomin=dataset.td.lu.16.I$min/dataset.td.lu.16.II$min,
+ratiomax=dataset.td.lu.16.I$max/dataset.td.lu.16.II$max)
+
+dI_III<-data.frame(xlabel=paste(dataset.td.lu.16.I$eventID,
+dataset.td.lu.16.I$subblock, sep="_"), avgTD=dataset.td.lu.16.I$avg,
+minTD=dataset.td.lu.16.I$min, maxTD=dataset.td.lu.16.I$max,
+avgTI=dataset.td.lu.16.III$avg, minTI=dataset.td.lu.16.III$min,
+maxTI=dataset.td.lu.16.III$max,
+ratioavg=dataset.td.lu.16.I$avg/dataset.td.lu.16.III$avg,
+ratiomin=dataset.td.lu.16.I$min/dataset.td.lu.16.III$min,
+ratiomax=dataset.td.lu.16.I$max/dataset.td.lu.16.III$max)
+
+dI_IV<-data.frame(xlabel=paste(dataset.td.lu.16.I$eventID,
+dataset.td.lu.16.I$subblock, sep="_"), avgTD=dataset.td.lu.16.I$avg,
+minTD=dataset.td.lu.16.I$min, maxTD=dataset.td.lu.16.I$max,
+avgTI=dataset.td.lu.16.IV$avg, minTI=dataset.td.lu.16.IV$min,
+maxTI=dataset.td.lu.16.IV$max,
+ratioavg=dataset.td.lu.16.I$avg/dataset.td.lu.16.IV$avg,
+ratiomin=dataset.td.lu.16.I$min/dataset.td.lu.16.IV$min,
+ratiomax=dataset.td.lu.16.I$max/dataset.td.lu.16.IV$max)
+
+dI_V<-data.frame(xlabel=paste(dataset.td.lu.16.I$eventID,
+dataset.td.lu.16.I$subblock, sep="_"), avgTD=dataset.td.lu.16.I$avg,
+minTD=dataset.td.lu.16.I$min, maxTD=dataset.td.lu.16.I$max,
+avgTI=dataset.td.lu.16.V$avg, minTI=dataset.td.lu.16.V$min,
+maxTI=dataset.td.lu.16.V$max,
+ratioavg=dataset.td.lu.16.I$avg/dataset.td.lu.16.V$avg,
+ratiomin=dataset.td.lu.16.I$min/dataset.td.lu.16.V$min,
+ratiomax=dataset.td.lu.16.I$max/dataset.td.lu.16.V$max)
+
+dII_I<-data.frame(xlabel=paste(dataset.td.lu.16.II$eventID,
+dataset.td.lu.16.II$subblock, sep="_"), avgTD=dataset.td.lu.16.II$avg,
+minTD=dataset.td.lu.16.II$min, maxTD=dataset.td.lu.16.II$max,
+avgTI=dataset.td.lu.16.I$avg, minTI=dataset.td.lu.16.I$min,
+maxTI=dataset.td.lu.16.I$max,
+ratioavg=dataset.td.lu.16.II$avg/dataset.td.lu.16.I$avg,
+ratiomin=dataset.td.lu.16.II$min/dataset.td.lu.16.I$min,
+ratiomax=dataset.td.lu.16.II$max/dataset.td.lu.16.I$max)
+
+dII_II<-data.frame(xlabel=paste(dataset.td.lu.16.II$eventID,
+dataset.td.lu.16.II$subblock, sep="_"), avgTD=dataset.td.lu.16.II$avg,
+minTD=dataset.td.lu.16.II$min, maxTD=dataset.td.lu.16.II$max,
+avgTI=dataset.td.lu.16.II$avg, minTI=dataset.td.lu.16.II$min,
+maxTI=dataset.td.lu.16.II$max,
+ratioavg=dataset.td.lu.16.II$avg/dataset.td.lu.16.II$avg,
+ratiomin=dataset.td.lu.16.II$min/dataset.td.lu.16.II$min,
+ratiomax=dataset.td.lu.16.II$max/dataset.td.lu.16.II$max)
+
+dII_III<-data.frame(xlabel=paste(dataset.td.lu.16.II$eventID,
+dataset.td.lu.16.II$subblock, sep="_"), avgTD=dataset.td.lu.16.II$avg,
+minTD=dataset.td.lu.16.II$min, maxTD=dataset.td.lu.16.II$max,
+avgTI=dataset.td.lu.16.III$avg, minTI=dataset.td.lu.16.III$min,
+maxTI=dataset.td.lu.16.III$max,
+ratioavg=dataset.td.lu.16.II$avg/dataset.td.lu.16.III$avg,
+ratiomin=dataset.td.lu.16.II$min/dataset.td.lu.16.III$min,
+ratiomax=dataset.td.lu.16.II$max/dataset.td.lu.16.III$max)
+
+dII_IV<-data.frame(xlabel=paste(dataset.td.lu.16.II$eventID,
+dataset.td.lu.16.II$subblock, sep="_"), avgTD=dataset.td.lu.16.II$avg,
+minTD=dataset.td.lu.16.II$min, maxTD=dataset.td.lu.16.II$max,
+avgTI=dataset.td.lu.16.IV$avg, minTI=dataset.td.lu.16.IV$min,
+maxTI=dataset.td.lu.16.IV$max,
+ratioavg=dataset.td.lu.16.II$avg/dataset.td.lu.16.IV$avg,
+ratiomin=dataset.td.lu.16.II$min/dataset.td.lu.16.IV$min,
+ratiomax=dataset.td.lu.16.II$max/dataset.td.lu.16.IV$max)
+
+dII_V<-data.frame(xlabel=paste(dataset.td.lu.16.II$eventID,
+dataset.td.lu.16.II$subblock, sep="_"), avgTD=dataset.td.lu.16.II$avg,
+minTD=dataset.td.lu.16.II$min, maxTD=dataset.td.lu.16.II$max,
+avgTI=dataset.td.lu.16.V$avg, minTI=dataset.td.lu.16.V$min,
+maxTI=dataset.td.lu.16.V$max,
+ratioavg=dataset.td.lu.16.II$avg/dataset.td.lu.16.V$avg,
+ratiomin=dataset.td.lu.16.II$min/dataset.td.lu.16.V$min,
+ratiomax=dataset.td.lu.16.II$max/dataset.td.lu.16.V$max)
+
+dIII_I<-data.frame(xlabel=paste(dataset.td.lu.16.III$eventID,
+dataset.td.lu.16.III$subblock, sep="_"),
+avgTD=dataset.td.lu.16.III$avg, minTD=dataset.td.lu.16.III$min,
+maxTD=dataset.td.lu.16.III$max, avgTI=dataset.td.lu.16.I$avg,
+minTI=dataset.td.lu.16.I$min, maxTI=dataset.td.lu.16.I$max,
+ratioavg=dataset.td.lu.16.III$avg/dataset.td.lu.16.I$avg,
+ratiomin=dataset.td.lu.16.III$min/dataset.td.lu.16.I$min,
+ratiomax=dataset.td.lu.16.III$max/dataset.td.lu.16.I$max)
+
+dIII_II<-data.frame(xlabel=paste(dataset.td.lu.16.III$eventID,
+dataset.td.lu.16.III$subblock, sep="_"),
+avgTD=dataset.td.lu.16.III$avg, minTD=dataset.td.lu.16.III$min,
+maxTD=dataset.td.lu.16.III$max, avgTI=dataset.td.lu.16.II$avg,
+minTI=dataset.td.lu.16.II$min, maxTI=dataset.td.lu.16.II$max,
+ratioavg=dataset.td.lu.16.III$avg/dataset.td.lu.16.II$avg,
+ratiomin=dataset.td.lu.16.III$min/dataset.td.lu.16.II$min,
+ratiomax=dataset.td.lu.16.III$max/dataset.td.lu.16.II$max)
+
+dIII_III<-data.frame(xlabel=paste(dataset.td.lu.16.III$eventID,
+ dataset.td.lu.16.III$subblock, sep="_"),
+ avgTD=dataset.td.lu.16.III$avg, minTD=dataset.td.lu.16.III$min,
+ maxTD=dataset.td.lu.16.III$max, avgTI=dataset.td.lu.16.III$avg,
+ minTI=dataset.td.lu.16.III$min, maxTI=dataset.td.lu.16.III$max,
+ ratioavg=dataset.td.lu.16.III$avg/dataset.td.lu.16.III$avg,
+ ratiomin=dataset.td.lu.16.III$min/dataset.td.lu.16.III$min,
+ ratiomax=dataset.td.lu.16.III$max/dataset.td.lu.16.III$max)
+
+dIII_IV<-data.frame(xlabel=paste(dataset.td.lu.16.III$eventID,
+dataset.td.lu.16.III$subblock, sep="_"),
+avgTD=dataset.td.lu.16.III$avg, minTD=dataset.td.lu.16.III$min,
+maxTD=dataset.td.lu.16.III$max, avgTI=dataset.td.lu.16.IV$avg,
+minTI=dataset.td.lu.16.IV$min, maxTI=dataset.td.lu.16.IV$max,
+ratioavg=dataset.td.lu.16.III$avg/dataset.td.lu.16.IV$avg,
+ratiomin=dataset.td.lu.16.III$min/dataset.td.lu.16.IV$min,
+ratiomax=dataset.td.lu.16.III$max/dataset.td.lu.16.IV$max)
+
+dIII_V<-data.frame(xlabel=paste(dataset.td.lu.16.III$eventID,
+dataset.td.lu.16.III$subblock, sep="_"),
+avgTD=dataset.td.lu.16.III$avg, minTD=dataset.td.lu.16.III$min,
+maxTD=dataset.td.lu.16.III$max, avgTI=dataset.td.lu.16.V$avg,
+minTI=dataset.td.lu.16.V$min, maxTI=dataset.td.lu.16.V$max,
+ratioavg=dataset.td.lu.16.III$avg/dataset.td.lu.16.V$avg,
+ratiomin=dataset.td.lu.16.III$min/dataset.td.lu.16.V$min,
+ratiomax=dataset.td.lu.16.III$max/dataset.td.lu.16.V$max)
+
+dIV_I<-data.frame(xlabel=paste(dataset.td.lu.16.IV$eventID,
+dataset.td.lu.16.IV$subblock, sep="_"), avgTD=dataset.td.lu.16.IV$avg,
+minTD=dataset.td.lu.16.IV$min, maxTD=dataset.td.lu.16.IV$max,
+avgTI=dataset.td.lu.16.I$avg, minTI=dataset.td.lu.16.I$min,
+maxTI=dataset.td.lu.16.I$max,
+ratioavg=dataset.td.lu.16.IV$avg/dataset.td.lu.16.I$avg,
+ratiomin=dataset.td.lu.16.IV$min/dataset.td.lu.16.I$min,
+ratiomax=dataset.td.lu.16.IV$max/dataset.td.lu.16.I$max)
+
+dIV_II<-data.frame(xlabel=paste(dataset.td.lu.16.IV$eventID,
+dataset.td.lu.16.IV$subblock, sep="_"), avgTD=dataset.td.lu.16.IV$avg,
+minTD=dataset.td.lu.16.IV$min, maxTD=dataset.td.lu.16.IV$max,
+avgTI=dataset.td.lu.16.II$avg, minTI=dataset.td.lu.16.II$min,
+maxTI=dataset.td.lu.16.II$max,
+ratioavg=dataset.td.lu.16.IV$avg/dataset.td.lu.16.II$avg,
+ratiomin=dataset.td.lu.16.IV$min/dataset.td.lu.16.II$min,
+ratiomax=dataset.td.lu.16.IV$max/dataset.td.lu.16.II$max)
+
+dIV_III<-data.frame(xlabel=paste(dataset.td.lu.16.IV$eventID,
+dataset.td.lu.16.IV$subblock, sep="_"), avgTD=dataset.td.lu.16.IV$avg,
+minTD=dataset.td.lu.16.IV$min, maxTD=dataset.td.lu.16.IV$max,
+avgTI=dataset.td.lu.16.III$avg, minTI=dataset.td.lu.16.III$min,
+maxTI=dataset.td.lu.16.III$max,
+ratioavg=dataset.td.lu.16.IV$avg/dataset.td.lu.16.III$avg,
+ratiomin=dataset.td.lu.16.IV$min/dataset.td.lu.16.III$min,
+ratiomax=dataset.td.lu.16.IV$max/dataset.td.lu.16.III$max)
+
+dIV_IV<-data.frame(xlabel=paste(dataset.td.lu.16.IV$eventID,
+dataset.td.lu.16.IV$subblock, sep="_"), avgTD=dataset.td.lu.16.IV$avg,
+minTD=dataset.td.lu.16.IV$min, maxTD=dataset.td.lu.16.IV$max,
+avgTI=dataset.td.lu.16.IV$avg, minTI=dataset.td.lu.16.IV$min,
+maxTI=dataset.td.lu.16.IV$max,
+ratioavg=dataset.td.lu.16.IV$avg/dataset.td.lu.16.IV$avg,
+ratiomin=dataset.td.lu.16.IV$min/dataset.td.lu.16.IV$min,
+ratiomax=dataset.td.lu.16.IV$max/dataset.td.lu.16.IV$max)
+
+dIV_V<-data.frame(xlabel=paste(dataset.td.lu.16.IV$eventID,
+dataset.td.lu.16.IV$subblock, sep="_"), avgTD=dataset.td.lu.16.IV$avg,
+minTD=dataset.td.lu.16.IV$min, maxTD=dataset.td.lu.16.IV$max,
+avgTI=dataset.td.lu.16.V$avg, minTI=dataset.td.lu.16.V$min,
+maxTI=dataset.td.lu.16.V$max,
+ratioavg=dataset.td.lu.16.IV$avg/dataset.td.lu.16.V$avg,
+ratiomin=dataset.td.lu.16.IV$min/dataset.td.lu.16.V$min,
+ratiomax=dataset.td.lu.16.IV$max/dataset.td.lu.16.V$max)
+
+dV_I<-data.frame(xlabel=paste(dataset.td.lu.16.V$eventID,
+dataset.td.lu.16.V$subblock, sep="_"), avgTD=dataset.td.lu.16.V$avg,
+minTD=dataset.td.lu.16.V$min, maxTD=dataset.td.lu.16.V$max,
+avgTI=dataset.td.lu.16.I$avg, minTI=dataset.td.lu.16.I$min,
+maxTI=dataset.td.lu.16.I$max,
+ratioavg=dataset.td.lu.16.V$avg/dataset.td.lu.16.I$avg,
+ratiomin=dataset.td.lu.16.V$min/dataset.td.lu.16.I$min,
+ratiomax=dataset.td.lu.16.V$max/dataset.td.lu.16.I$max)
+
+dV_II<-data.frame(xlabel=paste(dataset.td.lu.16.V$eventID,
+dataset.td.lu.16.V$subblock, sep="_"), avgTD=dataset.td.lu.16.V$avg,
+minTD=dataset.td.lu.16.V$min, maxTD=dataset.td.lu.16.V$max,
+avgTI=dataset.td.lu.16.II$avg, minTI=dataset.td.lu.16.II$min,
+maxTI=dataset.td.lu.16.II$max,
+ratioavg=dataset.td.lu.16.V$avg/dataset.td.lu.16.II$avg,
+ratiomin=dataset.td.lu.16.V$min/dataset.td.lu.16.II$min,
+ratiomax=dataset.td.lu.16.V$max/dataset.td.lu.16.II$max)
+
+dV_III<-data.frame(xlabel=paste(dataset.td.lu.16.V$eventID,
+dataset.td.lu.16.V$subblock, sep="_"), avgTD=dataset.td.lu.16.V$avg,
+minTD=dataset.td.lu.16.V$min, maxTD=dataset.td.lu.16.V$max,
+avgTI=dataset.td.lu.16.III$avg, minTI=dataset.td.lu.16.III$min,
+maxTI=dataset.td.lu.16.III$max,
+ratioavg=dataset.td.lu.16.V$avg/dataset.td.lu.16.III$avg,
+ratiomin=dataset.td.lu.16.V$min/dataset.td.lu.16.III$min,
+ratiomax=dataset.td.lu.16.V$max/dataset.td.lu.16.III$max)
+
+dV_IV<-data.frame(xlabel=paste(dataset.td.lu.16.V$eventID,
+dataset.td.lu.16.V$subblock, sep="_"), avgTD=dataset.td.lu.16.V$avg,
+minTD=dataset.td.lu.16.V$min, maxTD=dataset.td.lu.16.V$max,
+avgTI=dataset.td.lu.16.IV$avg, minTI=dataset.td.lu.16.IV$min,
+maxTI=dataset.td.lu.16.IV$max,
+ratioavg=dataset.td.lu.16.V$avg/dataset.td.lu.16.IV$avg,
+ratiomin=dataset.td.lu.16.V$min/dataset.td.lu.16.IV$min,
+ratiomax=dataset.td.lu.16.V$max/dataset.td.lu.16.IV$max)
+
+dV_V<-data.frame(xlabel=paste(dataset.td.lu.16.V$eventID,
+dataset.td.lu.16.V$subblock, sep="_"), avgTD=dataset.td.lu.16.V$avg,
+minTD=dataset.td.lu.16.V$min, maxTD=dataset.td.lu.16.V$max,
+avgTI=dataset.td.lu.16.V$avg, minTI=dataset.td.lu.16.V$min,
+maxTI=dataset.td.lu.16.V$max,
+ratioavg=dataset.td.lu.16.V$avg/dataset.td.lu.16.V$avg,
+ratiomin=dataset.td.lu.16.V$min/dataset.td.lu.16.V$min,
+ratiomax=dataset.td.lu.16.V$max/dataset.td.lu.16.V$max)
+#+END_SRC
+
+** Mean Averages
+#+BEGIN_SRC R :results output :session comp.4b.ratio.ti.ti :exports both
+mean.avg<-matrix(0, 5, 5)
+mean.avg[1,]<-c(mean(dI_I$ratioavg), mean(dI_II$ratioavg), mean(dI_III$ratioavg), mean(dI_IV$ratioavg), mean(dI_V$ratioavg))
+mean.avg[2,]<-c(mean(dII_I$ratioavg), mean(dII_II$ratioavg), mean(dII_III$ratioavg), mean(dII_IV$ratioavg), mean(dII_V$ratioavg))
+mean.avg[3,]<-c(mean(dIII_I$ratioavg), mean(dIII_II$ratioavg), mean(dIII_III$ratioavg), mean(dIII_IV$ratioavg), mean(dIII_V$ratioavg))
+mean.avg[4,]<-c(mean(dIV_I$ratioavg), mean(dIV_II$ratioavg), mean(dIV_III$ratioavg), mean(dIV_IV$ratioavg), mean(dIV_V$ratioavg))
+mean.avg[5,]<-c(mean(dV_I$ratioavg), mean(dV_II$ratioavg), mean(dV_III$ratioavg), mean(dV_IV$ratioavg), mean(dV_V$ratioavg))
+print(mean.avg)
+#+END_SRC
+
+#+RESULTS:
+:          [,1]     [,2]      [,3]      [,4] [,5]
+: [1,] 1.000000 1.031481 1.0342408 1.0260843  Inf
+: [2,] 1.020605 1.000000 1.0158230 1.0032474  Inf
+: [3,] 1.031365 1.012469 1.0000000 1.0004695  Inf
+: [4,] 1.050481 1.025608 1.0261407 1.0000000  Inf
+: [5,] 1.020621 1.003280 0.9880754 0.9867983  NaN
+
+** Mean Mins
+#+BEGIN_SRC R :results output :session comp.4b.ratio.ti.ti :exports both
+mean.min<-matrix(0, 5, 5)
+mean.min[1,]<-c(mean(dI_I$ratiomin), mean(dI_II$ratiomin), mean(dI_III$ratiomin), mean(dI_IV$ratiomin), mean(dI_V$ratiomin))
+mean.min[2,]<-c(mean(dII_I$ratiomin), mean(dII_II$ratiomin), mean(dII_III$ratiomin), mean(dII_IV$ratiomin), mean(dII_V$ratiomin))
+mean.min[3,]<-c(mean(dIII_I$ratiomin), mean(dIII_II$ratiomin), mean(dIII_III$ratiomin), mean(dIII_IV$ratiomin), mean(dIII_V$ratiomin))
+mean.min[4,]<-c(mean(dIV_I$ratiomin), mean(dIV_II$ratiomin), mean(dIV_III$ratiomin), mean(dIV_IV$ratiomin), mean(dIV_V$ratiomin))
+mean.min[5,]<-c(mean(dV_I$ratiomin), mean(dV_II$ratiomin), mean(dV_III$ratiomin), mean(dV_IV$ratiomin), mean(dV_V$ratiomin))
+print(mean.min)
+#+END_SRC
+
+#+RESULTS:
+:      [,1] [,2] [,3] [,4] [,5]
+: [1,]  NaN  NaN  NaN  NaN  NaN
+: [2,]  NaN  NaN  NaN  NaN  NaN
+: [3,]  NaN  NaN  NaN  NaN  NaN
+: [4,]  NaN  NaN  NaN  NaN  NaN
+: [5,]  NaN  NaN  NaN  NaN  NaN
+
+** Mean Maxs
+#+BEGIN_SRC R :results output :session comp.4b.ratio.ti.ti :exports both
+mean.max<-matrix(0, 5, 5)
+mean.max[1,]<-c(mean(dI_I$ratiomax), mean(dI_II$ratiomax), mean(dI_III$ratiomax), mean(dI_IV$ratiomax), mean(dI_V$ratiomax))
+mean.max[2,]<-c(mean(dII_I$ratiomax), mean(dII_II$ratiomax), mean(dII_III$ratiomax), mean(dII_IV$ratiomax), mean(dII_V$ratiomax))
+mean.max[3,]<-c(mean(dIII_I$ratiomax), mean(dIII_II$ratiomax), mean(dIII_III$ratiomax), mean(dIII_IV$ratiomax), mean(dIII_V$ratiomax))
+mean.max[4,]<-c(mean(dIV_I$ratiomax), mean(dIV_II$ratiomax), mean(dIV_III$ratiomax), mean(dIV_IV$ratiomax), mean(dIV_V$ratiomax))
+mean.max[5,]<-c(mean(dV_I$ratiomax), mean(dV_II$ratiomax), mean(dV_III$ratiomax), mean(dV_IV$ratiomax), mean(dV_V$ratiomax))
+print(mean.max)
+#+END_SRC
+
+#+RESULTS:
+:          [,1]      [,2]     [,3]     [,4] [,5]
+: [1,] 1.000000 1.0907242 1.149522 1.109556  Inf
+: [2,] 1.114596 1.0000000 1.207191 1.092779  Inf
+: [3,] 1.033333 1.0095771 1.000000 1.036209  Inf
+: [4,] 1.062794 1.0308373 1.121275 1.000000  Inf
+: [5,] 1.005617 0.9793539 1.026403 1.014937  NaN
 
