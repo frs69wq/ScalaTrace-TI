@@ -76,7 +76,7 @@
      that. Nodes have a large amount of memory, then the execution
      can be folded by a great factor (16 is easy IIRC).
 
-* TODO 11th July 2014 [4/10]
+* TODO 11th July 2014 [5/10]
 ** DONE COMM TD TD Ratio
 ** DONE Folded execution 2 4 8 16
    compare comp 4b avg min max b/w folded and regular.
@@ -89,5 +89,7 @@
 ** TODO Plot B-16 and C-16 on same graph (inst rate)
 ** TODO Figure 14 CCPE
    But with more information.
-** TODO Get a trace with SIG_DIFF and LOOP_LCS enabled B-16
+** DONE Get a trace with SIG_DIFF and LOOP_LCS enabled B-16
 ** DONE LU C-1024 No instrumentation (4 nodes/4 cores)
+
+

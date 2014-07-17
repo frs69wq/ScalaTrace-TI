@@ -159,7 +159,7 @@ public class Expand {
 
 			    System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + global_average + " " + global_minimum + " " + global_maximum);
 			    // System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + new_global_average + " " + new_global_minimum + " " + new_global_maximum);
-			    // System.out.printf("%d %d %d %.2f %.2f\n", current_event, current_subblock, bin_events[i], bin_minimum[i], bin_average[i], bin_maximum[i]);
+			    // System.out.printf("%d %d %d %.2f %.2f\n", current_event, current_subblock, bin_events[i], bin_mi	nimum[i], bin_average[i], bin_maximum[i]);
 			    break;
 			    
 		        default:

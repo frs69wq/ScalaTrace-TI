@@ -4,7 +4,7 @@
 #+STARTUP: overview
 #+STARTUP: indent
 
-* COMM 4b ratios of TD vs TI
+* DONE COMM 4b ratios of TD vs TI
 See [[file:~/git/ScalaTrace-TI/R-analysis/comm.4b.ratio.td.ti.Rmd][comm.4b.ratio.td.ti.Rmd]]
 ** Motive
 The idea behind checking the ratios of multiple traces is that
@@ -351,7 +351,7 @@ print(mean.max)
 The ratios vary from trace to trace. Depending on the network
 congestion, some executions take more time.
 
-* COMP 4b ratios of TD vs TD
+* DONE COMP 4b ratios of TD vs TD
 See [[file:~/git/ScalaTrace-TI/R-analysis/comp.4b.ratio.td.td.Rmd][comp.4b.ratio.td.td.Rmd]]
 ** Motive
 The idea behind checking the ratios of multiple time dependent
@@ -683,7 +683,7 @@ print(mean.max)
 The ratios are almost close to 1, which shows that the CPU processing
 is almost constant for every execution.
 
-* COMP 4b ratios of TD and TIC
+* DONE COMP 4b ratios of TD and TIC
 See [[file:~/git/ScalaTrace-TI/R-analysis/comp.4b.ratio.td.tic.Rmd][comp.4b.ratio.td.tic.Rmd]]
 ** Motive
 TIC traces are the ones having both COMP 4b and COMP 4c values of an
@@ -703,8 +703,8 @@ System.out.println (current_event + " " + opcode + " " + current_subblock + " " 
 #+END_EXAMPLE
 
 ** Get the datasets
-#+BEGIN_SRC sh :results silent
 The value of 2nd case of switch must be set to /COMP 4b/
+#+BEGIN_SRC sh :results silent
 cd ../scripts
 java Expand ../traces/td/lu/C/16/I/0 > ../datasets/td.lu.C.16.comp.4b.I
 java Expand ../traces/td/lu/C/16/II/0 > ../datasets/td.lu.C.16.comp.4b.II
@@ -984,7 +984,7 @@ If this becomes an accuracy issue at some point, either we apply some
 correction factor or use two distinct traces (one for the
 instructions, one for timings).
 
-* Rough Estimation of Instruction Rate
+* DONE Rough Estimation of Instruction Rate
 See [[file:~/git/ScalaTrace-TI/R-analysis/rough.estimation.of.instruction.rate.Rmd][rough.estimation.of.instruction.rate.Rmd]]
 ** Motive
 Calculate the instruction rate of execution using TIC traces.
@@ -1703,7 +1703,7 @@ Instruction rate for *Class C, 16 processes* is around *3.4e9 Instructions per s
 It is clear from the plots that the executions are quite stable as CPU
 bursts on each execution occur at same places.
 
-* Rough Estimation of Instruction Rate (with individual bins)
+* TODO Rough Estimation of Instruction Rate (with individual bins)
 See [[file:~/git/ScalaTrace-TI/R-analysis/rough.estimation.of.instruction.rate.bins.Rmd][rough.estimation.of.instruction.rate.bins.Rmd]]
 ** Motive
 Calculate the instruction rate of execution using TIC traces but
@@ -2139,7 +2139,7 @@ d.C.16.4b.4c.bins.V<-d.C.16.4b.4c.bins.V[!(d.C.16.4b.4c.bins.V$time.elements==0 
 ** Plots
 ** Conclusion
 
-* Variability
+* DONE Variability
 See [[file:~/git/ScalaTrace-TI/R-analysis/variability.Rmd][variability.Rmd]]
 ** Motive
 Plot the variablity of execution in TIC traces.
@@ -2698,14 +2698,14 @@ ggplot(facet.frame.V, aes(x=inst.avg, y=time.avg, ymin=time.min, ymax=time.max, 
 #+RESULTS:
 [[file:../R-analysis/plots/facet.variability.tic.B8.B16.C8.C16.V.png]]
 
-* Variabilily (with individual bins)
+* TODO Variabilily (with individual bins)
 See [[../R-analysis/variability.bins.Rmd][variability.bins.Rmd]]
 ** Motive
 ** Overview
 ** Get the datasets
 ** Read the datasets into R
 ** Plots
-* Folded Execution of C-64
+* DONE Folded Execution of C-64
 See [[file:~/git/ScalaTrace-TI/R-analysis/folded.execution.c.64.Rmd][folded.execution.c.64.Rmd]]
 ** Motive
 The objective is to compare COMP 4b min, max and avg between
@@ -3057,7 +3057,7 @@ II   8.694936 21.13127 44.98423 85.34437 75.37503
 III 10.372431 24.91502 29.73930 56.34469 88.98524
 #+end_example
 
-* COMM 4b ratios of TD vs TD
+* DONE COMM 4b ratios of TD vs TD
 See [[file:~/git/ScalaTrace-TI/R-analysis/comm.4b.ratio.td.td.Rmd][comm.4b.ratio.td.td.Rmd]]
 ** Motive
 The idea behind checking the ratios of multiple traces is that
@@ -3387,3 +3387,79 @@ print(mean.max)
 : [4,] 1.062794 1.0308373 1.121275 1.000000  Inf
 : [5,] 1.005617 0.9793539 1.026403 1.014937  NaN
 
+* TODO TD vs TIC ratios of B-16 and C-8 w.r.t. B-8
+** Motive
+The objective is to check the variation between the executions when:  
+A) we change the number of processes  
+B) we change the class 
+
+** Overview
+Taking B-8 as reference, see the changes in B-16 and C-8.  
+Their *COMP 4b* global values were parsed using the [[file:~/git/ScalaTrace-TI/scripts/Expand.java][Expand.java]] code
+with this format.
+#+BEGIN_EXAMPLE
+System.out.println ("eventID opcode subblock events avg min max");
+System.out.println (current_event + " " + opcode + " " + current_subblock + " " + global_events + " " + global_average + " " + global_minimum + " " + global_maximum);
+#+END_EXAMPLE
+** Get the datasets
+The value of 2nd case of switch must be set to /COMP 4b/
+#+BEGIN_SRC sh :results silent
+cd ../scripts
+java Expand ../traces/td/lu/B/8/I/0 > ../datasets/td.lu.B.8.comp.4b.I
+java Expand ../traces/td/lu/B/8/II/0 > ../datasets/td.lu.B.8.comp.4b.II
+
+java Expand ../traces/td/lu/C/8/I/0 > ../datasets/td.lu.C.8.comp.4b.I
+java Expand ../traces/td/lu/C/8/II/0 > ../datasets/td.lu.C.8.comp.4b.II
+
+java Expand ../traces/td/lu/B/16/I/0 > ../datasets/td.lu.B.16.comp.4b.I
+java Expand ../traces/td/lu/B/16/II/0 > ../datasets/td.lu.B.16.comp.4b.II
+
+java Expand ../traces/tic/lu/B/8/I/0 > ../datasets/tic.lu.B.8.comp.4b.I
+java Expand ../traces/tic/lu/B/8/II/0 > ../datasets/tic.lu.B.8.comp.4b.II
+java Expand ../traces/tic/lu/B/8/III/0 > ../datasets/tic.lu.B.8.comp.4b.III
+java Expand ../traces/tic/lu/B/8/IV/0 > ../datasets/tic.lu.B.8.comp.4b.IV
+java Expand ../traces/tic/lu/B/8/V/0 > ../datasets/tic.lu.B.8.comp.4b.V
+
+java Expand ../traces/tic/lu/B/16/I/0 > ../datasets/tic.lu.B.16.comp.4b.I
+java Expand ../traces/tic/lu/B/16/II/0 > ../datasets/tic.lu.B.16.comp.4b.II
+java Expand ../traces/tic/lu/B/16/III/0 > ../datasets/tic.lu.B.16.comp.4b.III
+java Expand ../traces/tic/lu/B/16/IV/0 > ../datasets/tic.lu.B.16.comp.4b.IV
+java Expand ../traces/tic/lu/B/16/V/0 > ../datasets/tic.lu.B.16.comp.4b.V
+
+java Expand ../traces/tic/lu/C/8/I/0 > ../datasets/tic.lu.C.8.comp.4b.I
+java Expand ../traces/tic/lu/C/8/II/0 > ../datasets/tic.lu.C.8.comp.4b.II
+java Expand ../traces/tic/lu/C/8/III/0 > ../datasets/tic.lu.C.8.comp.4b.III
+java Expand ../traces/tic/lu/C/8/IV/0 > ../datasets/tic.lu.C.8.comp.4b.IV
+java Expand ../traces/tic/lu/C/8/V/0 > ../datasets/tic.lu.C.8.comp.4b.V
+#+END_SRC
+
+** Read the datasets into R
+#+BEGIN_SRC R :results silent :session td.tic.ratio.b.16.c.16
+setwd ('~/git/ScalaTrace-TI')
+dataset.td.lu.B.8.comp.4b.I<-read.table("datasets/td.lu.B.8.comp.4b.I", header=TRUE)
+dataset.td.lu.B.8.comp.4b.II<-read.table("datasets/td.lu.B.8.comp.4b.II", header=TRUE)
+
+dataset.td.lu.B.16.comp.4b.I<-read.table("datasets/td.lu.B.16.comp.4b.I", header=TRUE)
+dataset.td.lu.B.16.comp.4b.II<-read.table("datasets/td.lu.B.16.comp.4b.II", header=TRUE)
+
+dataset.td.lu.C.8.comp.4b.I<-read.table("datasets/td.lu.C.8.comp.4b.I", header=TRUE)
+dataset.td.lu.C.8.comp.4b.II<-read.table("datasets/td.lu.C.8.comp.4b.II", header=TRUE)
+
+dataset.tic.lu.B.8.comp.4b.I<-read.table("datasets/tic.lu.B.8.comp.4b.I", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.II<-read.table("datasets/tic.lu.B.8.comp.4b.II", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.III<-read.table("datasets/tic.lu.B.8.comp.4b.III", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.IV<-read.table("datasets/tic.lu.B.8.comp.4b.IV", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.V<-read.table("datasets/tic.lu.B.8.comp.4b.V", header=TRUE)
+
+dataset.tic.lu.B.16.comp.4b.I<-read.table("datasets/tic.lu.B.16.comp.4b.I", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.II<-read.table("datasets/tic.lu.B.16.comp.4b.II", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.III<-read.table("datasets/tic.lu.B.16.comp.4b.III", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.IV<-read.table("datasets/tic.lu.B.16.comp.4b.IV", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.V<-read.table("datasets/tic.lu.B.16.comp.4b.V", header=TRUE)
+
+dataset.tic.lu.C.8.comp.4b.I<-read.table("datasets/tic.lu.C.8.comp.4b.I", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.II<-read.table("datasets/tic.lu.C.8.comp.4b.II", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.III<-read.table("datasets/tic.lu.C.8.comp.4b.III", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.IV<-read.table("datasets/tic.lu.C.8.comp.4b.IV", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.V<-read.table("datasets/tic.lu.C.8.comp.4b.V", header=TRUE)
+#+END_SRC
