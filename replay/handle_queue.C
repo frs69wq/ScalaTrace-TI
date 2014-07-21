@@ -11,6 +11,7 @@
 #include <iostream>      // Added by Henri so that smpicxx can compile this
 
 #include "handle_queue.h"
+#include "sys/time.h"
 
 #ifdef FEATURE_PREALLOC_MEM
 HandleQueue::HandleQueue()
@@ -167,8 +168,11 @@ void HandleQueue::testsingleCompletion(){
   vector<void *>::iterator buf_it;
 
 #ifdef DEBUG
+  struct timeval now;
+  gettimeofday(&now, NULL);
+  long long whole = now.tv_sec;
   if(my_rank == doTestFor)
-    cout << requests.size() << "  ";
+    cout << requests.size() << " xxx " <<  whole << " xxx " ;
 #endif
 
   for(req_it=requests.begin(), buf_it=buffers.begin(); req_it!=requests.end() && buf_it!=buffers.end(); ){
