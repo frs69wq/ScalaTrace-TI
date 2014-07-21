@@ -1,6 +1,7 @@
 #+TITLE: Statistical Analysis using R
 #+AUTHOR: Anshul Gupta
 #+EMAIL: [[mailto:anshulgupta0803@gmail.com][anshulgupta0803@gmail.com]]
+#+LaTeX_Header: \usepackage{fullpage}
 #+STARTUP: overview
 #+STARTUP: indent
 
