@@ -2,14 +2,14 @@
  Class           =                        B
  Size            =            102x 102x 102
  Iterations      =                      250
- Time in seconds =                    39.23
+ Time in seconds =                    33.20
  Total processes =                       16
  Compiled procs  =                       16
- Mop/s total     =                 12714.60
- Mop/s/process   =                   794.66
+ Mop/s total     =                 15023.66
+ Mop/s/process   =                   938.98
  Operation type  =           floating point
  Verification    =               SUCCESSFUL
  Version         =                      3.3
- Compile date    =              17 Jul 2014
+ Compile date    =              23 Jul 2014
 
-Time = Jul 17 15:03
+Time = Jul 23 10:24

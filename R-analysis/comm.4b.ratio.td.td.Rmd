@@ -5,13 +5,12 @@ date: "16/07/2014"
 output: html_document
 ---
 
-
 ## Motive
 The idea behind checking the ratios of multiple time dependent traces with each other is to see weather the processing is affected by any factors or not.
 
 ## Overview
 Multiple time dependent traces were acquired on graphene cluster for LU benchmark, class C and 16 Processes.  
-Their **COMP 4b** global values were parsed using the _scripts/Expand.java_ code
+Their **COMM 4b** global values were parsed using the _scripts/Expand.java_ code
 with this format.  
 See _org/analysis.org_
 
@@ -37,7 +36,6 @@ Each `d<A>_<B>` has 7 fields:
 * maxTI = Maximum of time dependent trace B
 
 ```{r Read datasets}
-
 dI_I<-data.frame(xlabel=paste(dataset.td.lu.16.I$eventID, dataset.td.lu.16.I$subblock, sep="_"),
 avgTD=dataset.td.lu.16.I$avg, minTD=dataset.td.lu.16.I$min, maxTD=dataset.td.lu.16.I$max,
 avgTI=dataset.td.lu.16.I$avg, minTI=dataset.td.lu.16.I$min, maxTI=dataset.td.lu.16.I$max,
