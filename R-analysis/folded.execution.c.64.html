@@ -73,21 +73,44 @@ dataset.td.lu.C.64.folded.2.comp.4b.I &lt;- read.table('datasets/td.lu.C.64.fold
 dataset.td.lu.C.64.folded.4.comp.4b.I &lt;- read.table('datasets/td.lu.C.64.folded.4.comp.4b.I', header=TRUE)
 dataset.td.lu.C.64.folded.8.comp.4b.I &lt;- read.table('datasets/td.lu.C.64.folded.8.comp.4b.I', header=TRUE)
 dataset.td.lu.C.64.folded.16.comp.4b.I &lt;- read.table('datasets/td.lu.C.64.folded.16.comp.4b.I', header=TRUE)
-dataset.td.lu.C.64.folded.32.comp.4b.I &lt;- read.table('datasets/td.lu.C.64.folded.32.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.32.comp.4b.I &lt;- read.table('datasets/td.lu.C.64.folded.32.comp.4b.IV', header=TRUE)
 
 dataset.td.lu.C.64.folded.1.comp.4b.II &lt;- read.table('datasets/td.lu.C.64.comp.4b.II', header=TRUE)
 dataset.td.lu.C.64.folded.2.comp.4b.II &lt;- read.table('datasets/td.lu.C.64.folded.2.comp.4b.II', header=TRUE)
 dataset.td.lu.C.64.folded.4.comp.4b.II &lt;- read.table('datasets/td.lu.C.64.folded.4.comp.4b.II', header=TRUE)
 dataset.td.lu.C.64.folded.8.comp.4b.II &lt;- read.table('datasets/td.lu.C.64.folded.8.comp.4b.II', header=TRUE)
 dataset.td.lu.C.64.folded.16.comp.4b.II &lt;- read.table('datasets/td.lu.C.64.folded.16.comp.4b.II', header=TRUE)
-dataset.td.lu.C.64.folded.32.comp.4b.II &lt;- read.table('datasets/td.lu.C.64.folded.32.comp.4b.II', header=TRUE)
+dataset.td.lu.C.64.folded.32.comp.4b.II &lt;- read.table('datasets/td.lu.C.64.folded.32.comp.4b.V', header=TRUE)
 
 dataset.td.lu.C.64.folded.1.comp.4b.III &lt;- read.table('datasets/td.lu.C.64.comp.4b.III', header=TRUE)
 dataset.td.lu.C.64.folded.2.comp.4b.III &lt;- read.table('datasets/td.lu.C.64.folded.2.comp.4b.III', header=TRUE)
 dataset.td.lu.C.64.folded.4.comp.4b.III &lt;- read.table('datasets/td.lu.C.64.folded.4.comp.4b.III', header=TRUE)
 dataset.td.lu.C.64.folded.8.comp.4b.III &lt;- read.table('datasets/td.lu.C.64.folded.8.comp.4b.III', header=TRUE)
 dataset.td.lu.C.64.folded.16.comp.4b.III &lt;- read.table('datasets/td.lu.C.64.folded.16.comp.4b.III', header=TRUE)
-dataset.td.lu.C.64.folded.32.comp.4b.III &lt;- read.table('datasets/td.lu.C.64.folded.32.comp.4b.III', header=TRUE)</code></pre>
+dataset.td.lu.C.64.folded.32.comp.4b.III &lt;- read.table('datasets/td.lu.C.64.folded.32.comp.4b.VI', header=TRUE)</code></pre>
+<pre class="r"><code>dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.1.comp.4b.I$avg * dataset.td.lu.C.64.folded.1.comp.4b.I$events)/sum(dataset.td.lu.C.64.folded.1.comp.4b.I$events))/dataset.td.lu.C.64.folded.1.comp.4b.I$avg
+dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.1.comp.4b.II$avg * dataset.td.lu.C.64.folded.1.comp.4b.II$events)/sum(dataset.td.lu.C.64.folded.1.comp.4b.II$events))/dataset.td.lu.C.64.folded.1.comp.4b.II$avg
+dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.1.comp.4b.III$avg * dataset.td.lu.C.64.folded.1.comp.4b.III$events)/sum(dataset.td.lu.C.64.folded.1.comp.4b.III$events))/dataset.td.lu.C.64.folded.1.comp.4b.III$avg
+
+dataset.td.lu.C.64.folded.2.comp.4b.I$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.2.comp.4b.I$avg * dataset.td.lu.C.64.folded.2.comp.4b.I$events)/sum(dataset.td.lu.C.64.folded.2.comp.4b.I$events))/dataset.td.lu.C.64.folded.2.comp.4b.I$avg
+dataset.td.lu.C.64.folded.2.comp.4b.II$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.2.comp.4b.II$avg * dataset.td.lu.C.64.folded.2.comp.4b.II$events)/sum(dataset.td.lu.C.64.folded.2.comp.4b.II$events))/dataset.td.lu.C.64.folded.2.comp.4b.II$avg
+dataset.td.lu.C.64.folded.2.comp.4b.III$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.2.comp.4b.III$avg * dataset.td.lu.C.64.folded.2.comp.4b.III$events)/sum(dataset.td.lu.C.64.folded.2.comp.4b.III$events))/dataset.td.lu.C.64.folded.2.comp.4b.III$avg
+
+dataset.td.lu.C.64.folded.4.comp.4b.I$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.4.comp.4b.I$avg * dataset.td.lu.C.64.folded.4.comp.4b.I$events)/sum(dataset.td.lu.C.64.folded.4.comp.4b.I$events))/dataset.td.lu.C.64.folded.4.comp.4b.I$avg
+dataset.td.lu.C.64.folded.4.comp.4b.II$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.4.comp.4b.II$avg * dataset.td.lu.C.64.folded.4.comp.4b.II$events)/sum(dataset.td.lu.C.64.folded.4.comp.4b.II$events))/dataset.td.lu.C.64.folded.4.comp.4b.II$avg
+dataset.td.lu.C.64.folded.4.comp.4b.III$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.4.comp.4b.III$avg * dataset.td.lu.C.64.folded.4.comp.4b.III$events)/sum(dataset.td.lu.C.64.folded.4.comp.4b.III$events))/dataset.td.lu.C.64.folded.4.comp.4b.III$avg
+
+dataset.td.lu.C.64.folded.8.comp.4b.I$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.8.comp.4b.I$avg * dataset.td.lu.C.64.folded.8.comp.4b.I$events)/sum(dataset.td.lu.C.64.folded.8.comp.4b.I$events))/dataset.td.lu.C.64.folded.8.comp.4b.I$avg
+dataset.td.lu.C.64.folded.8.comp.4b.II$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.8.comp.4b.II$avg * dataset.td.lu.C.64.folded.8.comp.4b.II$events)/sum(dataset.td.lu.C.64.folded.8.comp.4b.II$events))/dataset.td.lu.C.64.folded.8.comp.4b.II$avg
+dataset.td.lu.C.64.folded.8.comp.4b.III$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.8.comp.4b.III$avg * dataset.td.lu.C.64.folded.8.comp.4b.III$events)/sum(dataset.td.lu.C.64.folded.8.comp.4b.III$events))/dataset.td.lu.C.64.folded.8.comp.4b.III$avg
+
+dataset.td.lu.C.64.folded.16.comp.4b.I$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.16.comp.4b.I$avg * dataset.td.lu.C.64.folded.16.comp.4b.I$events)/sum(dataset.td.lu.C.64.folded.16.comp.4b.I$events))/dataset.td.lu.C.64.folded.16.comp.4b.I$avg
+dataset.td.lu.C.64.folded.16.comp.4b.II$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.16.comp.4b.II$avg * dataset.td.lu.C.64.folded.16.comp.4b.II$events)/sum(dataset.td.lu.C.64.folded.16.comp.4b.II$events))/dataset.td.lu.C.64.folded.16.comp.4b.II$avg
+dataset.td.lu.C.64.folded.16.comp.4b.III$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.16.comp.4b.III$avg * dataset.td.lu.C.64.folded.16.comp.4b.III$events)/sum(dataset.td.lu.C.64.folded.16.comp.4b.III$events))/dataset.td.lu.C.64.folded.16.comp.4b.III$avg
+
+dataset.td.lu.C.64.folded.32.comp.4b.I$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.32.comp.4b.I$avg * dataset.td.lu.C.64.folded.32.comp.4b.I$events)/sum(dataset.td.lu.C.64.folded.32.comp.4b.I$events))/dataset.td.lu.C.64.folded.32.comp.4b.I$avg
+dataset.td.lu.C.64.folded.32.comp.4b.II$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.32.comp.4b.II$avg * dataset.td.lu.C.64.folded.32.comp.4b.II$events)/sum(dataset.td.lu.C.64.folded.32.comp.4b.II$events))/dataset.td.lu.C.64.folded.32.comp.4b.II$avg
+dataset.td.lu.C.64.folded.32.comp.4b.III$newAvg&lt;-(sum(dataset.td.lu.C.64.folded.32.comp.4b.III$avg * dataset.td.lu.C.64.folded.32.comp.4b.III$events)/sum(dataset.td.lu.C.64.folded.32.comp.4b.III$events))/dataset.td.lu.C.64.folded.32.comp.4b.III$avg</code></pre>
 <pre class="r"><code>mean.avg.I&lt;-matrix(0, 3, 5)
 mean.avg.I[,1] &lt;- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
                     mean(dataset.td.lu.C.64.folded.2.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
@@ -148,6 +171,66 @@ mean.avg.III[,4] &lt;- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$avg/dataset
 mean.avg.III[,5] &lt;- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
                     mean(dataset.td.lu.C.64.folded.32.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
                     mean(dataset.td.lu.C.64.folded.32.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg))</code></pre>
+<pre class="r"><code>mean.newAvg.I&lt;-matrix(0, 3, 5)
+mean.newAvg.I[,1] &lt;- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg))
+
+mean.newAvg.I[,2] &lt;- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg))
+
+mean.newAvg.I[,3] &lt;- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg))
+
+mean.newAvg.I[,4] &lt;- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg))
+
+mean.newAvg.I[,5] &lt;- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg))</code></pre>
+<pre class="r"><code>mean.newAvg.II&lt;-matrix(0, 3, 5)
+mean.newAvg.II[,1] &lt;- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg))
+
+mean.newAvg.II[,2] &lt;- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg))
+
+mean.newAvg.II[,3] &lt;- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg))
+
+mean.newAvg.II[,4] &lt;- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg))
+
+mean.newAvg.II[,5] &lt;- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg))</code></pre>
+<pre class="r"><code>mean.newAvg.III&lt;-matrix(0, 3, 5)
+mean.newAvg.III[,1] &lt;- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg))
+
+mean.newAvg.III[,2] &lt;- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg))
+
+mean.newAvg.III[,3] &lt;- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg))
+
+mean.newAvg.III[,4] &lt;- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg))
+
+mean.newAvg.III[,5] &lt;- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg))</code></pre>
 <pre class="r"><code>mean.min.I&lt;-matrix(0, 3, 5)
 mean.min.I[,1] &lt;- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
                     mean(dataset.td.lu.C.64.folded.2.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
@@ -272,65 +355,86 @@ mean.max.III[,5] &lt;- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$max/dataset
 rownames(mean.avg.I)&lt;-c('I', 'II', 'III')
 print(mean.avg.I)</code></pre>
 <pre><code>##         2     4     8    16    32
-## I   1.295 1.802 3.074 5.501 5.654
-## II  1.152 1.669 3.714 6.128 5.432
-## III 1.138 1.717 3.085 5.381 9.409</code></pre>
+## I   1.295 1.802 3.074 5.501 5.795
+## II  1.152 1.669 3.714 6.128 5.749
+## III 1.138 1.717 3.085 5.381 5.320</code></pre>
 <pre class="r"><code>colnames(mean.avg.II)&lt;-c('2', '4', '8', '16', '32')
 rownames(mean.avg.II)&lt;-c('I', 'II', 'III')
 print(mean.avg.II)</code></pre>
 <pre><code>##         2     4     8    16    32
-## I   1.133 1.767 2.983 5.384 5.469
-## II  1.114 1.635 3.642 5.882 5.154
-## III 1.122 1.640 2.929 5.104 9.278</code></pre>
+## I   1.133 1.767 2.983 5.384 5.435
+## II  1.114 1.635 3.642 5.882 5.470
+## III 1.122 1.640 2.929 5.104 5.074</code></pre>
 <pre class="r"><code>colnames(mean.avg.III)&lt;-c('2', '4', '8', '16', '32')
 rownames(mean.avg.III)&lt;-c('I', 'II', 'III')
 print(mean.avg.III)</code></pre>
 <pre><code>##         2     4     8    16    32
-## I   1.167 1.775 2.993 5.408 5.492
-## II  1.123 1.642 3.608 5.922 5.207
-## III 1.126 1.656 2.956 5.152 9.115</code></pre>
+## I   1.167 1.775 2.993 5.408 5.503
+## II  1.123 1.642 3.608 5.922 5.516
+## III 1.126 1.656 2.956 5.152 5.122</code></pre>
 <pre class="r"><code>colnames(mean.min.I)&lt;-c('2', '4', '8', '16', '32')
 rownames(mean.min.I)&lt;-c('I', 'II', 'III')
 print(mean.min.I)</code></pre>
 <pre><code>##          2     4     8    16    32
-## I   1.1730 1.202 1.733 2.627 2.529
-## II  1.0095 1.230 1.750 2.772 2.745
-## III 0.9993 1.307 1.821 2.698 2.921</code></pre>
+## I   1.1730 1.202 1.733 2.627 2.968
+## II  1.0095 1.230 1.750 2.772 2.785
+## III 0.9993 1.307 1.821 2.698 2.533</code></pre>
 <pre class="r"><code>colnames(mean.min.II)&lt;-c('2', '4', '8', '16', '32')
 rownames(mean.min.II)&lt;-c('I', 'II', 'III')
 print(mean.min.II)</code></pre>
 <pre><code>##         2     4     8    16    32
-## I   1.028 1.189 1.712 2.574 2.425
-## II  1.016 1.213 1.698 2.557 2.556
-## III 1.006 1.243 1.699 2.464 2.689</code></pre>
+## I   1.028 1.189 1.712 2.574 2.636
+## II  1.016 1.213 1.698 2.557 2.550
+## III 1.006 1.243 1.699 2.464 2.359</code></pre>
 <pre class="r"><code>colnames(mean.min.III)&lt;-c('2', '4', '8', '16', '32')
 rownames(mean.min.III)&lt;-c('I', 'II', 'III')
 print(mean.min.III)</code></pre>
 <pre><code>##          2     4     8    16    32
-## I   1.0441 1.181 1.711 2.592 2.445
-## II  1.0064 1.207 1.703 2.605 2.599
-## III 0.9953 1.247 1.715 2.508 2.738</code></pre>
+## I   1.0441 1.181 1.711 2.592 2.705
+## II  1.0064 1.207 1.703 2.605 2.598
+## III 0.9953 1.247 1.715 2.508 2.395</code></pre>
 <pre class="r"><code>colnames(mean.max.I)&lt;-c('2', '4', '8', '16', '32')
 rownames(mean.max.I)&lt;-c('I', 'II', 'III')
 print(mean.max.I)</code></pre>
 <pre><code>##          2     4     8    16    32
-## I   11.690 34.11 38.99 76.22 87.04
-## II   8.455 21.95 44.06 89.01 78.67
-## III 10.780 24.38 31.34 60.94 94.75</code></pre>
+## I   11.690 34.11 38.99 76.22 76.46
+## II   8.455 21.95 44.06 89.01 87.96
+## III 10.780 24.38 31.34 60.94 66.03</code></pre>
 <pre class="r"><code>colnames(mean.max.II)&lt;-c('2', '4', '8', '16', '32')
 rownames(mean.max.II)&lt;-c('I', 'II', 'III')
 print(mean.max.II)</code></pre>
-<pre><code>##          2     4     8    16     32
-## I   11.771 36.97 42.47 82.77  94.72
-## II   8.742 23.33 52.36 97.63  87.10
-## III 12.863 26.17 34.55 68.21 115.20</code></pre>
+<pre><code>##          2     4     8    16    32
+## I   11.771 36.97 42.47 82.77 84.69
+## II   8.742 23.33 52.36 97.63 96.78
+## III 12.863 26.17 34.55 68.21 73.14</code></pre>
 <pre class="r"><code>colnames(mean.max.III)&lt;-c('2', '4', '8', '16', '32')
 rownames(mean.max.III)&lt;-c('I', 'II', 'III')
 print(mean.max.III)</code></pre>
 <pre><code>##          2     4     8    16    32
-## I   11.717 33.28 37.76 71.81 84.97
-## II   8.695 21.13 44.98 85.34 75.38
-## III 10.372 24.92 29.74 56.34 88.99</code></pre>
+## I   11.717 33.28 37.76 71.81 73.45
+## II   8.695 21.13 44.98 85.34 85.05
+## III 10.372 24.92 29.74 56.34 61.43</code></pre>
+<pre class="r"><code>colnames(mean.newAvg.I)&lt;-c('2', '4', '8', '16', '32')
+rownames(mean.newAvg.I)&lt;-c('I', 'II', 'III')
+print(mean.newAvg.I)</code></pre>
+<pre><code>##         2     4     8    16    32
+## I   1.056 1.322 1.804 3.000 2.897
+## II  1.069 1.369 1.819 2.898 2.904
+## III 1.058 1.361 1.855 2.974 2.945</code></pre>
+<pre class="r"><code>colnames(mean.newAvg.II)&lt;-c('2', '4', '8', '16', '32')
+rownames(mean.newAvg.II)&lt;-c('I', 'II', 'III')
+print(mean.newAvg.II)</code></pre>
+<pre><code>##         2     4     8    16    32
+## I   1.062 1.414 1.863 3.105 2.926
+## II  1.114 1.461 1.864 2.931 2.938
+## III 1.170 1.400 1.886 3.004 2.981</code></pre>
+<pre class="r"><code>colnames(mean.newAvg.III)&lt;-c('2', '4', '8', '16', '32')
+rownames(mean.newAvg.III)&lt;-c('I', 'II', 'III')
+print(mean.newAvg.III)</code></pre>
+<pre><code>##         2     4     8    16    32
+## I   1.049 1.322 1.788 2.965 2.862
+## II  1.067 1.365 1.802 2.856 2.865
+## III 1.063 1.355 1.837 2.930 2.900</code></pre>
 </div>
 
 

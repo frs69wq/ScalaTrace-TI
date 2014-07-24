@@ -3537,12 +3537,21 @@ The value of 2nd case of switch must be set to /COMP 4b/
 cd ../scripts
 java Expand ../traces/td/lu/B/8/I/0 > ../datasets/td.lu.B.8.comp.4b.I
 java Expand ../traces/td/lu/B/8/II/0 > ../datasets/td.lu.B.8.comp.4b.II
-
-java Expand ../traces/td/lu/C/8/I/0 > ../datasets/td.lu.C.8.comp.4b.I
-java Expand ../traces/td/lu/C/8/II/0 > ../datasets/td.lu.C.8.comp.4b.II
+java Expand ../traces/td/lu/B/8/III/0 > ../datasets/td.lu.B.8.comp.4b.III
+java Expand ../traces/td/lu/B/8/IV/0 > ../datasets/td.lu.B.8.comp.4b.IV
+java Expand ../traces/td/lu/B/8/V/0 > ../datasets/td.lu.B.8.comp.4b.V
 
 java Expand ../traces/td/lu/B/16/I/0 > ../datasets/td.lu.B.16.comp.4b.I
 java Expand ../traces/td/lu/B/16/II/0 > ../datasets/td.lu.B.16.comp.4b.II
+java Expand ../traces/td/lu/B/16/III/0 > ../datasets/td.lu.B.16.comp.4b.III
+java Expand ../traces/td/lu/B/16/IV/0 > ../datasets/td.lu.B.16.comp.4b.IV
+java Expand ../traces/td/lu/B/16/V/0 > ../datasets/td.lu.B.16.comp.4b.V
+
+java Expand ../traces/td/lu/C/8/I/0 > ../datasets/td.lu.C.8.comp.4b.I
+java Expand ../traces/td/lu/C/8/II/0 > ../datasets/td.lu.C.8.comp.4b.II
+java Expand ../traces/td/lu/C/8/III/0 > ../datasets/td.lu.C.8.comp.4b.III
+java Expand ../traces/td/lu/C/8/IV/0 > ../datasets/td.lu.C.8.comp.4b.IV
+java Expand ../traces/td/lu/C/8/V/0 > ../datasets/td.lu.C.8.comp.4b.V
 
 java Expand ../traces/tic/lu/B/8/I/0 > ../datasets/tic.lu.B.8.comp.4b.I
 java Expand ../traces/tic/lu/B/8/II/0 > ../datasets/tic.lu.B.8.comp.4b.II
@@ -4063,3 +4072,52 @@ insturmentation (PAPI Counters).
 If this becomes an accuracy issue at some point, either we apply some
 correction factor or use two distinct traces (one for the
 instructions, one for timings).
+* TODO B-16 and C-16 instruction rate on same plot
+** Get the datasets
+The value of 2nd case of switch must be set to /COMP 4b/
+#+BEGIN_SRC sh :results silent
+cd ../scripts
+java Expand ../traces/td/lu/C/16/I/0 > ../datasets/td.lu.C.16.comp.4b.I
+java Expand ../traces/td/lu/C/16/II/0 > ../datasets/td.lu.C.16.comp.4b.II
+java Expand ../traces/td/lu/C/16/III/0 > ../datasets/td.lu.C.16.comp.4b.III
+java Expand ../traces/td/lu/C/16/IV/0 > ../datasets/td.lu.C.16.comp.4b.IV
+
+java Expand ../traces/td/lu/B/16/III/0 > ../datasets/td.lu.B.16.comp.4b.III
+java Expand ../traces/td/lu/B/16/IV/0 > ../datasets/td.lu.B.16.comp.4b.IV
+java Expand ../traces/td/lu/B/16/V/0 > ../datasets/td.lu.B.16.comp.4b.V
+java Expand ../traces/td/lu/B/16/VI/0 > ../datasets/td.lu.B.16.comp.4b.VI
+#+END_SRC
+
+The value of 2nd case of switch must be set to /COMP 4c/
+#+BEGIN_SRC sh :results silent
+cd ../scripts
+java Expand ../traces/ti/lu/C/16/I/0 > ../datasets/ti.lu.C.16.comp.4c.I
+java Expand ../traces/ti/lu/C/16/II/0 > ../datasets/ti.lu.C.16.comp.4c.II
+java Expand ../traces/ti/lu/C/16/III/0 > ../datasets/ti.lu.C.16.comp.4c.III
+java Expand ../traces/ti/lu/C/16/IV/0 > ../datasets/ti.lu.C.16.comp.4c.IV
+
+java Expand ../traces/ti/lu/B/16/V/0 > ../datasets/ti.lu.B.16.comp.4c.V
+java Expand ../traces/ti/lu/B/16/VI/0 > ../datasets/ti.lu.B.16.comp.4c.VI
+java Expand ../traces/ti/lu/B/16/VII/0 > ../datasets/ti.lu.B.16.comp.4c.VII
+java Expand ../traces/ti/lu/B/16/VIII/0 > ../datasets/ti.lu.B.16.comp.4c.VIII
+#+END_SRC
+* TODO COMP 4b ratios TD B-16 SIGDIFF 1 and 2
+** Get the datasets
+#+BEGIN_SRC sh :results silent
+cd ../scripts
+java Expand ../traces/td/lu/B/16/I/0 > ../datasets/td.lu.sd.0.B.16.comp.4b.I
+java Expand ../traces/td/lu/B/16/II/0 > ../datasets/td.lu.sd.0.B.16.comp.4b.II
+java Expand ../traces/td/lu/B/16/III/0 > ../datasets/td.lu.sd.0.B.16.comp.4b.III
+
+java Expand ../traces/td/lu.sigdiff.1/B/16/I/0 > ../datasets/td.lu.sd.1.B.16.comp.4b.I
+java Expand ../traces/td/lu.sigdiff.1/B/16/II/0 > ../datasets/td.lu.sd.1.B.16.comp.4b.II
+java Expand ../traces/td/lu.sigdiff.1/B/16/III/0 > ../datasets/td.lu.sd.1.B.16.comp.4b.III
+
+java Expand ../traces/td/lu.sigdiff.2/B/16/I/0 > ../datasets/td.lu.sd.2.B.16.comp.4b.I
+java Expand ../traces/td/lu.sigdiff.2/B/16/II/0 > ../datasets/td.lu.sd.2.B.16.comp.4b.II
+java Expand ../traces/td/lu.sigdiff.2/B/16/III/0 > ../datasets/td.lu.sd.2.B.16.comp.4b.III
+
+java Expand ../traces/td/lu.sigdiff.3/B/16/I/0 > ../datasets/td.lu.sd.3.B.16.comp.4b.I
+java Expand ../traces/td/lu.sigdiff.3/B/16/II/0 > ../datasets/td.lu.sd.3.B.16.comp.4b.II
+java Expand ../traces/td/lu.sigdiff.3/B/16/III/0 > ../datasets/td.lu.sd.3.B.16.comp.4b.III
+#+END_SRC

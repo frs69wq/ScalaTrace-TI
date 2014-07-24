@@ -1,0 +1,152 @@
+```{r}
+library(ggplot2)
+setwd('~/git/ScalaTrace-TI')
+
+ti.c.16.comp.4c.I<-read.table('datasets/ti.lu.C.16.comp.4c.I', header=TRUE)
+ti.c.16.comp.4c.II<-read.table('datasets/ti.lu.C.16.comp.4c.II', header=TRUE)
+ti.c.16.comp.4c.III<-read.table('datasets/ti.lu.C.16.comp.4c.III', header=TRUE)
+ti.c.16.comp.4c.IV<-read.table('datasets/ti.lu.C.16.comp.4c.IV', header=TRUE)
+
+td.c.16.comp.4b.I<-read.table('datasets/td.lu.C.16.comp.4b.I', header=TRUE)
+td.c.16.comp.4b.II<-read.table('datasets/td.lu.C.16.comp.4b.II', header=TRUE)
+td.c.16.comp.4b.III<-read.table('datasets/td.lu.C.16.comp.4b.III', header=TRUE)
+td.c.16.comp.4b.IV<-read.table('datasets/td.lu.C.16.comp.4b.IV', header=TRUE)
+
+ti.b.16.comp.4c.I<-read.table('datasets/ti.lu.B.16.comp.4c.V', header=TRUE)
+ti.b.16.comp.4c.II<-read.table('datasets/ti.lu.B.16.comp.4c.VI', header=TRUE)
+ti.b.16.comp.4c.III<-read.table('datasets/ti.lu.B.16.comp.4c.VII', header=TRUE)
+ti.b.16.comp.4c.IV<-read.table('datasets/ti.lu.B.16.comp.4c.VIII', header=TRUE)
+
+td.b.16.comp.4b.I<-read.table('datasets/td.lu.B.16.comp.4b.III', header=TRUE)
+td.b.16.comp.4b.II<-read.table('datasets/td.lu.B.16.comp.4b.IV', header=TRUE)
+td.b.16.comp.4b.III<-read.table('datasets/td.lu.B.16.comp.4b.V', header=TRUE)
+td.b.16.comp.4b.IV<-read.table('datasets/td.lu.B.16.comp.4b.VI', header=TRUE)
+
+b.16.4b.4c.I<-cbind(td.b.16.comp.4b.I[,1:4],
+                    td.b.16.comp.4b.I$avg/1e6,
+                    ti.b.16.comp.4c.I$avg*1e3)
+
+b.16.4b.4c.II<-cbind(td.b.16.comp.4b.II[,1:4],
+                    td.b.16.comp.4b.II$avg/1e6,
+                    ti.b.16.comp.4c.II$avg*1e3)
+
+b.16.4b.4c.III<-cbind(td.b.16.comp.4b.III[,1:4],
+                    td.b.16.comp.4b.III$avg/1e6,
+                    ti.b.16.comp.4c.III$avg*1e3)
+
+b.16.4b.4c.IV<-cbind(td.b.16.comp.4b.IV[,1:4],
+                    td.b.16.comp.4b.IV$avg/1e6,
+                    ti.b.16.comp.4c.IV$avg*1e3)
+
+c.16.4b.4c.I<-cbind(td.c.16.comp.4b.I[,1:4],
+                    td.c.16.comp.4b.I$avg/1e6,
+                    ti.c.16.comp.4c.I$avg*1e3)
+
+c.16.4b.4c.II<-cbind(td.c.16.comp.4b.II[,1:4],
+                     td.c.16.comp.4b.II$avg/1e6,
+                     ti.c.16.comp.4c.II$avg*1e3)
+
+c.16.4b.4c.III<-cbind(td.c.16.comp.4b.III[,1:4],
+                     td.c.16.comp.4b.III$avg/1e6,
+                     ti.c.16.comp.4c.III$avg*1e3)
+
+c.16.4b.4c.IV<-cbind(td.c.16.comp.4b.IV[,1:4],
+                     td.c.16.comp.4b.IV$avg/1e6,
+                     ti.c.16.comp.4c.IV$avg*1e3)
+
+colnames(b.16.4b.4c.I)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(b.16.4b.4c.II)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(b.16.4b.4c.III)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(b.16.4b.4c.IV)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+colnames(c.16.4b.4c.I)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(c.16.4b.4c.II)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(c.16.4b.4c.III)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(c.16.4b.4c.IV)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+a1<-rbind(data.frame(b.16.4b.4c.I, class='B-16',
+                     rows=1:nrow(b.16.4b.4c.I),
+                     time=b.16.4b.4c.I$events * b.16.4b.4c.I$COMP.4b.avg,
+                     percentRate=((b.16.4b.4c.I$events * b.16.4b.4c.I$COMP.4c.avg) / (b.16.4b.4c.I$events * b.16.4b.4c.I$COMP.4b.avg)) / (sum(((b.16.4b.4c.I$events * b.16.4b.4c.I$COMP.4c.avg) / (b.16.4b.4c.I$events * b.16.4b.4c.I$COMP.4b.avg)))) * 100),
+          data.frame(c.16.4b.4c.I, class='C-16',
+                     rows=1:nrow(c.16.4b.4c.I),
+                     time=c.16.4b.4c.I$events * c.16.4b.4c.I$COMP.4b.avg,
+                     percentRate=((c.16.4b.4c.I$events * c.16.4b.4c.I$COMP.4c.avg) / (c.16.4b.4c.I$events * c.16.4b.4c.I$COMP.4b.avg)) / (sum(((c.16.4b.4c.I$events * c.16.4b.4c.I$COMP.4c.avg) / (c.16.4b.4c.I$events * c.16.4b.4c.I$COMP.4b.avg)))) * 100))
+
+a2<-rbind(data.frame(b.16.4b.4c.II, class='B-16',
+                     rows=1:nrow(b.16.4b.4c.II),
+                     time=b.16.4b.4c.II$events * b.16.4b.4c.II$COMP.4b.avg,
+                     percentRate=((b.16.4b.4c.II$events * b.16.4b.4c.II$COMP.4c.avg) / (b.16.4b.4c.II$events * b.16.4b.4c.II$COMP.4b.avg)) / (sum(((b.16.4b.4c.II$events * b.16.4b.4c.II$COMP.4c.avg) / (b.16.4b.4c.II$events * b.16.4b.4c.II$COMP.4b.avg)))) * 100),
+          data.frame(c.16.4b.4c.II, class='C-16',
+                     rows=1:nrow(c.16.4b.4c.II),
+                     time=c.16.4b.4c.II$events * c.16.4b.4c.II$COMP.4b.avg,
+                     percentRate=((c.16.4b.4c.II$events * c.16.4b.4c.II$COMP.4c.avg) / (c.16.4b.4c.II$events * c.16.4b.4c.II$COMP.4b.avg)) / (sum(((c.16.4b.4c.II$events * c.16.4b.4c.II$COMP.4c.avg) / (c.16.4b.4c.II$events * c.16.4b.4c.II$COMP.4b.avg)))) * 100))
+
+a3<-rbind(data.frame(b.16.4b.4c.III, class='B-16',
+                     rows=1:nrow(b.16.4b.4c.III),
+                     time=b.16.4b.4c.III$events * b.16.4b.4c.III$COMP.4b.avg,
+                     percentRate=((b.16.4b.4c.III$events * b.16.4b.4c.III$COMP.4c.avg) / (b.16.4b.4c.III$events * b.16.4b.4c.III$COMP.4b.avg)) / (sum(((b.16.4b.4c.III$events * b.16.4b.4c.III$COMP.4c.avg) / (b.16.4b.4c.III$events * b.16.4b.4c.III$COMP.4b.avg)))) * 100),
+          data.frame(c.16.4b.4c.III, class='C-16',
+                     rows=1:nrow(c.16.4b.4c.III),
+                     time=c.16.4b.4c.III$events * c.16.4b.4c.III$COMP.4b.avg,
+                     percentRate=((c.16.4b.4c.III$events * c.16.4b.4c.III$COMP.4c.avg) / (c.16.4b.4c.III$events * c.16.4b.4c.III$COMP.4b.avg)) / (sum(((c.16.4b.4c.III$events * c.16.4b.4c.III$COMP.4c.avg) / (c.16.4b.4c.III$events * c.16.4b.4c.III$COMP.4b.avg)))) * 100))
+
+a4<-rbind(data.frame(b.16.4b.4c.IV, class='B-16',
+                     rows=1:nrow(b.16.4b.4c.IV),
+                     time=b.16.4b.4c.IV$events * b.16.4b.4c.IV$COMP.4b.avg,
+                     percentRate=((b.16.4b.4c.IV$events * b.16.4b.4c.IV$COMP.4c.avg) / (b.16.4b.4c.IV$events * b.16.4b.4c.IV$COMP.4b.avg)) / (sum(((b.16.4b.4c.IV$events * b.16.4b.4c.IV$COMP.4c.avg) / (b.16.4b.4c.IV$events * b.16.4b.4c.IV$COMP.4b.avg)))) * 100),
+          data.frame(c.16.4b.4c.IV, class='C-16',
+                     rows=1:nrow(c.16.4b.4c.IV),
+                     time=c.16.4b.4c.IV$events * c.16.4b.4c.IV$COMP.4b.avg,
+                     percentRate=((c.16.4b.4c.IV$events * c.16.4b.4c.IV$COMP.4c.avg) / (c.16.4b.4c.IV$events * c.16.4b.4c.IV$COMP.4b.avg)) / (sum(((c.16.4b.4c.IV$events * c.16.4b.4c.IV$COMP.4c.avg) / (c.16.4b.4c.IV$events * c.16.4b.4c.IV$COMP.4b.avg)))) * 100))
+# 
+# ggplot(a, aes(x=COMP.4c.avg,
+#               y=COMP.4c.avg/COMP.4b.avg,
+#               color=factor(class),
+#               size=events)) +
+#   geom_point() + scale_x_log10() +
+#   geom_smooth(method="loess", aes(fill=factor(a$class)))
+
+
+ggplot(a1, aes(x=rows,
+              y=COMP.4c.avg/COMP.4b.avg,
+              color=factor(class),
+              size=percentRate)) +
+  geom_point() + geom_smooth(method="loess", se=FALSE)
+
+ggplot(a2, aes(x=rows,
+              y=COMP.4c.avg/COMP.4b.avg,
+              color=factor(class),
+              size=percentRate)) +
+  geom_point() + geom_smooth(method="loess", se=FALSE)
+
+ggplot(a3, aes(x=rows,
+              y=COMP.4c.avg/COMP.4b.avg,
+              color=factor(class),
+              size=percentRate)) +
+  geom_point() + geom_smooth(method="loess", se=FALSE)
+
+ggplot(a4, aes(x=rows,
+              y=COMP.4c.avg/COMP.4b.avg,
+              color=factor(class),
+              size=percentRate)) +
+  geom_point() + geom_smooth(method="loess", se=FALSE)
+
+
+newDF1<-data.frame(rows=1:167, percentRatio=((a1[a1[,7]=="C-16",][1:167,]$COMP.4c.avg / a1[a1[,7]=="C-16",][1:167,]$COMP.4b.avg) / (a1[a1[,7]=="B-16",][1:167,]$COMP.4c.avg / 
+a1[a1[,7]=="B-16",][1:167,]$COMP.4b.avg)))
+
+newDF2<-data.frame(rows=1:167, percentRatio=((a2[a2[,7]=="C-16",][1:167,]$COMP.4c.avg / a2[a2[,7]=="C-16",][1:167,]$COMP.4b.avg) / (a2[a2[,7]=="B-16",][1:167,]$COMP.4c.avg / a2[a2[,7]=="B-16",][1:167,]$COMP.4b.avg)))
+
+newDF3<-data.frame(rows=1:167, percentRatio=((a3[a3[,7]=="C-16",][1:167,]$COMP.4c.avg / a3[a3[,7]=="C-16",][1:167,]$COMP.4b.avg) / (a3[a3[,7]=="B-16",][1:167,]$COMP.4c.avg / a3[a3[,7]=="B-16",][1:167,]$COMP.4b.avg)))
+
+newDF4<-data.frame(rows=1:167, percentRatio=((a4[a4[,7]=="C-16",][1:167,]$COMP.4c.avg / a4[a4[,7]=="C-16",][1:167,]$COMP.4b.avg) / (a4[a4[,7]=="B-16",][1:167,]$COMP.4c.avg / a4[a4[,7]=="B-16",][1:167,]$COMP.4b.avg)))
+
+ggplot(newDF1, aes(x=rows, y=percentRatio)) + geom_point() + geom_hline(yintercept=1) + geom_smooth(method="loess", se=FALSE)
+
+ggplot(newDF2, aes(x=rows, y=percentRatio)) + geom_point() + geom_hline(yintercept=1) + geom_smooth(method="loess", se=FALSE)
+
+ggplot(newDF3, aes(x=rows, y=percentRatio)) + geom_point() + geom_hline(yintercept=1) + geom_smooth(method="loess", se=FALSE)
+
+ggplot(newDF4, aes(x=rows, y=percentRatio)) + geom_point() + geom_hline(yintercept=1) + geom_smooth(method="loess", se=FALSE)
+```

@@ -87,7 +87,7 @@ of the experiments of the CCPE paper but using ScalaTrace-TI.
   have a large amount of memory, then the execution can be folded by a
   great factor (16 is easy IIRC).
 
-* TODO 11th July 2014 [5/6]
+* TODO 11th July 2014 [6/11]
 ** DONE COMM TD TD Ratio
 ** DONE COMM TI TI Ratio
 ** DONE Folded execution 2 4 8 16
@@ -96,26 +96,36 @@ More execution of ff-32
 Recalculate avg (avg*events/events)
 
 ** DONE B-32, B-64, C-32, C-64 traces
-** ASK Get a trace with SIG_DIFF and LOOP_LCS enabled B-16
-Few more traces with LOOP_LCS
-Few with SIG_DIFF
-+ Comparing B-16 SIGDIFF 0 and 1
-  after event 66 the opcodes are not same.
-  
 ** DONE LU C-1024 No instrumentation (4 nodes/4 cores)
-** TODO Figure 14 CCPE
-But with more information.
+** ASK Get a trace with SIG_DIFF and LOOP_LCS enabled B-16
+Few more traces with LOOP_LCS (crappy)
+Few with SIG_DIFF
++ Comparing B-16 SIGDIFF 0 and 1 after event 66 the opcodes are not
+  same. 
++ No difference in opcodes and stack signature in SIGDIFF 2 and 3
++ COMP 4b ratios b/w 1-2 and 2-3 are almost 1.
 
-** TODO TD vs TIC ratio B-16, C-8
-check if it is constant b/w diff runs.
-determine if the ratio is same b/w classes and processes.
-
-** TODO Identify different phases in the execution from the traces
-** TODO Track from the trace for the 3 missing event
-** TODO Plot B-16 and C-16 on same graph (inst rate)
+** ASK Plot B-16 and C-16 on same graph (inst rate)
 a) get the overall value (events*avg) and calc % using this for each
    entry.
    -OR-
 b) identify most important events using a threshold on % or events and
    extract the dataframe for those events
 c) ratios of rates on the same plot
+
+** DONE TD vs TIC ratio B-16, C-8
+check if it is constant b/w diff runs.
+determine if the ratio is same b/w classes and processes.
+
+** TODO Identify different phases in the execution from the traces
+** TODO Track from the trace for the 3 missing event
+** TODO Figure 14 CCPE
+But with more information
+1) plot the overall average rate
+2) Separate the 8's from the 16's, as instances are not fully
+   comparable
+3) use color to highlight the "location" in the execution rather than
+   the number of instruction (already given by the x-axis. A first
+   approximation could be to have a different color if the event id is
+   in [0-30[ [30-60[ and [60-80[ to roughly distinguish what I suppose
+   to be the warmup, computation, results gathering and checkup phases.
