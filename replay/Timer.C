@@ -118,7 +118,7 @@ void Timer::simulateComputeTime(bool doComm, compute_t *_exec) {
 	cerr << "PAPI num instruction overflow!" << endl;
 	exit(1);
   }
-  cout << "Simulating " << flops*1000.0 << " flops" << endl;
+  //cout << "Simulating " << flops*1000.0 << " flops" << endl;
   smpi_execute_flops(flops*1000.0);	// Re-multiplying by 1000 (we had divided to avoid overflows)
   #else
   smpi_execute((double)comp_time / 1000000.0);
