@@ -1227,8 +1227,10 @@ Trace* Trace::inputTrace(const char* filename, int mode, int rank){
       eventbuf += line + "\n";
     } else {
       Event *e = Event::inputEvent(eventbuf, mode, rank);
-      e->setId(seqnum++);
-      trace->appendEvent(e, false);
+      if (e){
+        e->setId(seqnum++);
+        trace->appendEvent(e, false);
+      }
       eventbuf.clear();
     }
   }
