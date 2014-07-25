@@ -5,7 +5,7 @@ DEBUGGING=n
 #####################################
 # Options
 #####################################
-HISTO_REPLAY=y
+HISTO_REPLAY=n
 
 RAND_DEST=6
 
