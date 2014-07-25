@@ -87,7 +87,7 @@ of the experiments of the CCPE paper but using ScalaTrace-TI.
   have a large amount of memory, then the execution can be folded by a
   great factor (16 is easy IIRC).
 
-* TODO 11th July 2014 [6/11]
+* TODO 11th July 2014 [6/10]
 ** DONE COMM TD TD Ratio
 ** DONE COMM TI TI Ratio
 ** DONE Folded execution 2 4 8 16
@@ -118,7 +118,16 @@ check if it is constant b/w diff runs.
 determine if the ratio is same b/w classes and processes.
 
 ** TODO Identify different phases in the execution from the traces
-** TODO Track from the trace for the 3 missing event
+*** Phase 1
+1148 -> 1004 -> 1010
+MPI_Wait -> MPI_Allreduce -> MPI_Barrier
+
+*** Phase2
+
+*** Phase 3
+
+*** TODO Track from the trace for the 3 missing event
+
 ** TODO Figure 14 CCPE
 But with more information
 1) plot the overall average rate

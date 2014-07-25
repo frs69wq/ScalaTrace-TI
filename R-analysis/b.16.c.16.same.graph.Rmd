@@ -99,7 +99,7 @@ a4<-rbind(data.frame(b.16.4b.4c.IV, class='B-16',
                      rows=1:nrow(c.16.4b.4c.IV),
                      time=c.16.4b.4c.IV$events * c.16.4b.4c.IV$COMP.4b.avg,
                      percentRate=((c.16.4b.4c.IV$events * c.16.4b.4c.IV$COMP.4c.avg) / (c.16.4b.4c.IV$events * c.16.4b.4c.IV$COMP.4b.avg)) / (sum(((c.16.4b.4c.IV$events * c.16.4b.4c.IV$COMP.4c.avg) / (c.16.4b.4c.IV$events * c.16.4b.4c.IV$COMP.4b.avg)))) * 100))
-# 
+ 
 # ggplot(a, aes(x=COMP.4c.avg,
 #               y=COMP.4c.avg/COMP.4b.avg,
 #               color=factor(class),
