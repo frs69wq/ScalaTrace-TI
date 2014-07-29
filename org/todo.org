@@ -87,7 +87,7 @@ of the experiments of the CCPE paper but using ScalaTrace-TI.
   have a large amount of memory, then the execution can be folded by a
   great factor (16 is easy IIRC).
 
-* TODO 11th July 2014 [6/10]
+* TODO 11th July 2014 [7/10]
 ** DONE COMM TD TD Ratio
 ** DONE COMM TI TI Ratio
 ** DONE Folded execution 2 4 8 16
@@ -97,7 +97,7 @@ Recalculate avg (avg*events/events)
 
 ** DONE B-32, B-64, C-32, C-64 traces
 ** DONE LU C-1024 No instrumentation (4 nodes/4 cores)
-** ASK Get a trace with SIG_DIFF and LOOP_LCS enabled B-16
+** DONE Get a trace with SIG_DIFF and LOOP_LCS enabled B-16
 Few more traces with LOOP_LCS (crappy)
 Few with SIG_DIFF
 + Comparing B-16 SIGDIFF 0 and 1 after event 66 the opcodes are not
