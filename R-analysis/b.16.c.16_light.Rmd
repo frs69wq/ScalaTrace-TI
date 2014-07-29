@@ -1,0 +1,105 @@
+---
+title: "comparison of B-16 and C-16"
+author: "F. Suter"
+date: "29/07/2014"
+output: html_document
+---
+
+In this document we want to study the evolution of the instruction rate for two traces obtained with the same number of processes (16) but different data sizes (Classes B and C)
+
+## Init 
+```{r init and table read}
+library(ggplot2)
+setwd('~/SVN/Anshul/ScalaTrace-TI')
+
+td.b.16.comp.4b.I<-read.table('datasets/td.lu.B.16.comp.4b.III', header=TRUE)
+ti.b.16.comp.4c.I<-read.table('datasets/ti.lu.B.16.comp.4c.V', header=TRUE)
+
+td.c.16.comp.4b.I<-read.table('datasets/td.lu.C.16.comp.4b.I', header=TRUE)
+ti.c.16.comp.4c.I<-read.table('datasets/ti.lu.C.16.comp.4c.I', header=TRUE)
+```
+
+## Preparing the datasets
+We first modify the datasets for each class by replacing the original (avg, min, max) per block of the Timed trace (td) by the average time (COMP.4b.avg, in seconds) and the average number of instructions (COMP.4c.avg, after correction) per block.
+
+Then we add new columns:
+
+  * rate: the instruction rate of an event, i.e. the #instructions divided by the time, or COMP.4.c / COMP.4.b
+  
+  * time: an estimation of the time taken by an event (number of occurences * avg time)
+  
+  * inst: an estimation of the number of instruction of an event (number of occurences * avg #instructions)
+  
+  * time_percent: the relative time contribution of an event (in percentage)
+  
+  * inst_percent: the relative instruction contribution of an event (in percentage)
+  
+Note: the last two columns might be biased as all the processes do not execute all the events (depends on the rank lists)
+  
+
+```{r Preparing the datasets}
+b.16<-cbind(td.b.16.comp.4b.I[,1:4],
+            td.b.16.comp.4b.I$avg/1e6,
+            ti.b.16.comp.4c.I$avg*1e3)
+
+colnames(b.16)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+b.16$rate <- b.16$COMP.4c.avg / b.16$COMP.4b.avg
+b.16$time <- b.16$events * b.16$COMP.4b.avg
+b.16$inst <- b.16$events * b.16$COMP.4c.avg
+b.total_time = sum(b.16$time)  
+b.total_inst = sum(b.16$inst)
+b.16$time_percent <- round((b.16$time*100)/b.total_time, digits = 2)
+b.16$inst_percent <- round((b.16$inst*100)/b.total_inst, digits = 2)
+
+c.16<-cbind(td.c.16.comp.4b.I[,1:4],
+            td.c.16.comp.4b.I$avg/1e6,
+            ti.c.16.comp.4c.I$avg*1e3)
+
+colnames(c.16)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+c.16$rate <- c.16$COMP.4c.avg / c.16$COMP.4b.avg
+c.16$time <- c.16$events * c.16$COMP.4b.avg
+c.16$inst <- c.16$events * c.16$COMP.4c.avg
+c.total_time = sum(c.16$time)  
+c.total_inst = sum(c.16$inst)
+c.16$time_percent <- round((c.16$time*100)/c.total_time, digits = 2)
+c.16$inst_percent <- round((c.16$inst*100)/c.total_inst, digits = 2)
+```
+
+## Comparing the two instances
+Give a first try by binding the two dataframes by rows. This doesn't allow us to verify that events at the same line are actually the same (evenID-opcode-subblock). We might consider a binding by columns at some point.
+
+```{r Let bind dataframes}
+df<-rbind(data.frame(b.16, class='B-16', rows=1:nrow(b.16)),
+          data.frame(c.16, class='C-16', rows=1:nrow(c.16)))
+```
+
+## Plotting stuff
+Start by plotting the instruction rate per event, factoring by class and having a bigger point if the event is an important contributor in terms of time.
+
+```{r Try to plot something}
+ggplot(df, aes(x=rows, y=rate, color=factor(class),size=time_percent)) +
+  geom_point()
+```
+
+Contributions smaller than 0.01% are still displayed, get rid of them to increase clarity.
+
+```{r Get rid of event of unsignificant contribution}
+df2 = df[df$time_percent>0.00,]
+ggplot(df2, aes(x=rows, y=rate, color=factor(class),size=time_percent)) +
+  geom_point()
+
+```
+
+Now, zoom in the middle part where important contributions are
+```{r zoom on the middle part}
+ggplot(df2, aes(x=rows, y=rate, color=factor(class),size=time_percent)) +
+  geom_point() +xlim(55,105)
+
+```
+Let see what a line shows. Remove the sizing then and stops at row 123 (not the same events after)
+```{r plot lines and not points}
+ggplot(df2, aes(x=rows, y=rate, color=factor(class))) +
+  geom_line() + xlim(0,123) +geom_smooth(method="lm", se=FALSE)
+```
+
