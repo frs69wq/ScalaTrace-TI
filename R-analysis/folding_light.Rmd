@@ -79,7 +79,7 @@ There are several issues there:
 
   + ratios don't evolve in the same way
 
-  + ratio stall between 32 and 64 while it shouldn't
+  + ratio stall between 16 and 32 while it shouldn't
   
 But there might be an explanation for the first two issues. We sum the time for all the occurrences of all of the blocks, regardless if a process actually executes it or not. Then we overestimate the compute time greatly and it compromises the computation of the ratios.
 

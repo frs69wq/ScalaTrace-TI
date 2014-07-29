@@ -122,7 +122,7 @@ ratios</code></pre>
 <ul>
 <li><p>approximations are much larger than measured times</p></li>
 <li><p>ratios don’t evolve in the same way</p></li>
-<li><p>ratio stall between 32 and 64 while it shouldn’t</p></li>
+<li><p>ratio stall between 16 and 32 while it shouldn’t</p></li>
 </ul>
 <p>But there might be an explanation for the first two issues. We sum the time for all the occurrences of all of the blocks, regardless if a process actually executes it or not. Then we overestimate the compute time greatly and it compromises the computation of the ratios.</p>
 <p>One solution could be to modify the expand.java program to add a (TRUE/FALSE) column that tells whether the process of rank 0 is involved or not. We have this information in the RANK line of each event, but might need ‘unwind’ to extract it.</p>
