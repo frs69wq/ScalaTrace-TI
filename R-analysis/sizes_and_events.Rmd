@@ -1,0 +1,35 @@
+---
+title: "sizes and events"
+author: "F. Suter"
+date: "30/07/2014"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+setwd('~/SVN/Anshul/ScalaTrace-TI')
+
+scala_sizes <- read.csv('datasets/scalatrace_sizes.csv',sep =',')
+mini_sizes <- read.csv('datasets/mini_sizes.csv', sep=',')
+scala_sizes$size <- scala_sizes$size/1024
+mini_sizes$size <- mini_sizes$size *1024
+scala_sizes$Tool="ScalaTrace"
+mini_sizes$Tool="MinI"
+```
+
+```{r}
+sizes <- rbind(scala_sizes, mini_sizes)
+
+ggplot(sizes, aes(x=processes, y=size, color=Class, shape=Tool, linetype=Tool )) +geom_line() + geom_point(size=3) + scale_y_log10(breaks=c(100*(1:2), 1e3, 1e4, 5e4, 1e5, 5e5, 1e6)) +scale_x_log10(breaks=unique(sizes$processes)) + ylab("Trace Size (in KiB)") + xlab("Number of MPI Processes")
+```
+
+
+```{r}
+compact <- read.csv('datasets/events_compact.csv',sep =',')
+compact$style="Compact"
+unrolled <- read.csv('datasets/events_unrolled.csv',sep =',')
+unrolled$style="Unrolled"
+events <- rbind(compact, unrolled)
+
+ggplot(events, aes(x=processes, y=events, color=Class, shape=style, linetype=style )) +geom_line() + geom_point(size=3) + scale_y_log10(breaks=c(100,1e3,1e5,1e6,5e6,1e7,5e7)) +scale_x_log10(breaks=unique(sizes$processes)) + ylab("Number of Events") + xlab("Number of MPI Processes")
+```

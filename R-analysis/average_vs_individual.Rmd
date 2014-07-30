@@ -2,7 +2,7 @@
 title: "Average vs. Individual"
 author: "F. Suter"
 date: "30/07/2014"
-output: html_document
+output: pdf_document
 ---
 
 In this document we want to determine whether using an averaged instruction rate is bad or not when compared to an individual instruction rate for each event.
