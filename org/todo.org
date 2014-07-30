@@ -87,7 +87,7 @@ of the experiments of the CCPE paper but using ScalaTrace-TI.
   have a large amount of memory, then the execution can be folded by a
   great factor (16 is easy IIRC).
 
-* TODO 11th July 2014 [7/10]
+* TODO 11th July 2014 [8/10]
 ** DONE COMM TD TD Ratio
 ** DONE COMM TI TI Ratio
 ** DONE Folded execution 2 4 8 16
@@ -105,7 +105,7 @@ Few with SIG_DIFF
 + No difference in opcodes and stack signature in SIGDIFF 2 and 3
 + COMP 4b ratios b/w 1-2 and 2-3 are almost 1.
 
-** ASK Plot B-16 and C-16 on same graph (inst rate)
+** DONE Plot B-16 and C-16 on same graph (inst rate)
 a) get the overall value (events*avg) and calc % using this for each
    entry.
    -OR-
@@ -138,3 +138,9 @@ But with more information
    approximation could be to have a different color if the event id is
    in [0-30[ [30-60[ and [60-80[ to roughly distinguish what I suppose
    to be the warmup, computation, results gathering and checkup phases.
+* TODO 29th July 2015 [0/4]
+** TODO Look at the rank list to ID which process execute with event
+** TODO Unwind all the Rank list. Find unique rank lists
+*** Matrix 
+** TODO TI traces for C-64 folding (perfect)
+** TODO Traces for #events upto max possible processes
