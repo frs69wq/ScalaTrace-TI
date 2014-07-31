@@ -1,6 +1,6 @@
 #+STARTUP: overview
 #+STARTUP: indent
-#+TODO: TODO(t) ASK(a) | DONE(d)
+#+TODO: TODO(t) | DONE(d)
 
 * TODO Trace analysis todo list [3/5]
 ** DONE Give access to traces and shell/R scripts
@@ -138,9 +138,9 @@ But with more information
    approximation could be to have a different color if the event id is
    in [0-30[ [30-60[ and [60-80[ to roughly distinguish what I suppose
    to be the warmup, computation, results gathering and checkup phases.
-* TODO 29th July 2015 [0/4]
+* TODO 29th July 2015 [2/4]
 ** TODO Look at the rank list to ID which process execute with event
 ** TODO Unwind all the Rank list. Find unique rank lists
 *** Matrix 
-** TODO TI traces for C-64 folding (perfect)
-** TODO Traces for #events upto max possible processes
+** DONE TI traces for C-64 folding (perfect)
+** DONE Traces for #events upto max possible processes
