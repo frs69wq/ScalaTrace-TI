@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ../traces/ti/lu;
+cd ../traces-new/ti/lu;
 
 echo "Class, processes, size" >  ../../../datasets/scalatrace_sizes.csv ;
 ls -l [B,C]/*/I/0  | awk '{printf("%s,%s\n",$9, $5)}' | awk '{gsub("/I/0","");print}' |awk '{gsub("/",",");print}' >> ../../../datasets/scalatrace_sizes.csv ;
