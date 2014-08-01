@@ -20,17 +20,17 @@ mini_sizes$Tool="MinI"
 ```{r}
 sizes <- rbind(scala_sizes, mini_sizes)
 
-ggplot(sizes, aes(x=processes, y=size, color=Class, shape=Tool, linetype=Tool )) +geom_line() + geom_point(size=3) + scale_y_log10(breaks=c(100*(1:2), 1e3, 1e4, 5e4, 1e5, 5e5, 1e6)) +scale_x_log10(breaks=unique(sizes$processes)) + ylab("Trace Size (in KiB)") + xlab("Number of MPI Processes")
+ggplot(sizes, aes(x=processes, y=size, color=Class, shape=Tool, linetype=Tool )) +geom_line() + geom_point(size=3) + scale_y_log10(breaks=c(100*(1:2), 1e3, 1e4, 5e4, 1e5, 5e5, 1e6)) +scale_x_log10(breaks=unique(sizes$processes)) + ylab("Trace Size (in KiB)") + xlab("Number of MPI Processes") + scale_linetype_manual(values=c(3,1)) + scale_shape_manual(values=c(17,16)) + guides(color=guide_legend(override.aes=list(shape=c(NA,NA))))
 ```
 
 
 ```{r}
 setwd('~/SVN/Anshul/ScalaTrace-TI')
 compact <- read.csv('datasets/events_compact.csv',sep =',')
-compact$style="Compact"
+compact$Style="Compact"
 unrolled <- read.csv('datasets/events_unrolled.csv',sep =',')
-unrolled$style="Unrolled"
+unrolled$Style="Unrolled"
 events <- rbind(compact, unrolled)
 
-ggplot(events, aes(x=processes, y=events, color=Class, shape=style, linetype=style )) +geom_line() + geom_point(size=3) + scale_y_log10(breaks=c(10^(1:9))) +scale_x_log10(breaks=unique(sizes$processes)) + ylab("Number of Events") + xlab("Number of MPI Processes")
+ggplot(events, aes(x=processes, y=events, color=Class, shape=Style, linetype=Style )) +geom_line() + geom_point(size=3) + scale_y_log10(breaks=c(10^(1:9))) +scale_x_log10(breaks=unique(sizes$processes)) + ylab("Number of Events") + xlab("Number of MPI Processes")+ scale_linetype_manual(values=c(1,3))+ guides(shape = guide_legend(order=1, reverse = TRUE), linetype = guide_legend(order=1, reverse = TRUE), color=guide_legend(order=2, override.aes=list(shape=c(NA,NA)))) 
 ```
