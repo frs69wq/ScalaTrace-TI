@@ -1,0 +1,152 @@
+---
+title: "Impact of folding acquisition"
+author: "F. Suter"
+date: "04/08/2014"
+output: html_document
+---
+
+In this document, we analyze the impact of folded acquisition, i.e., executing with more than process per core, on the Time-Independent ScalaTrace traces, in terms of execution time and contents of the traces.
+
+##Init
+First load all the needed traces. The format of the 'time' dataframe is
+
+  * Timer: Application (output of the benchmark), Real and User (as given by the time command)
+  
+  * Factor: how many processes were run on a single core. Factor=1 correspond to the "Regular" acquisition mode.
+  
+  * Time: the reported time
+  
+  * Regular: for each entry, we report the time of the Regular acquisition to ease the processing.
+  
+```{r}
+library(ggplot2)
+library(reshape2)                 #for melt
+library(plyr)                     #for colwise
+setwd('~/SVN/Anshul/ScalaTrace-TI')
+
+# To analyze the impact on acquisition time
+times <- read.csv('datasets/ti_folding_times.csv',sep =',')
+
+# To analyze the impact on stored numbers of instructions 
+inst_regular <- read.csv('datasets/ti_folding_regular.csv', sep=',')
+inst_2 <- read.csv('datasets/ti_folding_2.csv', sep=',')
+inst_4 <- read.csv('datasets/ti_folding_4.csv', sep=',')
+inst_8 <- read.csv('datasets/ti_folding_8.csv', sep=',')
+inst_16 <- read.csv('datasets/ti_folding_16.csv', sep=',')
+inst_32 <- read.csv('datasets/ti_folding_32.csv', sep=',')
+
+# To analyze the impact on stored delta times
+time_regular <- read.table('datasets/td.lu.C.64.comp.4b.I', header=TRUE)
+time_2 <- read.table('datasets/td.lu.C.64.folded.2.comp.4b.I', header=TRUE)
+time_4 <- read.table('datasets/td.lu.C.64.folded.4.comp.4b.I', header=TRUE)
+time_8 <- read.table('datasets/td.lu.C.64.folded.8.comp.4b.I', header=TRUE)
+time_16 <- read.table('datasets/td.lu.C.64.folded.16.comp.4b.I', header=TRUE)
+time_32 <- read.table('datasets/td.lu.C.64.folded.32.comp.4b.IV', header=TRUE)
+```
+
+## Analysis of the impact of folding on the trace acquisition time
+
+We first plot the execution time for each folding factor and each timer.
+
+```{r}
+ggplot(times, aes(x=Factor, y=Time, color=Timer, shape=Timer)) +geom_line() + geom_point(size=3) + ylab("Execution Time (in seconds)") + xlab("Folding Factor") + scale_x_discrete(breaks=times$Factor)
+```
+
+We can see that the execution time grows linearly with the folding factor. The time reported by the benchmark is close to what is returned by the time command, but seems to include the time spent in the system too (closer to real than to user).
+
+We confirm the linear evolution by plotting the slowdown caused by the folded execution, that is the execution time for a given folding factor divided by the time for the "regular" acquisition. From now on, we focus on the "Application" timer:
+
+```{r}
+ggplot(times[times$Timer=="Application",], aes(x=Factor, y=Time/Regular, color=Timer, shape=Timer)) +geom_line() + geom_point(size=3) + ylab("Slowdown") + xlab("Folding Factor") + scale_x_discrete(breaks=times$Factor) + scale_y_continuous(breaks=times$Factor, labels=times$Factor, limits=c(1,32))
+```
+
+The linearity is even more glaring when we look at the time of a folded acquisition divided by the time of the regular acquisition multiplied by the corresponding folding factor. The obtained values should be very close to 1.
+
+```{r}
+ggplot(times[times$Timer=="Application",], aes(x=Factor, y=Time/(Regular*Factor), color=Timer, shape=Timer)) +geom_line() + geom_point(size=3) + ylab("Ratio") + xlab("Folding Factor") + scale_x_discrete(breaks=times$Factor) + geom_hline(yintercept=1) +ylim(0.90, 1.10)
+```
+
+We can conclude than we fold an acquisition, the time to obtain the trace is more or less multiplied by the chosen folding factor. 
+
+## Analysis of of the impact of folding on instruction counts
+
+Now, we want to determine whether folding the execution modifies the average number of instructions stored for each event. This shouldn't be the case. To verify this assumptiom, we first build a dataframe that compute the ratio of the values stored for a folded execution to the regular mode. 
+
+```{r}
+inst_ratios = data.frame(inst_2$COMP.4c.avg/inst_regular$COMP.4c.avg, 
+                         inst_4$COMP.4c.avg/inst_regular$COMP.4c.avg,
+                         inst_8$COMP.4c.avg/inst_regular$COMP.4c.avg, 
+                         inst_16$COMP.4c.avg/inst_regular$COMP.4c.avg, 
+                         inst_32$COMP.4c.avg/inst_regular$COMP.4c.avg)
+
+names(inst_ratios) <- c(2, 4,8,16,32)
+```
+
+We plot the distribution of these ratios as a boxplot.
+```{r}
+ggplot(melt(inst_ratios), aes(variable, value)) + geom_boxplot() + xlab("Folding factor") + ylab("(Folded/Regular) Instruction Ratio")
+```
+
+Unfortunately, an outlier flattens the boxplot. We have to look for this event: check the summary, find the minimum values for each column, and on which row(s) these values are:
+
+```{r}
+summary(inst_ratios)
+colwise(min)(inst_ratios)
+colwise(which.min)(inst_ratios)
+```
+
+All the minimum values are on the last line! look at the last line of 'inst_regular' and 'inst_2'.
+
+```{r}
+tail (inst_regular, n=1)
+tail (inst_2, n=1)
+```
+
+A lot more instructions are executed in the MPI_Finalize function (opcode=1045) in the regular mode. By looking at the raw traces, we can see that:
+
+  * For all the folded modes, the maximum number of instructions is around 600
+  
+  * In the regular mode, 63 processes (all but 1 then) report a large number of instructions
+  
+  * Interestingly, the last process in the regular one also report around 600 instructions
+  
+This difference might be related to the fact that the PAPI counter are stopped in the MPI_Finalize function. There might be bug there or something that requires some investigations. As it is not critical for the time being, we remove this last line and replot the boxplot.
+
+```{r}
+no_finalize=inst_ratios[-nrow(inst_ratios),]
+ggplot(melt(no_finalize), aes(variable, value)) + geom_boxplot() + xlab("Folding factor") + ylab("(Folded/Regular) Instruction Ratio")
+```
+
+The box is very flat and centered on 1, with only a few outliers as confirmed by the summary
+
+```{r}
+summary(no_finalize)
+```
+
+We can conclude that folding the execution has **no impact** on the contents of the trace, *at the exception of the MPI_finalize event that requires a deeper investigation*
+
+## Analysis of the impact of folding on delta times
+
+Here, we conduct the same kind of analysis but on timed traces to determine the impact of folding on timers. As the processes have to compute for the CPU resource, the stored values should increase with the folding factor, thus preventing the usage of such traces for replay.
+
+We first build a dataframe that compute the ratio of the values stored for a folded execution to the regular mode. 
+
+```{r}
+time_ratios = data.frame(time_2$avg/time_regular$avg, 
+                         time_4$avg/time_regular$avg,                 
+                         time_8$avg/time_regular$avg, 
+                         time_16$avg/time_regular$avg, 
+                         time_32$avg/time_regular$avg)
+
+names(time_ratios) <- c(2,4,8,16,32)
+```
+
+Then we plot the distribution of these ratios as a boxplot.
+
+```{r}
+ggplot(melt(time_ratios), aes(variable, value)) + geom_boxplot() + xlab("Folding factor") + ylab("(Folded/Regular) Time Ratio")
+```
+
+We see an increase, but not as expected. We already noticed some issues with these traces (at least for a folding factor of 32). *Some new traces have to be obtained*
+
+

@@ -2,7 +2,7 @@
 title: "sizes and events"
 author: "F. Suter"
 date: "30/07/2014"
-output: html_document
+output: pdf_document
 ---
 
 ```{r}
