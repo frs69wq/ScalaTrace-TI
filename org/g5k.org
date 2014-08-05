@@ -107,3 +107,19 @@ export NPB_MPI_ROOT='/usr/local/src/NPB3.3/NPB3.3-MPI'
   + $NPB_MPI_ROOT/TI
   + $NPB_MPI_ROOT/TI-Cal
 
+* Compiling and executing NPB Benchmarks
+Set TIME_INDEPENDENT in config/make.def to 'y' or 'n' according to the
+requirement.
+
+#+begin_src sh
+cd $NPB_MPI_ROOT
+make lu CLASS=X NPROCS=Y
+#+end_src
+
+The executable will appear in $NPB_MPI_ROOT/bin/lu.X.Y
+Now copy the executable to all the nodes.
+
+#+begin_src sh
+for i in `cat nodefile.4`; do sshpass -p "trace" scp $NPB_MPI_ROOT/bin/lu.X.Y root@$i:~; done
+mpirun -hostfile hostfile.16 -np Y lu.X.Y
+#+end_src
