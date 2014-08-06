@@ -25,7 +25,8 @@ library(plyr)                     #for colwise
 setwd('~/SVN/Anshul/ScalaTrace-TI')
 
 # To analyze the impact on acquisition time
-times <- read.csv('datasets/ti_folding_times.csv',sep =',')
+ti_times <- read.csv('datasets/ti_folding_times.csv',sep =',')
+td_times <- read.csv('datasets/td_folding_times.csv',sep =',')
 
 # To analyze the impact on stored numbers of instructions 
 inst_regular <- read.csv('datasets/ti_folding_regular.csv', sep=',')
@@ -36,12 +37,12 @@ inst_16 <- read.csv('datasets/ti_folding_16.csv', sep=',')
 inst_32 <- read.csv('datasets/ti_folding_32.csv', sep=',')
 
 # To analyze the impact on stored delta times
-time_regular <- read.table('datasets/td.lu.C.64.comp.4b.I', header=TRUE)
-time_2 <- read.table('datasets/td.lu.C.64.folded.2.comp.4b.I', header=TRUE)
-time_4 <- read.table('datasets/td.lu.C.64.folded.4.comp.4b.I', header=TRUE)
-time_8 <- read.table('datasets/td.lu.C.64.folded.8.comp.4b.I', header=TRUE)
-time_16 <- read.table('datasets/td.lu.C.64.folded.16.comp.4b.I', header=TRUE)
-time_32 <- read.table('datasets/td.lu.C.64.folded.32.comp.4b.IV', header=TRUE)
+time_regular <- read.csv('datasets/td_folding_1.csv', sep=',')
+time_2 <- read.csv('datasets/td_folding_2.csv', sep=',')
+time_4 <- read.csv('datasets/td_folding_4.csv', sep=',')
+time_8 <- read.csv('datasets/td_folding_8.csv', sep=',')
+time_16 <- read.csv('datasets/td_folding_16.csv', sep=',')
+time_32 <- read.csv('datasets/td_folding_32.csv', sep=',')
 ```
 
 ## Analysis of the impact of folding on the trace acquisition time
@@ -49,7 +50,7 @@ time_32 <- read.table('datasets/td.lu.C.64.folded.32.comp.4b.IV', header=TRUE)
 We first plot the execution time for each folding factor and each timer.
 
 ```{r}
-ggplot(times, aes(x=Factor, y=Time, color=Timer, shape=Timer)) +geom_line() + geom_point(size=3) + ylab("Execution Time (in seconds)") + xlab("Folding Factor") + scale_x_discrete(breaks=times$Factor)
+ggplot(ti_times, aes(x=Factor, y=Time, color=Timer, shape=Timer)) +geom_line() + geom_point(size=3) + ylab("Execution Time (in seconds)") + xlab("Folding Factor") + scale_x_discrete(breaks=ti_times$Factor)
 ```
 
 We can see that the execution time grows linearly with the folding factor. The time reported by the benchmark is close to what is returned by the time command, but seems to include the time spent in the system too (closer to real than to user).
@@ -57,16 +58,28 @@ We can see that the execution time grows linearly with the folding factor. The t
 We confirm the linear evolution by plotting the slowdown caused by the folded execution, that is the execution time for a given folding factor divided by the time for the "regular" acquisition. From now on, we focus on the "Application" timer:
 
 ```{r}
-ggplot(times[times$Timer=="Application",], aes(x=Factor, y=Time/Regular, color=Timer, shape=Timer)) +geom_line() + geom_point(size=3) + ylab("Slowdown") + xlab("Folding Factor") + scale_x_discrete(breaks=times$Factor) + scale_y_continuous(breaks=times$Factor, labels=times$Factor, limits=c(1,32))
+ggplot(ti_times[ti_times$Timer=="Application",], aes(x=Factor, y=Time/Regular, color=Timer, shape=Timer)) +geom_line() + geom_point(size=3) + ylab("Slowdown") + xlab("Folding Factor") + scale_x_discrete(breaks=ti_times$Factor) + scale_y_continuous(breaks=ti_times$Factor, labels=ti_times$Factor, limits=c(1,32))
 ```
 
 The linearity is even more glaring when we look at the time of a folded acquisition divided by the time of the regular acquisition multiplied by the corresponding folding factor. The obtained values should be very close to 1.
 
 ```{r}
-ggplot(times[times$Timer=="Application",], aes(x=Factor, y=Time/(Regular*Factor), color=Timer, shape=Timer)) +geom_line() + geom_point(size=3) + ylab("Ratio") + xlab("Folding Factor") + scale_x_discrete(breaks=times$Factor) + geom_hline(yintercept=1) +ylim(0.90, 1.10)
+ggplot(ti_times[ti_times$Timer=="Application",], aes(x=Factor, y=Time/(Regular*Factor), color=Timer, shape=Timer)) +geom_line() + geom_point(size=3) + ylab("Ratio") + xlab("Folding Factor") + scale_x_discrete(breaks=ti_times$Factor) + geom_hline(yintercept=1) +ylim(0.90, 1.10)
 ```
 
 We can conclude than we fold an acquisition, the time to obtain the trace is more or less multiplied by the chosen folding factor. 
+
+We observe an interesting thing with the Timed traces. For each folding factor, we acquired traces using 1, 2, or the 4 cores of a node. 
+
+```{r}
+td_times$cores <- factor(td_times$cores)
+
+ggplot(td_times, aes(x=Factor, y=Time, color=cores)) +geom_line() + geom_point(size=3) + ylab("Execution Time (in seconds)") + xlab("Folding Factor") + scale_x_discrete(breaks=td_times$Factor)
+
+ggplot(td_times, aes(x=Factor, y=Time/(Regular), color=cores)) +geom_line() +geom_point(size=3)+ ylab("Slowdown") + xlab("Folding Factor") + scale_x_discrete(breaks=td_times$Factor) 
+```
+
+We see that using more than one core per node leads to worse acquisition times and slowdowns. This is likely to be caused by the OS scheduler that moves processes from one core to another and cause an overhead. Pining processes to cores might solves this issue. 
 
 ## Analysis of of the impact of folding on instruction counts
 
@@ -132,11 +145,11 @@ Here, we conduct the same kind of analysis but on timed traces to determine the 
 We first build a dataframe that compute the ratio of the values stored for a folded execution to the regular mode. 
 
 ```{r}
-time_ratios = data.frame(time_2$avg/time_regular$avg, 
-                         time_4$avg/time_regular$avg,                 
-                         time_8$avg/time_regular$avg, 
-                         time_16$avg/time_regular$avg, 
-                         time_32$avg/time_regular$avg)
+time_ratios = data.frame(time_2$COMP.4b.avg/time_regular$COMP.4b.avg, 
+                         time_4$COMP.4b.avg/time_regular$COMP.4b.avg,                 
+                         time_8$COMP.4b.avg/time_regular$COMP.4b.avg, 
+                         time_16$COMP.4b.avg/time_regular$COMP.4b.avg, 
+                         time_32$COMP.4b.avg/time_regular$COMP.4b.avg)
 
 names(time_ratios) <- c(2,4,8,16,32)
 ```
@@ -144,9 +157,69 @@ names(time_ratios) <- c(2,4,8,16,32)
 Then we plot the distribution of these ratios as a boxplot.
 
 ```{r}
-ggplot(melt(time_ratios), aes(variable, value)) + geom_boxplot() + xlab("Folding factor") + ylab("(Folded/Regular) Time Ratio")
+ggplot(melt(time_ratios), aes(variable, value)) + geom_boxplot() + xlab("Folding factor") + ylab("(Folded/Regular) Time Ratio") 
+```
+Outliers prevents to see anything. Replot without displaying them.
+
+```{r}
+ggplot(melt(time_ratios), aes(variable, value)) + geom_boxplot(outlier.shape = NA) + xlab("Folding factor") + ylab("(Folded/Regular) Time Ratio")+ylim(0,35)
+
+summary(time_ratios)
 ```
 
-We see an increase, but not as expected. We already noticed some issues with these traces (at least for a folding factor of 32). *Some new traces have to be obtained*
+We see an increase, but not as expected. However we see that the 3rd Quartile value roughly doubles with the folding factor. Look at the values instead of ratios.
+
+```{r}
+times = data.frame(time_regular$COMP.4b.avg, 
+                    time_2$COMP.4b.avg,
+                    time_4$COMP.4b.avg,               
+                    time_8$COMP.4b.avg, 
+                    time_16$COMP.4b.avg, 
+                    time_32$COMP.4b.avg)
+names(times) <- c(1,2,4,8,16,32)
+
+summary(times)
+```
+
+The summary shows that 
+
+ * 25% of the values are less than 10 microseconds whatever the folding factor
+ 
+ * 50% of the values are still very small (less than 300 microseconds). 
+
+ * The impact of folding seems to be visible from more than 150 microseconds (doubling median from 16 to 32)
+ 
+ * For the first quartile and maximum values, we have something close to the expected slowdown.
+ 
+```{r}
+maximums<-c(max(time_regular$COMP.4b.avg),
+            max(time_2$COMP.4b.avg),
+            max(time_4$COMP.4b.avg),               
+            max(time_8$COMP.4b.avg), 
+            max(time_16$COMP.4b.avg), 
+            max(time_32$COMP.4b.avg))
+maximums /maximums[1]
+```
+
+Then we focus on the 50 most time-consuming events in the trace. 
+
+```{r}
+times = data.frame(head(time_regular[order(time_regular$COMP.4b.avg, decreasing = TRUE),],50)$COMP.4b.avg, 
+                   head(time_2[order(time_2$COMP.4b.avg, decreasing = TRUE),], 50)$COMP.4b.avg,
+                   head(time_4[order(time_4$COMP.4b.avg, decreasing = TRUE),], 50)$COMP.4b.avg,
+                   head(time_8[order(time_8$COMP.4b.avg, decreasing = TRUE),], 50)$COMP.4b.avg,
+                   head(time_16[order(time_16$COMP.4b.avg, decreasing = TRUE),], 50)$COMP.4b.avg, 
+                   head(time_32[order(time_32$COMP.4b.avg, decreasing = TRUE),], 50)$COMP.4b.avg)
+names(times) <- c(1,2,4,8,16,32)
+
+summary(times)
+
+ggplot(melt(times), aes(variable, value))  + xlab("Folding factor") + ylab("(Folded/Regular) Time Ratio") + geom_boxplot(outlier.shape = NA)+ylim(0,400000)
+```
+
+We see that the 1st, Median, and Mean evolve linearly with the folding factor to some extent. However, small values (Min and median for folding factors 2 and 4) are less impacted. 
+
+To conclude, delta times stored in timed traces are impacted by the floding of the execution in opposition to instructions stored in time-independent traces. Morevover, the increase of the delta times is related to the folding factor only for large values, with a definition of "large" that is hard to define and not as clear as what we saw for the acquisition times. 
+
 
 
