@@ -53,13 +53,14 @@ function unroll ()
 
   for i in $(seq 0 $(expr $EVENT_COUNT - 1))
   do
-    OPCODE_INDEX=$(grep -w "EVENT$i" $TRACE_FILE | awk '{print $2 - 1000}')
-    echo -e "EVENT$i: ${OPCODES[$OPCODE_INDEX]}"
+    # OPCODE_INDEX=$(grep -w "EVENT$i" $TRACE_FILE | awk '{print $2 - 1000}')
+    OPCODE_INDEX=$(grep -w "EVENT$i" $TRACE_FILE | awk '{print $2}')
+    echo -e -n  "EVENT$i: $OPCODE_INDEX "
     
-    # if [ $NO_UNWIND -eq 0 ]
-    # then
-    #   ./$UNWIND ${RANKLIST[$i]}
-    # fi
+    if [ $NO_UNWIND -eq 0 ]
+    then
+      ./$UNWIND ${RANKLIST[$i]} | head -n1
+    fi
     
     echo "awk '/EVENT$i:/, /EVENT$(expr $i + 1):/' $TRACE_FILE" | bash | grep -v RANKS | grep -v EVENT |
     while read line
