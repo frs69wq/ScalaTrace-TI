@@ -1,5 +1,10 @@
+#+TITLE: Trace Acquisition on Grid'5000
+#+AUTHOR: Anshul Gupta
+#+EMAIL: [[mailto:anshulgupta0803@gmail.com][anshulgupta0803@gmail.com]]
+#+OPTIONS: toc:nil
 #+STARTUP: indent
 #+STARTUP: overview
+#+LaTeX_Header: \usepackage{fullpage}
 
 * Login on the frontend
 #+begin_src sh
