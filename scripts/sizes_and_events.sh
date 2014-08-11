@@ -8,8 +8,9 @@ ls -l [B,C]/*/I/0  | awk '{printf("%s,%s\n",$9, $5)}' | awk '{gsub("/I/0","");pr
 echo "Class, processes, events" >  ../../../datasets/events_compact.csv ;
 echo "Class, processes, events" >  ../../../datasets/events_unrolled.csv ;
 for i in `ls [B,C]/*/I/0`; do 
-  echo `echo $i | cut -d '/' -f 1,2 | awk '{gsub("/",",");print}'`","`grep EVENT $i | wc -l` >> ../../../datasets/events_compact.csv ;
-  echo `echo $i | cut -d '/' -f 1,2 | awk '{gsub("/",",");print}'`","`grep COM $i | cut -d '(' -f 2 | cut -d ' ' -f 1 | awk '{s+=$1} END {print s}'` >> ../../../datasets/events_unrolled.csv ;
+  inst=`echo $i | awk -F '/' '{print $1","$2}'`
+  echo $inst","`grep EVENT $i | wc -l` >> ../../../datasets/events_compact.csv ;
+  echo $inst","`awk -F' ' '/COM/{gsub("\\\\(","",$4); s+=$4} END {print s}' $i` >> ../../../datasets/events_unrolled.csv ;
 done
 
 cd -
