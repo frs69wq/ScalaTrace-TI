@@ -980,10 +980,16 @@ void switch_event(int op_code, Event *e, Timer *timer){
 
 int replay_event(Event *e, int depth, int iteration){
   int op_code;
-
+  
   if(replay_timer)
     replay_timer->setCurrentEvent(e);
   op_code = e->getOp();
+
+#if DEBUG
+  cout << "rank: "<<my_rank <<", Id: " <<e->getId()<<", Op: " << e->getOp();
+  cout << ",depth: " << depth <<", iteration: " << iteration << endl;
+#endif
+   
   switch(op_code){
 
   case umpi_MPI_Finalize:
@@ -1030,6 +1036,6 @@ int replay_event(Event *e, int depth, int iteration){
     switch_event(op_code, e, replay_timer);
     break;
   }
-
+ 
   return 0;
 }
