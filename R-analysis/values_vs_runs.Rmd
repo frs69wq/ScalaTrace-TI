@@ -1,0 +1,38 @@
+---
+title: "Variability of communication and computation values across runs"
+author: "F. Suter"
+date: "11/08/2014"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+setwd('~/SVN/Anshul/ScalaTrace-TI')
+
+ti_comm_times <- read.csv('datasets/ti_total_comm_time.csv',sep =',')
+td_comm_times <- read.csv('datasets/td_total_comm_time.csv',sep =',') 
+
+ti_comp_times <- read.csv('datasets/ti_total_comp_time.csv',sep =',')
+td_comp_times <- read.csv('datasets/td_total_comp_time.csv',sep =',') 
+
+add_instance<-function(df){
+  df$Instance <- paste(df$Class, df$Processes, sep='-')
+  df$Processes <- factor(df$Processes)
+  return(df)
+}
+
+ti_comm_times <- add_instance(ti_comm_times)
+ti_comp_times <- add_instance(ti_comp_times)
+td_comm_times <- add_instance(td_comm_times)
+td_comp_times <- add_instance(td_comp_times)
+
+ti_times = rbind(ti_comm_times, ti_comp_times)
+td_times = rbind(td_comm_times, td_comp_times)
+times = rbind(ti_times, td_times)
+
+ggplot(ti_times, aes(x=as.integer(Run), y=Time, color=Instance, shape=Instance, linetype=Instance)) + geom_line()+geom_point(size=3) +facet_grid(TD_TI ~ COMM_COMP, scales="free_y") + scale_y_log10() + scale_x_continuous(breaks=c(1:8)) +xlab("Run Number") + ylab ("Cumulated Event Values") + scale_shape_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(16,17,16,17)) + scale_linetype_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(1,1,2,2))
+
+ggplot(td_times, aes(x=as.integer(Run), y=Time, color=Instance, shape=Instance, linetype=Instance)) + geom_line()+geom_point(size=3) +facet_grid(TD_TI ~ COMM_COMP, scales="free_y") + scale_y_log10() + scale_x_continuous(breaks=c(1:8)) +xlab("Run Number") + ylab ("Cumulated Event Values") + scale_shape_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(16,17,16,17)) + scale_linetype_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(1,1,2,2))
+
+ggplot(times, aes(x=as.integer(Run), y=Time, color=Instance, shape=Instance, linetype=Instance)) + geom_line()+geom_point(size=3) +facet_grid(TD_TI ~ COMM_COMP, scales="free_y") + scale_y_log10() + scale_x_continuous(breaks=c(1:8)) +xlab("Run Number") + ylab ("Cumulated Event Values") + scale_shape_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(16,17,16,17)) + scale_linetype_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(1,1,2,2))
+```
