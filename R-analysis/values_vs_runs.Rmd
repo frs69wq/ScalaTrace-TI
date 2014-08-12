@@ -2,7 +2,7 @@
 title: "Variability of communication and computation values across runs"
 author: "F. Suter"
 date: "11/08/2014"
-output: pdf_document
+output: html_document
 ---
 
 In this document, we analyze the variability of the values that are in stored in the traces across several runs of a given problem instance. Data have been extracted from the ScalaTrace traces with the **'total_times.sh'** script that sums the products of the number of occurrences of an event and the average value (time in microseconds or kilo-instructions) on the contents of the **traces/** directory. The number of runs varies for 5 to 7 depending on the instance.
@@ -50,7 +50,7 @@ times = rbind(ti_times, td_times)
 Plot the cumulated values for each run while distinguishing computations and communications. 
 
 ```{r}
-ggplot(td_times, aes(x=as.integer(Run), y=Time, color=Instance, shape=Instance, linetype=Instance)) + geom_line()+geom_point(size=3) +facet_grid(TD_TI ~ COMM_COMP, scales="free_y") + scale_x_continuous(breaks=c(1:8)) +xlab("Run Number") + ylab ("Cumulated Event Values") + scale_shape_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(16,17,16,17)) + scale_linetype_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(1,1,2,2)) #+ scale_y_log10() 
+ggplot(td_times, aes(x=as.integer(Run), y=Time, color=Instance, shape=Instance, linetype=Instance)) + geom_line()+geom_point(size=3) +facet_wrap(~ COMM_COMP, nrow=1,scales="free_y") + scale_x_continuous(breaks=c(1:8)) +xlab("Run Number") + ylab ("Cumulated Event Values") + scale_shape_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(16,17,16,17)) + scale_linetype_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(1,1,2,2)) #+ scale_y_log10() 
 ```
 
 We see that the values stored for compute events are pretty stable across runs. However, one value is not in line for each instance. Checking the list of nodes (**traces/td/lu/[B,C]/{8,16}/hostfile.***) used to execute the different runs explain this: For B-8, B-16, and C-8, the first run has been executed with 1 process per node, while the others ran 4 processes per node (on all 4 cores). For C-16, the first 6 runs use 1 process per node, and the 7th uses 4 cores per node. 
@@ -87,7 +87,7 @@ We see the opposite: computations took longer for this run.
 We conduct the analysis for time-independent traces and start by plotting the cumulated values for each run while distinguishing computations and communications. Here the compute part does not correspond to delta times but to numbers of kilo-instructions (thousands of instructions).
 
 ```{r}
-ggplot(ti_times, aes(x=as.integer(Run), y=Time, color=Instance, shape=Instance, linetype=Instance)) + geom_line()+geom_point(size=3) +facet_grid(TD_TI ~ COMM_COMP, scales="free_y") + scale_y_log10() + scale_x_continuous(breaks=c(1:8)) +xlab("Run Number") + ylab ("Cumulated Event Values") + scale_shape_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(16,17,16,17)) + scale_linetype_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(1,1,2,2))
+ggplot(ti_times, aes(x=as.integer(Run), y=Time, color=Instance, shape=Instance, linetype=Instance)) + geom_line()+geom_point(size=3) +facet_wrap(~ COMM_COMP) + scale_x_continuous(breaks=c(1:8)) +xlab("Run Number") + ylab ("Cumulated Event Values") + scale_shape_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(16,17,16,17)) + scale_linetype_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(1,1,2,2))
 ```
 
 Again, these results have to be completed by the lists of nodes used for their acquisition (**traces/td/lu/[B,C]/{8,16}/hostfile.***):
@@ -105,11 +105,11 @@ The first comment is that, despite of the different experimental configurations,
 ```{r}
 comm_times = rbind(ti_comm_times, td_comm_times)
 
-ggplot(comm_times, aes(x=as.integer(Run), y=Time, color=TD_TI, shape=TD_TI)) + geom_line()+geom_point(size=3) + facet_grid(Class~Processes)  +xlab("Run Number") + ylab ("Cumulated Communication Delays") + scale_shape_discrete(name="Trace Type")+ scale_color_discrete(name="Trace Type")
+ggplot(comm_times, aes(x=as.integer(Run), y=Time, color=TD_TI, shape=TD_TI)) + geom_line()+geom_point(size=3) + facet_wrap(Class~Processes, scales="free_y")  +xlab("Run Number") + ylab ("Cumulated Communication Delays") + scale_shape_discrete(name="Trace Type")+ scale_color_discrete(name="Trace Type")
 ```
 
 
 ## Wrapping Everything in a Single Graph 
 ```{r}
-ggplot(times, aes(x=as.integer(Run), y=Time, color=Instance, shape=Instance, linetype=Instance)) + geom_line()+geom_point(size=3) +facet_grid(TD_TI ~ COMM_COMP, scales="free_y") + scale_y_log10() + scale_x_continuous(breaks=c(1:8)) +xlab("Run Number") + ylab ("Cumulated Event Values") + scale_shape_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(16,17,16,17)) + scale_linetype_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(1,1,2,2))
+ggplot(times, aes(x=as.integer(Run), y=Time, color=Instance, shape=Instance, linetype=Instance)) + geom_line()+geom_point(size=3) +facet_wrap(TD_TI ~ COMM_COMP, scales="free_y") + scale_x_continuous(breaks=c(1:8)) +xlab("Run Number") + ylab ("Cumulated Event Values") + scale_shape_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(16,17,16,17)) + scale_linetype_manual(name="Instance", labels = c("B-16", "B-8", "C-16","C-8"), values=c(1,1,2,2))
 ```
