@@ -105,7 +105,7 @@ The first comment is that, despite of the different experimental configurations,
 ```{r}
 comm_times = rbind(ti_comm_times, td_comm_times)
 
-ggplot(comm_times, aes(x=as.integer(Run), y=Time, color=TD_TI, shape=TD_TI)) + geom_line()+geom_point(size=3) + facet_wrap(Class~Processes, scales="free_y")  +xlab("Run Number") + ylab ("Cumulated Communication Delays") + scale_shape_discrete(name="Trace Type")+ scale_color_discrete(name="Trace Type")
+ggplot(comm_times, aes(x=as.integer(Run), y=Time, color=TD_TI, shape=TD_TI)) + geom_line()+geom_point(size=3) + facet_wrap(~Instance, nrow=1,scales="free_y")  +xlab("Run Number") + ylab ("Cumulated Communication Delays") + scale_shape_discrete(name="Trace Type")+ scale_color_discrete(name="Trace Type")
 ```
 
 
