@@ -1,0 +1,281 @@
+---
+title: "Average vs. Individual for Fixed Class"
+author: "Anshul Gupta"
+date: "15/08/2014"
+output: html_document
+---
+
+In this document we want to determine whether using an averaged instruction rate is bad or not when compared to an individual instruction rate for each event.
+
+## Init 
+```{r init and table read}
+library(ggplot2)
+setwd('~/SVN/Anshul/ScalaTrace-TI')
+
+# td.a.16.comp.4b.I<-read.table('datasets-new/td.lu.A.16.comp.4b.I', header=TRUE)
+# ti.a.16.comp.4c.I<-read.table('datasets-new/ti.lu.A.16.comp.4c.I', header=TRUE)
+# 
+# td.b.16.comp.4b.I<-read.table('datasets-new/td.lu.B.16.comp.4b.I', header=TRUE)
+# ti.b.16.comp.4c.I<-read.table('datasets-new/ti.lu.B.16.comp.4c.I', header=TRUE)
+
+td.c.4.comp.4b.I<-read.table('datasets-new/td.lu.C.4.comp.4b.I', header=TRUE)
+ti.c.4.comp.4c.I<-read.table('datasets-new/ti.lu.C.4.comp.4c.I', header=TRUE)
+
+td.c.8.comp.4b.I<-read.table('datasets-new/td.lu.C.8.comp.4b.I', header=TRUE)
+ti.c.8.comp.4c.I<-read.table('datasets-new/ti.lu.C.8.comp.4c.I', header=TRUE)
+
+td.c.16.comp.4b.I<-read.table('datasets-new/td.lu.C.16.comp.4b.I', header=TRUE)
+ti.c.16.comp.4c.I<-read.table('datasets-new/ti.lu.C.16.comp.4c.I', header=TRUE)
+
+td.c.32.comp.4b.I<-read.table('datasets-new/td.lu.C.32.comp.4b.I', header=TRUE)
+ti.c.32.comp.4c.I<-read.table('datasets-new/ti.lu.C.32.comp.4c.I', header=TRUE)
+
+td.c.64.comp.4b.I<-read.table('datasets-new/td.lu.C.64.comp.4b.I', header=TRUE)
+ti.c.64.comp.4c.I<-read.table('datasets-new/ti.lu.C.64.comp.4c.I', header=TRUE)
+
+td.c.128.comp.4b.I<-read.table('datasets-new/td.lu.C.128.comp.4b.V', header=TRUE)
+ti.c.128.comp.4c.I<-read.table('datasets-new/ti.lu.C.128.comp.4c.V', header=TRUE)
+```
+
+## Preparing the datasets
+We first modify the datasets for each class by replacing the original (avg, min, max) per block of the Timed trace (td) by the average time (COMP.4b.avg, in seconds) and the average number of instructions (COMP.4c.avg, after correction) per block.
+
+Then we add new columns:
+
+  * rate: the instruction rate of an event, i.e. the #instructions divided by the time, or COMP.4.c / COMP.4.b
+  
+  * time: an estimation of the time taken by an event (number of occurences * avg time)
+  
+  * inst: an estimation of the number of instruction of an event (number of occurences * avg #instructions)
+  
+  * sim_time: a "would-be" simulated, i.e., the global number of instructions of an event executed at the average rate.
+  
+  * diff: the difference betwen time and sim_time values
+
+```{r Preparing the datasets}
+# a.16<-cbind(td.a.16.comp.4b.I[,1:4],
+#             td.a.16.comp.4b.I$avg/1e6,
+#             ti.a.16.comp.4c.I$avg*1e3)
+# 
+# colnames(a.16)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+# a.16$time <- a.16$events * a.16$COMP.4b.avg
+# a.16$inst <- a.16$events * a.16$COMP.4c.avg
+# 
+# a.total_time = sum(a.16$time)  
+# a.total_inst = sum(a.16$inst)
+# a.avg_rate = a.total_inst/a.total_time
+# 
+# a.16$sim_time <- a.16$inst/a.avg_rate
+# a.16$diff <- a.16$time-a.16$sim_time
+# 
+# 
+# b.16<-cbind(td.b.16.comp.4b.I[,1:4],
+#             td.b.16.comp.4b.I$avg/1e6,
+#             ti.b.16.comp.4c.I$avg*1e3)
+# 
+# colnames(b.16)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+# 
+# b.16$time <- b.16$events * b.16$COMP.4b.avg
+# b.16$inst <- b.16$events * b.16$COMP.4c.avg
+# 
+# b.total_time = sum(b.16$time)  
+# b.total_inst = sum(b.16$inst)
+# b.avg_rate = b.total_inst/b.total_time
+# 
+# b.16$sim_time <- b.16$inst/b.avg_rate
+# b.16$diff <- b.16$time-b.16$sim_time
+
+c.4<-cbind(td.c.4.comp.4b.I[,1:4],
+            td.c.4.comp.4b.I$avg/1e6,
+            ti.c.4.comp.4c.I$avg*1e3)
+
+colnames(c.4)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+c.4$time <- c.4$events * c.4$COMP.4b.avg
+c.4$inst <- c.4$events * c.4$COMP.4c.avg
+
+c.total_time = sum(c.4$time)  
+c.total_inst = sum(c.4$inst)
+c.avg_rate = c.total_inst/c.total_time
+
+c.4$sim_time <- c.4$inst/c.avg_rate
+c.4$diff <- c.4$time-c.4$sim_time
+
+
+c.8<-cbind(td.c.8.comp.4b.I[,1:4],
+            td.c.8.comp.4b.I$avg/1e6,
+            ti.c.8.comp.4c.I$avg*1e3)
+
+colnames(c.8)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+c.8$time <- c.8$events * c.8$COMP.4b.avg
+c.8$inst <- c.8$events * c.8$COMP.4c.avg
+
+c.total_time = sum(c.8$time)  
+c.total_inst = sum(c.8$inst)
+c.avg_rate = c.total_inst/c.total_time
+
+c.8$sim_time <- c.8$inst/c.avg_rate
+c.8$diff <- c.8$time-c.8$sim_time
+
+
+c.16<-cbind(td.c.16.comp.4b.I[,1:4],
+            td.c.16.comp.4b.I$avg/1e6,
+            ti.c.16.comp.4c.I$avg*1e3)
+
+colnames(c.16)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+c.16$time <- c.16$events * c.16$COMP.4b.avg
+c.16$inst <- c.16$events * c.16$COMP.4c.avg
+
+c.total_time = sum(c.16$time)  
+c.total_inst = sum(c.16$inst)
+c.avg_rate = c.total_inst/c.total_time
+
+c.16$sim_time <- c.16$inst/c.avg_rate
+c.16$diff <- c.16$time-c.16$sim_time
+
+
+c.32<-cbind(td.c.32.comp.4b.I[,1:4],
+            td.c.32.comp.4b.I$avg/1e6,
+            ti.c.32.comp.4c.I$avg*1e3)
+
+colnames(c.32)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+c.32$time <- c.32$events * c.32$COMP.4b.avg
+c.32$inst <- c.32$events * c.32$COMP.4c.avg
+
+c.total_time = sum(c.32$time)  
+c.total_inst = sum(c.32$inst)
+c.avg_rate = c.total_inst/c.total_time
+
+c.32$sim_time <- c.32$inst/c.avg_rate
+c.32$diff <- c.32$time-c.32$sim_time
+
+
+c.64<-cbind(td.c.64.comp.4b.I[,1:4],
+            td.c.64.comp.4b.I$avg/1e6,
+            ti.c.64.comp.4c.I$avg*1e3)
+
+colnames(c.64)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+c.64$time <- c.64$events * c.64$COMP.4b.avg
+c.64$inst <- c.64$events * c.64$COMP.4c.avg
+
+c.total_time = sum(c.64$time)  
+c.total_inst = sum(c.64$inst)
+c.avg_rate = c.total_inst/c.total_time
+
+c.64$sim_time <- c.64$inst/c.avg_rate
+c.64$diff <- c.64$time-c.64$sim_time
+
+
+c.128<-cbind(td.c.128.comp.4b.I[,1:4],
+            td.c.128.comp.4b.I$avg/1e6,
+            ti.c.128.comp.4c.I$avg*1e3)
+
+colnames(c.128)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+c.128$time <- c.128$events * c.128$COMP.4b.avg
+c.128$inst <- c.128$events * c.128$COMP.4c.avg
+
+c.total_time = sum(c.128$time)  
+c.total_inst = sum(c.128$inst)
+c.avg_rate = c.total_inst/c.total_time
+
+c.128$sim_time <- c.128$inst/c.avg_rate
+c.128$diff <- c.128$time-c.128$sim_time
+```
+
+## Start with one process only: C-4
+
+We plot, for each event both approximated time (avg time * number of occurences) and the simulated time.
+
+```{r}
+ggplot(c.4, aes(x=1:nrow(c.4))) + geom_point(aes(y=time, color="red"))+
+  geom_point(aes(y=sim_time, color="blue"))
+```
+
+Most of the events do not last very long (less than 0.1 second over a total time of 26s for an execution of B-16) let filter out these small events and replot
+
+```{r}
+c.4.2 = c.4[c.4$time>0.1,]
+ggplot(c.4.2, aes(x=1:nrow(c.4.2))) + geom_point(aes(y=time, color="red"))+
+  geom_point(aes(y=sim_time, color="blue"))
+```
+
+Plot the differences between times and simulated times:
+
+```{r}
+ggplot(c.4, aes(x=1:nrow(c.4), y=diff)) + geom_line()
+```
+
+There are only a few for which using the average rate leads to bad prediction, but it seems to compensate. look at the summary of diff and at the overall sum:
+
+```{r}
+summary(c.4$diff)
+sum(c.4$diff)
+c.total_time
+sum(c.4$sim_time)
+```
+
+In the end, we have the same time! 
+
+## Consider all the processes
+
+Do we have the same behavior for all the processes of same class? Bind the dataframes into a new one (df)
+
+```{r}
+df1<-rbind(data.frame(c.4, class='C-4', rows=1:nrow(c.4)),
+#           data.frame(c.8, class='C-8', rows=1:nrow(c.8)),
+          data.frame(c.16, class='C-16', rows=1:nrow(c.16)),
+#           data.frame(c.32, class='C-32', rows=1:nrow(c.32)),
+          data.frame(c.64, class='C-64', rows=1:nrow(c.64)))#,
+#           data.frame(c.128, class='C-128', rows=1:nrow(c.128)))
+
+df2<-rbind(#data.frame(c.4, class='C-4', rows=1:nrow(c.4)),
+          data.frame(c.8, class='C-8', rows=1:nrow(c.8)),
+#           data.frame(c.16, class='C-16', rows=1:nrow(c.16)),
+          data.frame(c.32, class='C-32', rows=1:nrow(c.32)),
+#           data.frame(c.64, class='C-64', rows=1:nrow(c.64)),
+          data.frame(c.128, class='C-128', rows=1:nrow(c.128)))
+```
+
+Do we have the same spikes for all classes?
+I tried having all the processes in one dataframe but it was too cluttered. So I splitted the dataframe on the processes which are a perfect square and remaining in other.
+
+```{r}
+ggplot(df1, aes(x=rows, y=diff, color=factor(class))) + geom_line()
+ggplot(df2, aes(x=rows, y=diff, color=factor(class))) + geom_line()
+```
+
+Although the spikes are there but due to mismatch of eventID-opcode-subblock between different processes shifts the spikes.
+Zooming on the spikes further:
+
+```{r}
+ggplot(df1, aes(x=rows, y=diff, color=factor(class))) + geom_line() + xlim(50,110)
+
+ggplot(df2, aes(x=rows, y=diff, color=factor(class))) + geom_line() + xlim(65,110)
+```
+
+If we look at the plot of df1, C-16 and C-64 are perfectly aligned which can be explained with the number of processes being a perfect square (but again, C-4 is a little shifted which we may explain by the neighbourhood problem).
+Maybe plotting C-256 would make things clear, but I am missing those traces.
+
+In plot of df2, I am not sure how to justify the crests and trough of the spikes.
+The most negative trough of C-32 is bigger than the same of C-128.
+And C-8 is weird too.
+
+The differences are:
+
+```{r}
+diffs <- c(sum(c.4$diff),
+           sum(c.8$diff),
+           sum(c.16$diff),
+           sum(c.32$diff),
+           sum(c.64$diff),
+           sum(c.128$diff))
+diffs
+```
+
+Very accurate indeed!
+
