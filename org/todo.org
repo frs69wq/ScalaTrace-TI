@@ -144,8 +144,8 @@ But with more information
 *** Matrix 
 ** DONE TI traces for C-64 folding (perfect)
 ** DONE Traces for #events upto max possible processes
-* TODO 16th September 2014 [0/1]
-** TODO Run simulations of TD traces
+* TODO 16th September 2014 [1/1]
+** DONE Run simulations of TD traces
 + The basic command line is (from the root directory of the git)
 $ time smpirun --cfg="smpi/simulate_computation:no" \
 --cfg="surf/precision:1e-6" \
