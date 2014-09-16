@@ -138,9 +138,38 @@ But with more information
    approximation could be to have a different color if the event id is
    in [0-30[ [30-60[ and [60-80[ to roughly distinguish what I suppose
    to be the warmup, computation, results gathering and checkup phases.
-* TODO 29th July 2015 [2/4]
+* TODO 29th July 2014 [2/4]
 ** TODO Look at the rank list to ID which process execute with event
 ** TODO Unwind all the Rank list. Find unique rank lists
 *** Matrix 
 ** DONE TI traces for C-64 folding (perfect)
 ** DONE Traces for #events upto max possible processes
+* TODO 16th September 2014 [0/1]
+** TODO Run simulations of TD traces
++ The basic command line is (from the root directory of the git)
+$ time smpirun --cfg="smpi/simulate_computation:no" \
+--cfg="surf/precision:1e-6" \
+--cfg="smpi/privatize_global_variables:yes" \
+--cfg="smpi/running_power:4.18e9" \
+-platform scripts/graphene_pmbs13.xml \
+-np 4 \
+-hostfile traces-new/td/lu/B/4/hostfile.I \
+replay/replay traces-new/td/lu/B/4/I/0
++ The last three line is the variable part
++ List of runs to make
+  + in traces-new/td/lu (traces with 1 core per node, and details)
+  + Classes A, B, C
+  + with 4, 8, 16, 32, 64, 128 processes
+  + Run I only (it will be long enough)
+  + no folded, no *-cores traces
++ Store results in a .csv as:
+  Class, Processes, RealTime, SimTime, RunTime
+  where
+  + Realtime comes from details.I
+  + SimTime is the output of the simulation (Execution Time: xxx.yyy)
+  + RunTime is the output of the ~time~ command
++ It will be very time consuming (C-4 takes more than 1 minute on my
+  laptop) so
+  + use number of processes as outer loop and class as inner
+  + if you have access to multiple homogeneous machines, run in parallel
+  + commit soon, commit often.
