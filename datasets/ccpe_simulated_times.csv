@@ -1,0 +1,11 @@
+Class,Processes,Time,Type
+B,8,39.68,CcpeTime
+C,8,147.48,CcpeTime
+B,16,22.06,CcpeTime
+C,16,79.04,CcpeTime
+B,32,13.92,CcpeTime
+C,32,44.8,CcpeTime
+B,64,8.4,CcpeTime
+C,64,25.44,CcpeTime
+B,128,6.15,CcpeTime
+C,128,17.12,CcpeTime
