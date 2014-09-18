@@ -1,6 +1,7 @@
 *.d
 *.D
 *.o
+*~
 record/libsrc/dump
 record/libsrc/node
 record/libsrc/glob
