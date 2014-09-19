@@ -20,7 +20,7 @@ do
 		    --cfg="surf/precision:1e-6" \
 		    --cfg="smpi/privatize_global_variables:yes" \
 		    --cfg="smpi/running_power:4.18e9" \
-		    -platform scripts/graphene_pmbs13_16_cores.xml \
+		    -platform scripts/graphene_pmbs13_$processes\_cores.xml \
 		    -np $processes \
 		    -hostfile traces-new/td/lu/$class/$processes/simulation-hostfile.$cores-nodes \
 		    replay/replay traces-new/td/lu/$class/$processes/$run/0 > /tmp/file1) 1> /dev/null 2> /tmp/file2 
