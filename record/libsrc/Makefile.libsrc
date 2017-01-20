@@ -63,6 +63,7 @@ SW_INCLUDE = -I$(SW_HOME)
 # CPPFLAGS is used to generated dependencies
 CPPFLAGS+=-I${top_srcdir}/libsrc  \
           -I${top_srcdir}/common/inc \
+          -I${top_srcdir}/inc \
           -I${top_srcdir}/libsrc/${DIR} \
            $(SW_INCLUDE) \
            -I$(papiincludedir)
