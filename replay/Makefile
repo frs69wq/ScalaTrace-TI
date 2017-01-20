@@ -5,15 +5,15 @@ DEBUGGING=n
 #####################################
 # Options
 #####################################
-HISTO_REPLAY=y
+HISTO_REPLAY=n
 
 RAND_DEST=6
 
 PREALLOC_MEM=y
 
 # Added for SMPI integration
-SMPI_SIMULATION=n
-SMPI_SIMULATION_TIME_INDEPENDENT=y
+SMPI_SIMULATION=y
+SMPI_SIMULATION_TIME_INDEPENDENT=n
 
 top_srcdir=$(shell pwd)/..
 
@@ -47,7 +47,7 @@ CXX_SRCS:= \
 	Histogram.C \
 	ValueSet.C \
 	Stat.C \
- 	StatTime.C \
+	StatTime.C \
 	replay.C \
 	op_exec.C \
 	mem_handler.C \

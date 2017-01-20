@@ -1,0 +1,61 @@
+<?xml version='1.0'?>
+<!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
+<platform version="3">
+
+<config id="General">
+	<prop id="network/sender_gap" value="0"></prop>
+        <prop id="smpi/bw_factor" value="135168:0.938893;65536:0.70803;1:0.608258"></prop>
+        <prop id="smpi/lat_factor" value="135168:16.9717;65536:5.6845;1:1.11962"></prop>
+</config>
+
+
+<AS id="AS_graphene" routing="Full" >
+	<cluster id="AS_sgraphene1" prefix="graphene-" suffix=".nancy.grid5000.fr"
+		radical="1-39" power="4.18e9" bw="1.25E8" lat="21.1E-6"
+		bb_bw="1.25E9" bb_lat="21.1E-6"></cluster>
+	<cluster id="AS_sgraphene2" prefix="graphene-" suffix=".nancy.grid5000.fr"
+		radical="40-74" power="4.18e9" bw="1.25E8" lat="21.1E-6"
+		bb_bw="1.25E9" bb_lat="21.1E-6"></cluster>
+	<cluster id="AS_sgraphene3" prefix="graphene-" suffix=".nancy.grid5000.fr"
+		radical="75-104" power="4.18e9" bw="1.25E8" lat="21.1E-6"
+		bb_bw="1.25E9" bb_lat="21.1E-6"></cluster>
+	<cluster id="AS_sgraphene4" prefix="graphene-" suffix=".nancy.grid5000.fr"
+		radical="105-144" power="4.18e9" bw="1.25E8" lat="21.1E-6"
+		bb_bw="1.25E9" bb_lat="21.1E-6"></cluster>
+
+	<link id="switch-graphene" bandwidth="1250000000" latency="8.05E-6"/>
+
+	<ASroute src="AS_sgraphene1" dst="AS_sgraphene2"
+		gw_src="graphene-AS_sgraphene1_router.nancy.grid5000.fr"
+		gw_dst="graphene-AS_sgraphene2_router.nancy.grid5000.fr">
+                <link_ctn id="switch-graphene"/>
+	</ASroute>
+         <ASroute src="AS_sgraphene1" dst="AS_sgraphene3"
+                gw_src="graphene-AS_sgraphene1_router.nancy.grid5000.fr"
+                gw_dst="graphene-AS_sgraphene3_router.nancy.grid5000.fr">
+                <link_ctn id="switch-graphene"/>
+         </ASroute>
+         <ASroute src="AS_sgraphene2" dst="AS_sgraphene3"
+                gw_src="graphene-AS_sgraphene2_router.nancy.grid5000.fr"
+                gw_dst="graphene-AS_sgraphene3_router.nancy.grid5000.fr">
+                <link_ctn id="switch-graphene"/>
+         </ASroute>
+         <ASroute src="AS_sgraphene1" dst="AS_sgraphene4"
+                gw_src="graphene-AS_sgraphene1_router.nancy.grid5000.fr"
+                gw_dst="graphene-AS_sgraphene4_router.nancy.grid5000.fr">
+                <link_ctn id="switch-graphene"/>
+         </ASroute>
+         <ASroute src="AS_sgraphene2" dst="AS_sgraphene4"
+                gw_src="graphene-AS_sgraphene2_router.nancy.grid5000.fr"
+                gw_dst="graphene-AS_sgraphene4_router.nancy.grid5000.fr">
+                 <link_ctn id="switch-graphene"/>
+          </ASroute>
+          <ASroute src="AS_sgraphene3" dst="AS_sgraphene4"
+                 gw_src="graphene-AS_sgraphene3_router.nancy.grid5000.fr"
+                 gw_dst="graphene-AS_sgraphene4_router.nancy.grid5000.fr">
+                 <link_ctn id="switch-graphene"/>
+           </ASroute>
+
+
+	</AS>
+</platform>

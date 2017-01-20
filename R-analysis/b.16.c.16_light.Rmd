@@ -1,0 +1,193 @@
+---
+title: "comparison of traces with 16 processes"
+author: "F. Suter"
+date: "29/07/2014"
+output: html_document
+---
+
+In this document we want to study the evolution of the instruction rate for traces obtained from the execution of the LU NAS Parallle Benchmark with the same number of processes (16) but different data sizes (Classes A, B, and C).
+
+Remark: a first analysis was made with 'datasets/td.lu.B.16.comp.4b.III' and 'datasets/ti.lu.B.16.comp.4c.V'. It led to some "anormal" results, in a sens that class B was executed slower than class A. Some checks shown that the timing were bigger than they should have been.  
+
+## Init 
+```{r init and table read}
+library(ggplot2)
+setwd('~/SVN/Anshul/ScalaTrace-TI')
+
+td.a.16.comp.4b.I<-read.table('datasets/td.lu.A.16.comp.4b.I', header=TRUE)
+ti.a.16.comp.4c.I<-read.table('datasets/ti.lu.A.16.comp.4c.I', header=TRUE)
+
+td.b.16.comp.4b.I<-read.table('datasets/td.lu.B.16.comp.4b.I', header=TRUE)
+ti.b.16.comp.4c.I<-read.table('datasets/ti.lu.B.16.comp.4c.I', header=TRUE)
+
+td.c.16.comp.4b.I<-read.table('datasets/td.lu.C.16.comp.4b.I', header=TRUE)
+ti.c.16.comp.4c.I<-read.table('datasets/ti.lu.C.16.comp.4c.I', header=TRUE)
+```
+
+## Preparing the datasets
+We first modify the datasets for each class by replacing the original (avg, min, max) per block of the Timed trace (td) by the average time (COMP.4b.avg, in seconds) and the average number of instructions (COMP.4c.avg, after correction) per block.
+
+Then we add new columns:
+
+  * rate: the instruction rate of an event, i.e. the #instructions divided by the time, or COMP.4.c / COMP.4.b
+  
+  * time: an estimation of the time taken by an event (number of occurences * avg time)
+  
+  * inst: an estimation of the number of instruction of an event (number of occurences * avg #instructions)
+  
+  * time_percent: the relative time contribution of an event (in percentage)
+  
+  * inst_percent: the relative instruction contribution of an event (in percentage)
+  
+Note: the last two columns might be biased as all the processes do not execute all the events (depends on the rank lists)
+  
+
+```{r Preparing the datasets}
+a.16<-cbind(td.a.16.comp.4b.I[,1:4],
+            td.a.16.comp.4b.I$avg/1e6,
+            ti.a.16.comp.4c.I$avg*1e3)
+
+colnames(a.16)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+a.16$rate <- a.16$COMP.4c.avg / a.16$COMP.4b.avg
+a.16$time <- a.16$events * a.16$COMP.4b.avg
+a.16$inst <- a.16$events * a.16$COMP.4c.avg
+a.total_time = sum(a.16$time)  
+a.total_inst = sum(a.16$inst)
+
+a.16$time_percent <- round((a.16$time*100)/a.total_time, digits = 2)
+a.16$inst_percent <- round((a.16$inst*100)/a.total_inst, digits = 2)
+
+b.16<-cbind(td.b.16.comp.4b.I[,1:4],
+            td.b.16.comp.4b.I$avg/1e6,
+            ti.b.16.comp.4c.I$avg*1e3)
+
+colnames(b.16)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+b.16$rate <- b.16$COMP.4c.avg / b.16$COMP.4b.avg
+b.16$time <- b.16$events * b.16$COMP.4b.avg
+b.16$inst <- b.16$events * b.16$COMP.4c.avg
+b.total_time = sum(b.16$time)  
+b.total_inst = sum(b.16$inst)
+b.16$time_percent <- round((b.16$time*100)/b.total_time, digits = 2)
+b.16$inst_percent <- round((b.16$inst*100)/b.total_inst, digits = 2)
+
+c.16<-cbind(td.c.16.comp.4b.I[,1:4],
+            td.c.16.comp.4b.I$avg/1e6,
+            ti.c.16.comp.4c.I$avg*1e3)
+
+colnames(c.16)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+c.16$rate <- c.16$COMP.4c.avg / c.16$COMP.4b.avg
+c.16$time <- c.16$events * c.16$COMP.4b.avg
+c.16$inst <- c.16$events * c.16$COMP.4c.avg
+c.total_time = sum(c.16$time)  
+c.total_inst = sum(c.16$inst)
+c.16$time_percent <- round((c.16$time*100)/c.total_time, digits = 2)
+c.16$inst_percent <- round((c.16$inst*100)/c.total_inst, digits = 2)
+```
+
+Compute rough estimations of the average processing rate for each class by dividing the sum of instruction numbers by the sum of execution time
+
+
+```{r Compute average rates}
+times <- c(a.total_time,b.total_time,c.total_time)
+insts <- c(a.total_inst,b.total_inst,c.total_inst)
+rates <- insts/times
+rates
+```
+
+We note a slight increases of the rate as the handle data size grows. Check the evolution of times and instructions sums to see whether it matches the data size increase (roughly multiplied by 4).
+
+```{r}
+evol_time = c(times[2]/times[1], times[3]/times[2])
+evol_inst = c(insts[2]/insts[1], insts[3]/insts[2])
+evol_time
+evol_inst
+```
+
+The evolution of the number of instructions is very consistent with the evolution of data size (as expected). A bit worse for time, but rather consistent though.
+
+## Comparing the traces
+Give a first try by binding the dataframes by rows. This doesn't allow us to verify that events at the same line are actually the same (evenID-opcode-subblock). We might consider a binding by columns at some point.
+
+```{r Let bind dataframes}
+df<-rbind(data.frame(a.16, class='A-16', rows=1:nrow(a.16)),
+          data.frame(b.16, class='B-16', rows=1:nrow(b.16)),
+          data.frame(c.16, class='C-16', rows=1:nrow(c.16)))
+```
+
+## Plotting stuff
+Start by plotting the instruction rate per event, factoring by class and having a bigger point if the event is an important contributor in terms of time.
+
+```{r Try to plot something}
+ggplot(df, aes(x=rows, y=rate, color=factor(class),size=time_percent)) +
+  geom_point()
+```
+
+Very small contributions are still displayed, get rid of them to increase clarity. Let start with a threshold at 0.01 % (df2) and be more selective with a second threshold at 1% (df3).
+
+
+```{r Get rid of event of unsignificant contribution}
+df2 = df[df$time_percent>0.0,]
+df3 = df[df$time_percent>=1,]
+```
+
+## Analysis of contributions greater than 0.01%
+
+Same graph as before but with less points.
+
+```{r initial plot}
+ggplot(df2, aes(x=rows, y=rate, color=factor(class),size=time_percent)) +
+  geom_point()
+```
+
+The biggest contributors look to be in the middle part (from row 55 to 105), zoom in.
+
+```{r zoom on the middle part}
+ggplot(df2, aes(x=rows, y=rate, color=factor(class),size=time_percent)) +
+  geom_point() +xlim(55,105)
+```
+
+Let see what a line shows. Remove the sizing then and stops at row 123 (not the same events after)
+
+```{r plot lines and not points}
+ggplot(df2, aes(x=rows, y=rate, color=factor(class))) +
+  geom_line() + xlim(1, 123) + geom_smooth(method="lm", se=FALSE)
+```
+
+## Analysis of contribution greater than 1%
+
+We plot the same graphs but with the df3 dataframe.
+```{r initial plot with df3}
+ggplot(df3, aes(x=rows, y=rate, color=factor(class),size=time_percent)) +
+  geom_point()
+```
+
+There is no more need to zoom in, this threshold allows us to focus directly on the main part of the benchmark (i.e. the iterative computation of SSOR)
+
+Let see what a line shows for this subset of points
+
+```{r plot lines for df3}
+ggplot(df3, aes(x=rows, y=rate, color=factor(class))) +
+  geom_line()
+```
+
+The three lines look very close. Let recompute rates only on this subset of "big contributors" and compare them to those obtained for the whole traces.
+
+```{r rates for major contributors}
+a.big_time = sum (df3[df3$class=="A-16",]$time)
+b.big_time = sum (df3[df3$class=="B-16",]$time)
+c.big_time = sum (df3[df3$class=="C-16",]$time)
+a.big_inst = sum (df3[df3$class=="A-16",]$inst)
+b.big_inst = sum (df3[df3$class=="B-16",]$inst)
+c.big_inst = sum (df3[df3$class=="C-16",]$inst)
+big_times <- c(a.big_time, b.big_time, c.big_time)
+big_insts <- c(a.big_inst, b.big_inst, c.big_inst)
+big_rates <- big_insts/big_times
+big_rates
+rates
+
+```
+
+There is only a small difference, which may confirm that the average rate is mainly defined by these few events.
+
+

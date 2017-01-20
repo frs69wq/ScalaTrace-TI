@@ -1,0 +1,398 @@
+---
+title: "Folded Execution of C-64"
+author: "Anshul Gupta"
+date: "16/07/2014"
+output: html_document
+---
+
+## Motive
+The objective is to compare COMP 4b min, max and avg between
+the folded and regular execution.
+
+## Overview
+Executions of TD C-64 with folding factor of 2, 4, 8, 16 and 32 were taken on
+graphene.
+Their **COMP 4b** global values were parsed using the _scripts/Expand.java_ code with this format.
+See _org/analysis.org_
+
+```{r Init}
+setwd ('~/git/ScalaTrace-TI')
+dataset.td.lu.C.64.folded.1.comp.4b.I <- read.table('datasets/td.lu.C.64.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.2.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.2.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.4.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.4.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.8.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.8.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.16.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.16.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.32.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.32.comp.4b.IV', header=TRUE)
+
+dataset.td.lu.C.64.folded.1.comp.4b.II <- read.table('datasets/td.lu.C.64.comp.4b.II', header=TRUE)
+dataset.td.lu.C.64.folded.2.comp.4b.II <- read.table('datasets/td.lu.C.64.folded.2.comp.4b.II', header=TRUE)
+dataset.td.lu.C.64.folded.4.comp.4b.II <- read.table('datasets/td.lu.C.64.folded.4.comp.4b.II', header=TRUE)
+dataset.td.lu.C.64.folded.8.comp.4b.II <- read.table('datasets/td.lu.C.64.folded.8.comp.4b.II', header=TRUE)
+dataset.td.lu.C.64.folded.16.comp.4b.II <- read.table('datasets/td.lu.C.64.folded.16.comp.4b.II', header=TRUE)
+dataset.td.lu.C.64.folded.32.comp.4b.II <- read.table('datasets/td.lu.C.64.folded.32.comp.4b.V', header=TRUE)
+
+dataset.td.lu.C.64.folded.1.comp.4b.III <- read.table('datasets/td.lu.C.64.comp.4b.III', header=TRUE)
+dataset.td.lu.C.64.folded.2.comp.4b.III <- read.table('datasets/td.lu.C.64.folded.2.comp.4b.III', header=TRUE)
+dataset.td.lu.C.64.folded.4.comp.4b.III <- read.table('datasets/td.lu.C.64.folded.4.comp.4b.III', header=TRUE)
+dataset.td.lu.C.64.folded.8.comp.4b.III <- read.table('datasets/td.lu.C.64.folded.8.comp.4b.III', header=TRUE)
+dataset.td.lu.C.64.folded.16.comp.4b.III <- read.table('datasets/td.lu.C.64.folded.16.comp.4b.III', header=TRUE)
+dataset.td.lu.C.64.folded.32.comp.4b.III <- read.table('datasets/td.lu.C.64.folded.32.comp.4b.VI', header=TRUE)
+```
+
+```{r Recalculate Averages}
+dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg<-(sum(dataset.td.lu.C.64.folded.1.comp.4b.I$avg * dataset.td.lu.C.64.folded.1.comp.4b.I$events)/sum(dataset.td.lu.C.64.folded.1.comp.4b.I$events))/dataset.td.lu.C.64.folded.1.comp.4b.I$avg
+dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg<-(sum(dataset.td.lu.C.64.folded.1.comp.4b.II$avg * dataset.td.lu.C.64.folded.1.comp.4b.II$events)/sum(dataset.td.lu.C.64.folded.1.comp.4b.II$events))/dataset.td.lu.C.64.folded.1.comp.4b.II$avg
+dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg<-(sum(dataset.td.lu.C.64.folded.1.comp.4b.III$avg * dataset.td.lu.C.64.folded.1.comp.4b.III$events)/sum(dataset.td.lu.C.64.folded.1.comp.4b.III$events))/dataset.td.lu.C.64.folded.1.comp.4b.III$avg
+
+dataset.td.lu.C.64.folded.2.comp.4b.I$newAvg<-(sum(dataset.td.lu.C.64.folded.2.comp.4b.I$avg * dataset.td.lu.C.64.folded.2.comp.4b.I$events)/sum(dataset.td.lu.C.64.folded.2.comp.4b.I$events))/dataset.td.lu.C.64.folded.2.comp.4b.I$avg
+dataset.td.lu.C.64.folded.2.comp.4b.II$newAvg<-(sum(dataset.td.lu.C.64.folded.2.comp.4b.II$avg * dataset.td.lu.C.64.folded.2.comp.4b.II$events)/sum(dataset.td.lu.C.64.folded.2.comp.4b.II$events))/dataset.td.lu.C.64.folded.2.comp.4b.II$avg
+dataset.td.lu.C.64.folded.2.comp.4b.III$newAvg<-(sum(dataset.td.lu.C.64.folded.2.comp.4b.III$avg * dataset.td.lu.C.64.folded.2.comp.4b.III$events)/sum(dataset.td.lu.C.64.folded.2.comp.4b.III$events))/dataset.td.lu.C.64.folded.2.comp.4b.III$avg
+
+dataset.td.lu.C.64.folded.4.comp.4b.I$newAvg<-(sum(dataset.td.lu.C.64.folded.4.comp.4b.I$avg * dataset.td.lu.C.64.folded.4.comp.4b.I$events)/sum(dataset.td.lu.C.64.folded.4.comp.4b.I$events))/dataset.td.lu.C.64.folded.4.comp.4b.I$avg
+dataset.td.lu.C.64.folded.4.comp.4b.II$newAvg<-(sum(dataset.td.lu.C.64.folded.4.comp.4b.II$avg * dataset.td.lu.C.64.folded.4.comp.4b.II$events)/sum(dataset.td.lu.C.64.folded.4.comp.4b.II$events))/dataset.td.lu.C.64.folded.4.comp.4b.II$avg
+dataset.td.lu.C.64.folded.4.comp.4b.III$newAvg<-(sum(dataset.td.lu.C.64.folded.4.comp.4b.III$avg * dataset.td.lu.C.64.folded.4.comp.4b.III$events)/sum(dataset.td.lu.C.64.folded.4.comp.4b.III$events))/dataset.td.lu.C.64.folded.4.comp.4b.III$avg
+
+dataset.td.lu.C.64.folded.8.comp.4b.I$newAvg<-(sum(dataset.td.lu.C.64.folded.8.comp.4b.I$avg * dataset.td.lu.C.64.folded.8.comp.4b.I$events)/sum(dataset.td.lu.C.64.folded.8.comp.4b.I$events))/dataset.td.lu.C.64.folded.8.comp.4b.I$avg
+dataset.td.lu.C.64.folded.8.comp.4b.II$newAvg<-(sum(dataset.td.lu.C.64.folded.8.comp.4b.II$avg * dataset.td.lu.C.64.folded.8.comp.4b.II$events)/sum(dataset.td.lu.C.64.folded.8.comp.4b.II$events))/dataset.td.lu.C.64.folded.8.comp.4b.II$avg
+dataset.td.lu.C.64.folded.8.comp.4b.III$newAvg<-(sum(dataset.td.lu.C.64.folded.8.comp.4b.III$avg * dataset.td.lu.C.64.folded.8.comp.4b.III$events)/sum(dataset.td.lu.C.64.folded.8.comp.4b.III$events))/dataset.td.lu.C.64.folded.8.comp.4b.III$avg
+
+dataset.td.lu.C.64.folded.16.comp.4b.I$newAvg<-(sum(dataset.td.lu.C.64.folded.16.comp.4b.I$avg * dataset.td.lu.C.64.folded.16.comp.4b.I$events)/sum(dataset.td.lu.C.64.folded.16.comp.4b.I$events))/dataset.td.lu.C.64.folded.16.comp.4b.I$avg
+dataset.td.lu.C.64.folded.16.comp.4b.II$newAvg<-(sum(dataset.td.lu.C.64.folded.16.comp.4b.II$avg * dataset.td.lu.C.64.folded.16.comp.4b.II$events)/sum(dataset.td.lu.C.64.folded.16.comp.4b.II$events))/dataset.td.lu.C.64.folded.16.comp.4b.II$avg
+dataset.td.lu.C.64.folded.16.comp.4b.III$newAvg<-(sum(dataset.td.lu.C.64.folded.16.comp.4b.III$avg * dataset.td.lu.C.64.folded.16.comp.4b.III$events)/sum(dataset.td.lu.C.64.folded.16.comp.4b.III$events))/dataset.td.lu.C.64.folded.16.comp.4b.III$avg
+
+dataset.td.lu.C.64.folded.32.comp.4b.I$newAvg<-(sum(dataset.td.lu.C.64.folded.32.comp.4b.I$avg * dataset.td.lu.C.64.folded.32.comp.4b.I$events)/sum(dataset.td.lu.C.64.folded.32.comp.4b.I$events))/dataset.td.lu.C.64.folded.32.comp.4b.I$avg
+dataset.td.lu.C.64.folded.32.comp.4b.II$newAvg<-(sum(dataset.td.lu.C.64.folded.32.comp.4b.II$avg * dataset.td.lu.C.64.folded.32.comp.4b.II$events)/sum(dataset.td.lu.C.64.folded.32.comp.4b.II$events))/dataset.td.lu.C.64.folded.32.comp.4b.II$avg
+dataset.td.lu.C.64.folded.32.comp.4b.III$newAvg<-(sum(dataset.td.lu.C.64.folded.32.comp.4b.III$avg * dataset.td.lu.C.64.folded.32.comp.4b.III$events)/sum(dataset.td.lu.C.64.folded.32.comp.4b.III$events))/dataset.td.lu.C.64.folded.32.comp.4b.III$avg
+```
+
+```{r Ratio of avg w.r.t I}
+mean.avg.I<-matrix(0, 3, 5)
+mean.avg.I[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg))
+
+mean.avg.I[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg))
+
+mean.avg.I[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg))
+
+mean.avg.I[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg))
+
+mean.avg.I[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.I$avg))
+```
+
+```{r Ratio of avg w.r.t II}
+mean.avg.II<-matrix(0, 3, 5)
+mean.avg.II[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg))
+
+mean.avg.II[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg))
+
+mean.avg.II[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg))
+
+mean.avg.II[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg))
+
+mean.avg.II[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.II$avg))
+```
+
+```{r Ratio of avg w.r.t III}
+mean.avg.III<-matrix(0, 3, 5)
+mean.avg.III[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg))
+
+mean.avg.III[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg))
+
+mean.avg.III[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg))
+
+mean.avg.III[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg))
+
+mean.avg.III[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$avg/dataset.td.lu.C.64.folded.1.comp.4b.III$avg))
+```
+
+```{r Ratio of newAvg w.r.t I}
+mean.newAvg.I<-matrix(0, 3, 5)
+mean.newAvg.I[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg))
+
+mean.newAvg.I[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg))
+
+mean.newAvg.I[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg))
+
+mean.newAvg.I[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg))
+
+mean.newAvg.I[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.I$newAvg))
+```
+
+```{r Ratio of newAvg w.r.t II}
+mean.newAvg.II<-matrix(0, 3, 5)
+mean.newAvg.II[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg))
+
+mean.newAvg.II[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg))
+
+mean.newAvg.II[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg))
+
+mean.newAvg.II[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg))
+
+mean.newAvg.II[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.II$newAvg))
+```
+
+```{r Ratio of newAvg w.r.t III}
+mean.newAvg.III<-matrix(0, 3, 5)
+mean.newAvg.III[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg))
+
+mean.newAvg.III[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg))
+
+mean.newAvg.III[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg))
+
+mean.newAvg.III[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg))
+
+mean.newAvg.III[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$newAvg/dataset.td.lu.C.64.folded.1.comp.4b.III$newAvg))
+```
+
+```{r Ratio of min w.r.t I}
+mean.min.I<-matrix(0, 3, 5)
+mean.min.I[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min))
+
+mean.min.I[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min))
+
+mean.min.I[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min))
+
+mean.min.I[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min))
+
+mean.min.I[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.I$min))
+```
+
+```{r Ratio of min w.r.t II}
+mean.min.II<-matrix(0, 3, 5)
+mean.min.II[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min))
+
+mean.min.II[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min))
+
+mean.min.II[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min))
+
+mean.min.II[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min))
+
+mean.min.II[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.II$min))
+```
+
+```{r Ratio of min w.r.t III}
+mean.min.III<-matrix(0, 3, 5)
+mean.min.III[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min))
+
+mean.min.III[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min))
+
+mean.min.III[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min))
+
+mean.min.III[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min))
+
+mean.min.III[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$min/dataset.td.lu.C.64.folded.1.comp.4b.III$min))
+```
+
+```{r Ratio of max w.r.t I}
+mean.max.I<-matrix(0, 3, 5)
+mean.max.I[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max))
+
+mean.max.I[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max))
+
+mean.max.I[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max))
+
+mean.max.I[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max))
+
+mean.max.I[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.I$max))
+```
+
+```{r Ratio of max w.r.t II}
+mean.max.II<-matrix(0, 3, 5)
+mean.max.II[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max))
+
+mean.max.II[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max))
+
+mean.max.II[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max))
+
+mean.max.II[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max))
+
+mean.max.II[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.II$max))
+```
+
+```{r Ratio of max w.r.t III}
+mean.max.III<-matrix(0, 3, 5)
+mean.max.III[,1] <- c(mean(dataset.td.lu.C.64.folded.2.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.2.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max))
+
+mean.max.III[,2] <- c(mean(dataset.td.lu.C.64.folded.4.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.4.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max))
+
+mean.max.III[,3] <- c(mean(dataset.td.lu.C.64.folded.8.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max), 
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.8.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max))
+
+mean.max.III[,4] <- c(mean(dataset.td.lu.C.64.folded.16.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.16.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max))
+
+mean.max.III[,5] <- c(mean(dataset.td.lu.C.64.folded.32.comp.4b.I$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.II$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max),
+                    mean(dataset.td.lu.C.64.folded.32.comp.4b.III$max/dataset.td.lu.C.64.folded.1.comp.4b.III$max))
+```
+
+```{r Print avg}
+colnames(mean.avg.I)<-c('2', '4', '8', '16', '32')
+rownames(mean.avg.I)<-c('I', 'II', 'III')
+print(mean.avg.I)
+
+colnames(mean.avg.II)<-c('2', '4', '8', '16', '32')
+rownames(mean.avg.II)<-c('I', 'II', 'III')
+print(mean.avg.II)
+
+colnames(mean.avg.III)<-c('2', '4', '8', '16', '32')
+rownames(mean.avg.III)<-c('I', 'II', 'III')
+print(mean.avg.III)
+```
+
+```{r Print min}
+colnames(mean.min.I)<-c('2', '4', '8', '16', '32')
+rownames(mean.min.I)<-c('I', 'II', 'III')
+print(mean.min.I)
+
+colnames(mean.min.II)<-c('2', '4', '8', '16', '32')
+rownames(mean.min.II)<-c('I', 'II', 'III')
+print(mean.min.II)
+
+colnames(mean.min.III)<-c('2', '4', '8', '16', '32')
+rownames(mean.min.III)<-c('I', 'II', 'III')
+print(mean.min.III)
+```
+
+```{r Print max}
+colnames(mean.max.I)<-c('2', '4', '8', '16', '32')
+rownames(mean.max.I)<-c('I', 'II', 'III')
+print(mean.max.I)
+
+colnames(mean.max.II)<-c('2', '4', '8', '16', '32')
+rownames(mean.max.II)<-c('I', 'II', 'III')
+print(mean.max.II)
+
+colnames(mean.max.III)<-c('2', '4', '8', '16', '32')
+rownames(mean.max.III)<-c('I', 'II', 'III')
+print(mean.max.III)
+```
+
+```{r Print newAvg}
+colnames(mean.newAvg.I)<-c('2', '4', '8', '16', '32')
+rownames(mean.newAvg.I)<-c('I', 'II', 'III')
+print(mean.newAvg.I)
+
+colnames(mean.newAvg.II)<-c('2', '4', '8', '16', '32')
+rownames(mean.newAvg.II)<-c('I', 'II', 'III')
+print(mean.newAvg.II)
+
+colnames(mean.newAvg.III)<-c('2', '4', '8', '16', '32')
+rownames(mean.newAvg.III)<-c('I', 'II', 'III')
+print(mean.newAvg.III)
+```

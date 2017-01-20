@@ -1,77 +1,175 @@
-* TODO Trace analysis todo list [2/5]
+#+STARTUP: overview
+#+STARTUP: indent
+#+TODO: TODO(t) | DONE(d)
+
+* TODO Trace analysis todo list [3/5]
 ** DONE Give access to traces and shell/R scripts
-   + So that I can modify/complete the R parts
-   + Maybe create traces/ and scripts/ directories on the
-     ScalaTrace-TI GitHub
++ So that I can modify/complete the R parts
++ Maybe create traces/ and scripts/ directories on the ScalaTrace-TI
+  GitHub
+
 ** DONE Make the R documents more 'litterate programming' compliant
-   + Add information about the different fields of the data-frame(s)
-   + Be more explanatory between the different steps of the R script
-     + what you expect to find or visualize
-     + what you planned to do and why
-     + How you do implement this, etc
-     + In other words evrything that helps to go through the document
-       with full understanding
-   + Put all of this (R snippets and comments) in org-mode files, and
-     maybe add them to github too in a R-analysis/ directory.
++ Add information about the different fields of the data-frame(s)
++ Be more explanatory between the different steps of the R script
+  + what you expect to find or visualize
+  + what you planned to do and why
+  + How you do implement this, etc
+  + In other words evrything that helps to go through the document
+    with full understanding
++ Put all of this (R snippets and comments) in org-mode files, and
+  maybe add them to github too in a R-analysis/ directory.
+
 ** TODO Modify the graph of rough estimation of instruction rate
-   + Those on http://rpubs.com/anshulgupta0803/rough_estimation_of_inst_rate
-   + logscale on y-axis
-   + keep color related to the avg number of instructions
-   + let size depends on the number of elements in the event
-   + Try to have more rows in the data frame by splitting events in bins
-     + will identify the different modes in a given event
-     + get rid of emptty bins in the process (Don't know how)
-     + name event_id-subblock-bin_number
-** TODO Complete this graph with a facet grid one
-   + 4 facets for 4 traces: B-8, B-16, C-8, and C-16
-   + Will show if there is some variability when class or number of
-     processes changes
-   + first step towards some extrapolation
++ Those on http://rpubs.com/anshulgupta0803/rough_estimation_of_inst_rate
++ logscale on y-axis
++ keep color related to the avg number of instructions
++ let size depends on the number of elements in the event
++ Try to have more rows in the data frame by splitting events in bins
+  + will identify the different modes in a given event
+  + get rid of empty bins in the process
+  + name event_id-subblock-bin_number
+
+** DONE Complete this graph with a facet grid one
++ 4 facets for 4 traces: B-8, B-16, C-8, and C-16
++ Will show if there is some variability when class or number of
+  processes changes
++ first step towards some extrapolation
+
 ** TODO Make the variability graphs more readable
-   + Those on http://rpubs.com/anshulgupta0803/varibality
-   + Try linerange
-   + split events by bins as for the estimation of the
-     instrumentation rate
-   + color points by event number (using a gradient). This might help
-     to distinguish blocks in the graphs
-   + Maybe try to have a facet plot too (same characteristics)
-* TODO Trace replay todo list [0/3]
-  What follows is absolutely unrelated to the first part of this
-  document but could be useful at some point. I'd like you to redo
-  some of the experiments of the CCPE paper but using ScalaTrace-TI.
-** TODO Table 3 page 10
-   + Get some TD and TI traces for LU classes B and C from 8 to 128 processes
-     + executions for TI can be folded (more than one process per core)
-     + better to not fold those for TD to have coherent timings (but
-       1 process per core should be okay)
-     + use graphene if available as the first choice cluster
-   + measure the trace sizes and report the number of ScalaTrace
-     events too (instead of the number of actions) (global sum of 1st
-     element in the summary)
++ Those on http://rpubs.com/anshulgupta0803/varibality
++ Try linerange
++ split events by bins as for the estimation of the
+  instruction rate
++ color points by event number (using a gradient). This might help
+  to distinguish blocks in the graphs
++ Maybe try to have a facet plot too (same characteristics)
+
+* TODO Trace replay todo list [1/3]
+What follows is absolutely unrelated to the first part of this
+document but could be useful at some point. I'd like you to redo some
+of the experiments of the CCPE paper but using ScalaTrace-TI.
+** DONE Table 3 page 10
++ Get some TD and TI traces for LU classes B and C from 8 to 128 processes
+  + executions for TI can be folded (more than one process per core)
+  + better to not fold those for TD to have coherent timings (but 1
+    process per core should be okay)
+  + use graphene if available as the first choice cluster
++ measure the trace sizes and report the number of ScalaTrace events
+  too (instead of the number of actions) (global sum of 1st element in
+  the summary)
+
 ** TODO Figure 15 page 21
-   + replay some ScalaTrace traces with the latest version of SimGrid
-     (git is better)
-     + start with the TD traces from the previous items
-   + Measure the simulation time (time to run the simulation)
-     + report the characteristic of the machine used (either your
-       laptop or a node of Greid'5000) as it will be different of
-       that used in the journal article.
-   + Try to replay the TI traces then
-     + You will need a calibrated platform file (the one used by my
-       PhD student for the paper). I can give it to you
-     + report the same information
-   + Compare the simulated times
-     + Hopefully they will be close enough
++ Replay some ScalaTrace traces with the latest version of SimGrid
+  (git is better)
+  + start with the TD traces from the previous items
++ Measure the simulation time (time to run the simulation)
+  + report the characteristic of the machine used (either your laptop
+    or a node of Grid'5000) as it will be different of that used in
+    the journal article.
++ Try to replay the TI traces then
+  + You will need a calibrated platform file (the one used by my PhD
+    student for the paper). I can give it to you.
+  + report the same information
++ Compare the simulated times
+  + Hopefully they will be close enough
+
 ** TODO Some large instances in Fig 6 page 12 and Fig 9c page 16
-   + For the revision of the journal article we tried to simulate LU
-     instances larger than the available clusters. One problem was
-     that the simulation time and the trace sizes were
-     prohibitive. More precisely we failed to simulate the execution with 4096
-     processes that was longer than 3 days!
-   + Depending on the trace sizes and simulation times measured
-     above, I'd like to know if we are able to replay such instances
-     thanks to scalatrace (from 512 to 1024 first, and then if
-     possible 20148 and why not 4096)
-   + You can use the StRemi cluster from the Reims site to do
-     that. Nodes have a large amount of memory, then the execution
-     can be folded by a great factor (16 is easy IIRC).
++ For the revision of the journal article we tried to simulate LU
+  instances larger than the available clusters. One problem was
+  that the simulation time and the trace sizes were
+  prohibitive. More precisely we failed to simulate the execution with 4096
+  processes that was longer than 3 days!
++ Depending on the trace sizes and simulation times measured above,
+  I'd like to know if we are able to replay such instances thanks to 
+  scalatrace (from 512 to 1024 first, and then if possible 2048 and
+  why not 4096).
++ You can use the StRemi cluster from the Reims site to do that. Nodes
+  have a large amount of memory, then the execution can be folded by a
+  great factor (16 is easy IIRC).
+
+* TODO 11th July 2014 [8/10]
+** DONE COMM TD TD Ratio
+** DONE COMM TI TI Ratio
+** DONE Folded execution 2 4 8 16
+compare comp 4b avg min max b/w folded and regular.
+More execution of ff-32
+Recalculate avg (avg*events/events)
+
+** DONE B-32, B-64, C-32, C-64 traces
+** DONE LU C-1024 No instrumentation (4 nodes/4 cores)
+** DONE Get a trace with SIG_DIFF and LOOP_LCS enabled B-16
+Few more traces with LOOP_LCS (crappy)
+Few with SIG_DIFF
++ Comparing B-16 SIGDIFF 0 and 1 after event 66 the opcodes are not
+  same. 
++ No difference in opcodes and stack signature in SIGDIFF 2 and 3
++ COMP 4b ratios b/w 1-2 and 2-3 are almost 1.
+
+** DONE Plot B-16 and C-16 on same graph (inst rate)
+a) get the overall value (events*avg) and calc % using this for each
+   entry.
+   -OR-
+b) identify most important events using a threshold on % or events and
+   extract the dataframe for those events
+c) ratios of rates on the same plot
+
+** DONE TD vs TIC ratio B-16, C-8
+check if it is constant b/w diff runs.
+determine if the ratio is same b/w classes and processes.
+
+** TODO Identify different phases in the execution from the traces
+*** Phase 1
+1148 -> 1004 -> 1010
+MPI_Wait -> MPI_Allreduce -> MPI_Barrier
+
+*** Phase2
+
+*** Phase 3
+
+*** TODO Track from the trace for the 3 missing event
+
+** TODO Figure 14 CCPE
+But with more information
+1) plot the overall average rate
+2) Separate the 8's from the 16's, as instances are not fully
+   comparable
+3) use color to highlight the "location" in the execution rather than
+   the number of instruction (already given by the x-axis. A first
+   approximation could be to have a different color if the event id is
+   in [0-30[ [30-60[ and [60-80[ to roughly distinguish what I suppose
+   to be the warmup, computation, results gathering and checkup phases.
+* TODO 29th July 2014 [2/4]
+** TODO Look at the rank list to ID which process execute with event
+** TODO Unwind all the Rank list. Find unique rank lists
+*** Matrix 
+** DONE TI traces for C-64 folding (perfect)
+** DONE Traces for #events upto max possible processes
+* TODO 16th September 2014 [1/1]
+** DONE Run simulations of TD traces
++ The basic command line is (from the root directory of the git)
+$ time smpirun --cfg="smpi/simulate_computation:no" \
+--cfg="surf/precision:1e-6" \
+--cfg="smpi/privatize_global_variables:yes" \
+--cfg="smpi/running_power:4.18e9" \
+-platform scripts/graphene_pmbs13.xml \
+-np 4 \
+-hostfile traces-new/td/lu/B/4/hostfile.I \
+replay/replay traces-new/td/lu/B/4/I/0
++ The last three line is the variable part
++ List of runs to make
+  + in traces-new/td/lu (traces with 1 core per node, and details)
+  + Classes A, B, C
+  + with 4, 8, 16, 32, 64, 128 processes
+  + Run I only (it will be long enough)
+  + no folded, no *-cores traces
++ Store results in a .csv as:
+  Class, Processes, RealTime, SimTime, RunTime
+  where
+  + Realtime comes from details.I
+  + SimTime is the output of the simulation (Execution Time: xxx.yyy)
+  + RunTime is the output of the ~time~ command
++ It will be very time consuming (C-4 takes more than 1 minute on my
+  laptop) so
+  + use number of processes as outer loop and class as inner
+  + if you have access to multiple homogeneous machines, run in parallel
+  + commit soon, commit often.

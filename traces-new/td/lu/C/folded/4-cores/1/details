@@ -1,0 +1,15 @@
+ LU Benchmark Completed.
+ Class           =                        C
+ Size            =            162x 162x 162
+ Iterations      =                      250
+ Time in seconds =                    40.22
+ Total processes =                       64
+ Compiled procs  =                       64
+ Mop/s total     =                 50700.99
+ Mop/s/process   =                   792.20
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                      3.3
+ Compile date    =              06 Aug 2014
+
+real 46.439	user 172.455	sys 0.544	pcpu 372.60

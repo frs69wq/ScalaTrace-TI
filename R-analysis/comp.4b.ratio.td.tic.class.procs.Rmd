@@ -1,0 +1,154 @@
+---
+title: "COMP 4b ratios of TD vs TIC between Classes and Processes"
+author: "Anshul Gupta"
+date: "16/07/2014"
+output: html_document
+---
+
+## Motive
+The objective is to check the variation between the executions when:  
+A) we change the number of processes  
+B) we change the class  
+
+## Overview
+Taking B-8 as reference, see the changes in B-16 and C-8.  
+Their **COMP 4b** values were parsed using _scripts/Expand.java_  
+
+```{r Init}
+setwd ('~/git/ScalaTrace-TI')
+dataset.td.lu.B.8.comp.4b.I<-read.table("datasets/td.lu.B.8.comp.4b.I", header=TRUE)
+dataset.td.lu.B.8.comp.4b.II<-read.table("datasets/td.lu.B.8.comp.4b.II", header=TRUE)
+dataset.td.lu.B.8.comp.4b.III<-read.table("datasets/td.lu.B.8.comp.4b.III", header=TRUE)
+dataset.td.lu.B.8.comp.4b.IV<-read.table("datasets/td.lu.B.8.comp.4b.IV", header=TRUE)
+dataset.td.lu.B.8.comp.4b.V<-read.table("datasets/td.lu.B.8.comp.4b.V", header=TRUE)
+
+dataset.td.lu.B.16.comp.4b.I<-read.table("datasets/td.lu.B.16.comp.4b.I", header=TRUE)
+dataset.td.lu.B.16.comp.4b.II<-read.table("datasets/td.lu.B.16.comp.4b.II", header=TRUE)
+dataset.td.lu.B.16.comp.4b.III<-read.table("datasets/td.lu.B.16.comp.4b.III", header=TRUE)
+dataset.td.lu.B.16.comp.4b.IV<-read.table("datasets/td.lu.B.16.comp.4b.IV", header=TRUE)
+dataset.td.lu.B.16.comp.4b.V<-read.table("datasets/td.lu.B.16.comp.4b.V", header=TRUE)
+
+dataset.td.lu.C.8.comp.4b.I<-read.table("datasets/td.lu.C.8.comp.4b.I", header=TRUE)
+dataset.td.lu.C.8.comp.4b.II<-read.table("datasets/td.lu.C.8.comp.4b.II", header=TRUE)
+dataset.td.lu.C.8.comp.4b.III<-read.table("datasets/td.lu.C.8.comp.4b.III", header=TRUE)
+dataset.td.lu.C.8.comp.4b.IV<-read.table("datasets/td.lu.C.8.comp.4b.IV", header=TRUE)
+dataset.td.lu.C.8.comp.4b.V<-read.table("datasets/td.lu.C.8.comp.4b.V", header=TRUE)
+
+dataset.tic.lu.B.8.comp.4b.I<-read.table("datasets/tic.lu.B.8.comp.4b.I", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.II<-read.table("datasets/tic.lu.B.8.comp.4b.II", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.III<-read.table("datasets/tic.lu.B.8.comp.4b.III", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.IV<-read.table("datasets/tic.lu.B.8.comp.4b.IV", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.V<-read.table("datasets/tic.lu.B.8.comp.4b.V", header=TRUE)
+
+dataset.tic.lu.B.16.comp.4b.I<-read.table("datasets/tic.lu.B.16.comp.4b.I", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.II<-read.table("datasets/tic.lu.B.16.comp.4b.II", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.III<-read.table("datasets/tic.lu.B.16.comp.4b.III", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.IV<-read.table("datasets/tic.lu.B.16.comp.4b.IV", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.V<-read.table("datasets/tic.lu.B.16.comp.4b.V", header=TRUE)
+
+dataset.tic.lu.C.8.comp.4b.I<-read.table("datasets/tic.lu.C.8.comp.4b.I", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.II<-read.table("datasets/tic.lu.C.8.comp.4b.II", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.III<-read.table("datasets/tic.lu.C.8.comp.4b.III", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.IV<-read.table("datasets/tic.lu.C.8.comp.4b.IV", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.V<-read.table("datasets/tic.lu.C.8.comp.4b.V", header=TRUE)
+```
+
+
+```{r Read the datasets}
+mean.avg.tic.c.8.td.b.8<-matrix(0, 5, 5)
+mean.avg.tic.c.8.td.b.8[1,] <- c(mean(dataset.tic.lu.C.8.comp.4b.I$avg/dataset.td.lu.B.8.comp.4b.I$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.II$avg/dataset.td.lu.B.8.comp.4b.I$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.III$avg/dataset.td.lu.B.8.comp.4b.I$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.IV$avg/dataset.td.lu.B.8.comp.4b.I$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.V$avg/dataset.td.lu.B.8.comp.4b.I$avg))
+
+mean.avg.tic.c.8.td.b.8[2,] <- c(mean(dataset.tic.lu.C.8.comp.4b.I$avg/dataset.td.lu.B.8.comp.4b.II$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.II$avg/dataset.td.lu.B.8.comp.4b.II$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.III$avg/dataset.td.lu.B.8.comp.4b.II$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.IV$avg/dataset.td.lu.B.8.comp.4b.II$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.V$avg/dataset.td.lu.B.8.comp.4b.II$avg))
+
+mean.avg.tic.c.8.td.b.8[3,] <- c(mean(dataset.tic.lu.C.8.comp.4b.I$avg/dataset.td.lu.B.8.comp.4b.III$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.II$avg/dataset.td.lu.B.8.comp.4b.III$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.III$avg/dataset.td.lu.B.8.comp.4b.III$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.IV$avg/dataset.td.lu.B.8.comp.4b.III$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.V$avg/dataset.td.lu.B.8.comp.4b.III$avg))
+
+mean.avg.tic.c.8.td.b.8[4,] <- c(mean(dataset.tic.lu.C.8.comp.4b.I$avg/dataset.td.lu.B.8.comp.4b.IV$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.II$avg/dataset.td.lu.B.8.comp.4b.IV$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.III$avg/dataset.td.lu.B.8.comp.4b.IV$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.IV$avg/dataset.td.lu.B.8.comp.4b.IV$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.V$avg/dataset.td.lu.B.8.comp.4b.IV$avg))
+
+mean.avg.tic.c.8.td.b.8[5,] <- c(mean(dataset.tic.lu.C.8.comp.4b.I$avg/dataset.td.lu.B.8.comp.4b.V$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.II$avg/dataset.td.lu.B.8.comp.4b.V$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.III$avg/dataset.td.lu.B.8.comp.4b.V$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.IV$avg/dataset.td.lu.B.8.comp.4b.V$avg),
+                                 mean(dataset.tic.lu.C.8.comp.4b.V$avg/dataset.td.lu.B.8.comp.4b.V$avg))
+
+mean.avg.tic.b.16.td.b.8<-matrix(0, 5, 5)
+mean.avg.tic.b.16.td.b.8[1,] <- c(mean(dataset.tic.lu.B.16.comp.4b.I$avg)/mean(dataset.td.lu.B.8.comp.4b.I$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.II$avg)/mean(dataset.td.lu.B.8.comp.4b.I$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.III$avg)/mean(dataset.td.lu.B.8.comp.4b.I$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.IV$avg)/mean(dataset.td.lu.B.8.comp.4b.I$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.V$avg)/mean(dataset.td.lu.B.8.comp.4b.I$avg))
+
+mean.avg.tic.b.16.td.b.8[2,] <- c(mean(dataset.tic.lu.B.16.comp.4b.I$avg)/mean(dataset.td.lu.B.8.comp.4b.II$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.II$avg)/mean(dataset.td.lu.B.8.comp.4b.II$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.III$avg)/mean(dataset.td.lu.B.8.comp.4b.II$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.IV$avg)/mean(dataset.td.lu.B.8.comp.4b.II$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.V$avg)/mean(dataset.td.lu.B.8.comp.4b.II$avg))
+
+mean.avg.tic.b.16.td.b.8[3,] <- c(mean(dataset.tic.lu.B.16.comp.4b.I$avg)/mean(dataset.td.lu.B.8.comp.4b.III$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.II$avg)/mean(dataset.td.lu.B.8.comp.4b.III$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.III$avg)/mean(dataset.td.lu.B.8.comp.4b.III$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.IV$avg)/mean(dataset.td.lu.B.8.comp.4b.III$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.V$avg)/mean(dataset.td.lu.B.8.comp.4b.III$avg))
+
+mean.avg.tic.b.16.td.b.8[4,] <- c(mean(dataset.tic.lu.B.16.comp.4b.I$avg)/mean(dataset.td.lu.B.8.comp.4b.IV$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.II$avg)/mean(dataset.td.lu.B.8.comp.4b.IV$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.III$avg)/mean(dataset.td.lu.B.8.comp.4b.IV$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.IV$avg)/mean(dataset.td.lu.B.8.comp.4b.IV$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.V$avg)/mean(dataset.td.lu.B.8.comp.4b.IV$avg))
+
+mean.avg.tic.b.16.td.b.8[5,] <- c(mean(dataset.tic.lu.B.16.comp.4b.I$avg)/mean(dataset.td.lu.B.8.comp.4b.V$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.II$avg)/mean(dataset.td.lu.B.8.comp.4b.V$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.III$avg)/mean(dataset.td.lu.B.8.comp.4b.V$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.IV$avg)/mean(dataset.td.lu.B.8.comp.4b.V$avg),
+                                 mean(dataset.tic.lu.B.16.comp.4b.V$avg)/mean(dataset.td.lu.B.8.comp.4b.V$avg))
+
+mean.avg.tic.b.8.td.b.8<-matrix(0, 5, 5)
+mean.avg.tic.b.8.td.b.8[1,] <- c(mean(dataset.tic.lu.B.8.comp.4b.I$avg/dataset.td.lu.B.8.comp.4b.I$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.II$avg/dataset.td.lu.B.8.comp.4b.I$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.III$avg/dataset.td.lu.B.8.comp.4b.I$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.IV$avg/dataset.td.lu.B.8.comp.4b.I$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.V$avg/dataset.td.lu.B.8.comp.4b.I$avg))
+
+mean.avg.tic.b.8.td.b.8[2,] <- c(mean(dataset.tic.lu.B.8.comp.4b.I$avg/dataset.td.lu.B.8.comp.4b.II$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.II$avg/dataset.td.lu.B.8.comp.4b.II$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.III$avg/dataset.td.lu.B.8.comp.4b.II$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.IV$avg/dataset.td.lu.B.8.comp.4b.II$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.V$avg/dataset.td.lu.B.8.comp.4b.II$avg))
+
+mean.avg.tic.b.8.td.b.8[3,] <- c(mean(dataset.tic.lu.B.8.comp.4b.I$avg/dataset.td.lu.B.8.comp.4b.III$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.II$avg/dataset.td.lu.B.8.comp.4b.III$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.III$avg/dataset.td.lu.B.8.comp.4b.III$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.IV$avg/dataset.td.lu.B.8.comp.4b.III$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.V$avg/dataset.td.lu.B.8.comp.4b.III$avg))
+
+mean.avg.tic.b.8.td.b.8[4,] <- c(mean(dataset.tic.lu.B.8.comp.4b.I$avg/dataset.td.lu.B.8.comp.4b.IV$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.II$avg/dataset.td.lu.B.8.comp.4b.IV$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.III$avg/dataset.td.lu.B.8.comp.4b.IV$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.IV$avg/dataset.td.lu.B.8.comp.4b.IV$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.V$avg/dataset.td.lu.B.8.comp.4b.IV$avg))
+
+mean.avg.tic.b.8.td.b.8[5,] <- c(mean(dataset.tic.lu.B.8.comp.4b.I$avg/dataset.td.lu.B.8.comp.4b.V$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.II$avg/dataset.td.lu.B.8.comp.4b.V$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.III$avg/dataset.td.lu.B.8.comp.4b.V$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.IV$avg/dataset.td.lu.B.8.comp.4b.V$avg),
+                                 mean(dataset.tic.lu.B.8.comp.4b.V$avg/dataset.td.lu.B.8.comp.4b.V$avg))
+print(mean.avg.tic.b.16.td.b.8)
+print(mean.avg.tic.c.8.td.b.8)
+print(mean.avg.tic.b.8.td.b.8)
+```
+

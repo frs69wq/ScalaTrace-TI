@@ -1,0 +1,130 @@
+#+TITLE: Trace Acquisition on Grid'5000
+#+AUTHOR: Anshul Gupta
+#+EMAIL: [[mailto:anshulgupta0803@gmail.com][anshulgupta0803@gmail.com]]
+#+OPTIONS: toc:nil
+#+STARTUP: indent
+#+STARTUP: overview
+#+LaTeX_Header: \usepackage{fullpage}
+
+* Login on the frontend
+#+begin_src sh
+ssh angupta@access.grid5000.fr
+ssh nancy
+#+end_src
+
+* Reservation
+#+begin_src sh
+oarsub -I -t deploy -l nodes=4,walltime=3 -p "cluster='graphene'"
+#+end_src
+
+* Deploy
+The tarball is present in
+[[https://api.grid5000.fr/sid/sites/nancy/public/angupta/ti-wheezy-x64-v11.0.tgz]]
+[[https://api.grid5000.fr/sid/sites/nancy/public/angupta/ti-wheezy-x64-v11.0.dsc]]
+
+#+begin_src sh
+cat $OAR_NODEFILE | uniq > nodefile.4
+cat $OAR_NODEFILE > hostfile.16
+
+kadeploy -f nodefile.4 -e ti-wheezy-x64-prod -k .ssh/id_rsa.pub
+#+end_src
+
+* Login on the first node
+The main tracefile after compression will be present on the first
+node.
+
+#+begin_src sh
+ssh root@`head -n1 hostfile.16`
+#+end_src
+
+* Copying ssh keys to all the nodes
+The password of all nodes is "trace"
+
+#+begin_src sh
+echo "StrictHostKeyChecking no" > .ssh/config
+ssh-copy-id angupta@nancy
+scp angupta@nancy:hostfile* .
+scp angupta@nancy:nodefile* .
+
+for i in `cat nodefile.4`; do sshpass -p "trace" ssh-copy-id root@$i; done
+#+end_src
+* Disable CPU 1-3 on every node
+taktuk gives some error while broadcasting. :-/
+
+This script logins to every node sequentially.
+#+begin_src sh
+for i in `cat nodefile.4`; do ssh $i; done
+#+end_src
+
+In every node, execute this.
+#+begin_src sh
+for i in /sys/devices/system/cpu/cpu[1-3]*/online; do echo 0 > $i; done
+logout
+#+end_src
+
+Check the online/offline CPU list.
+#+begin_src sh
+for i in `cat nodefile.4`; do ssh $i lscpu | grep -i on-line; done
+for i in `cat nodefile.4`; do ssh $i lscpu | grep -i off-line; done
+#+end_src
+* Tools
+** ScalaTrace-TI
+#+begin_src sh
+export SCALATRACE_TI='/usr/local/src/ScalaTrace-TI'
+#+end_src
+
+** ScalaTrace-TD
+#+begin_src sh
+export SCALATRACE_TD='/usr/local/src/ScalaTrace-TD'
+#+end_src
+
+** ScalaTrace-TI-Calibration
+#+begin_src sh
+export SCALATRACE_TIC='/usr/local/src/ScalaTrace-TI-Calibration'
+#+end_src
+
+** Simgrid source (git)
+#+begin_src sh
+export SIMGRID_SRC='/usr/local/src/simgrid'
+#+end_src
+
+** Simgrid bin
+#+begin_src sh
+export SIMGRID_ROOT='/usr/local/src/SimGrid'
+#+end_src
+
+** PAPI
+#+begin_src sh
+export PAPI_ROOT='/usr/local/src/papi-5.3.0'
+#+end_src
+
+** NPB
+#+begin_src sh
+export NPB_MPI_ROOT='/usr/local/src/NPB3.3/NPB3.3-MPI'
+#+end_src
+
+- Time-Independet is set to 'n' by default in
+  $NPB_MPI_ROOT/config/make.def
+- Ignore the following binary files directory as they were compiled
+  with older version of ScalaTrace-TI 
+  + $NPB_MPI_ROOT/Default
+  + $NPB_MPI_ROOT/TD
+  + $NPB_MPI_ROOT/TI
+  + $NPB_MPI_ROOT/TI-Cal
+
+* Compiling and executing NPB Benchmarks
+Set TIME_INDEPENDENT in config/make.def to 'y' or 'n' according to the
+requirement.
+
+#+begin_src sh
+cd $NPB_MPI_ROOT
+make lu CLASS=X NPROCS=Y
+#+end_src
+
+The executable will appear in $NPB_MPI_ROOT/bin/lu.X.Y
+Now copy the executable to all the nodes.
+
+#+begin_src sh
+for i in `cat nodefile.4`; do sshpass -p "trace" scp $NPB_MPI_ROOT/bin/lu.X.Y root@$i:~; done
+mpirun -hostfile hostfile.16 -np Y lu.X.Y
+#+end_src

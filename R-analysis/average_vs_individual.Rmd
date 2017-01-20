@@ -1,0 +1,153 @@
+---
+title: "Average vs. Individual"
+author: "F. Suter"
+date: "30/07/2014"
+output: pdf_document
+---
+
+In this document we want to determine whether using an averaged instruction rate is bad or not when compared to an individual instruction rate for each event.
+
+## Init 
+```{r init and table read}
+library(ggplot2)
+setwd('~/SVN/Anshul/ScalaTrace-TI')
+
+td.a.16.comp.4b.I<-read.table('datasets/td.lu.A.16.comp.4b.I', header=TRUE)
+ti.a.16.comp.4c.I<-read.table('datasets/ti.lu.A.16.comp.4c.I', header=TRUE)
+
+td.b.16.comp.4b.I<-read.table('datasets/td.lu.B.16.comp.4b.I', header=TRUE)
+ti.b.16.comp.4c.I<-read.table('datasets/ti.lu.B.16.comp.4c.I', header=TRUE)
+
+td.c.16.comp.4b.I<-read.table('datasets/td.lu.C.16.comp.4b.I', header=TRUE)
+ti.c.16.comp.4c.I<-read.table('datasets/ti.lu.C.16.comp.4c.I', header=TRUE)
+```
+
+## Preparing the datasets
+We first modify the datasets for each class by replacing the original (avg, min, max) per block of the Timed trace (td) by the average time (COMP.4b.avg, in seconds) and the average number of instructions (COMP.4c.avg, after correction) per block.
+
+Then we add new columns:
+
+  * rate: the instruction rate of an event, i.e. the #instructions divided by the time, or COMP.4.c / COMP.4.b
+  
+  * time: an estimation of the time taken by an event (number of occurences * avg time)
+  
+  * inst: an estimation of the number of instruction of an event (number of occurences * avg #instructions)
+  
+  * sim_time: a "would-be" simulated, i.e., the global number of instructions of an event executed at the average rate.
+  
+  * diff: the difference betwen time and sim_time values
+
+```{r Preparing the datasets}
+a.16<-cbind(td.a.16.comp.4b.I[,1:4],
+            td.a.16.comp.4b.I$avg/1e6,
+            ti.a.16.comp.4c.I$avg*1e3)
+
+colnames(a.16)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+a.16$time <- a.16$events * a.16$COMP.4b.avg
+a.16$inst <- a.16$events * a.16$COMP.4c.avg
+
+a.total_time = sum(a.16$time)  
+a.total_inst = sum(a.16$inst)
+a.avg_rate = a.total_inst/a.total_time
+
+a.16$sim_time <- a.16$inst/a.avg_rate
+a.16$diff <- a.16$time-a.16$sim_time
+
+
+b.16<-cbind(td.b.16.comp.4b.I[,1:4],
+            td.b.16.comp.4b.I$avg/1e6,
+            ti.b.16.comp.4c.I$avg*1e3)
+
+colnames(b.16)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+b.16$time <- b.16$events * b.16$COMP.4b.avg
+b.16$inst <- b.16$events * b.16$COMP.4c.avg
+
+b.total_time = sum(b.16$time)  
+b.total_inst = sum(b.16$inst)
+b.avg_rate = b.total_inst/b.total_time
+
+b.16$sim_time <- b.16$inst/b.avg_rate
+b.16$diff <- b.16$time-b.16$sim_time
+
+c.16<-cbind(td.c.16.comp.4b.I[,1:4],
+            td.c.16.comp.4b.I$avg/1e6,
+            ti.c.16.comp.4c.I$avg*1e3)
+
+colnames(c.16)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+c.16$time <- c.16$events * c.16$COMP.4b.avg
+c.16$inst <- c.16$events * c.16$COMP.4c.avg
+
+c.total_time = sum(c.16$time)  
+c.total_inst = sum(c.16$inst)
+c.avg_rate = c.total_inst/c.total_time
+
+c.16$sim_time <- c.16$inst/c.avg_rate
+c.16$diff <- c.16$time-c.16$sim_time
+```
+
+## Start with one Class only: B
+
+We plot, for each event both approximated time (avg time * number of occurences) and the simulated time.
+
+```{r}
+ggplot(b.16, aes(x=1:nrow(b.16))) + geom_point(aes(y=time, color="red"))+
+  geom_point(aes(y=sim_time, color="blue"))
+```
+
+Most of the events do not last very long (less than 0.1 second over a total time of 26s for an execution of B-16) let filter out these small events and replot
+
+```{r}
+b.16.2 = b.16[b.16$time>0.1,]
+ggplot(b.16.2, aes(x=1:nrow(b.16.2))) + geom_point(aes(y=time, color="red"))+
+  geom_point(aes(y=sim_time, color="blue"))
+```
+
+Plot the differences between times and simulated times:
+
+```{r}
+ggplot(b.16, aes(x=1:nrow(b.16), y=diff)) + geom_line()
+```
+
+There are only a few for which using the average rate leads to bad prediction, but it seems to compensate. look at the summary of diff and at the overall sum:
+
+```{r}
+summary(b.16$diff)
+sum(b.16$diff)
+b.total_time
+sum(b.16$sim_time)
+```
+
+In the end, we have the same time! 
+
+## Consider all the classes
+
+Do we have the same behavior for all the classes? Bind the dataframes into a new one (df)
+
+```{r}
+df<-rbind(data.frame(a.16, class='A-16', rows=1:nrow(a.16)),
+           data.frame(b.16, class='B-16', rows=1:nrow(b.16)),
+           data.frame(c.16, class='C-16', rows=1:nrow(c.16)))
+```
+
+Do we have the same spikes for all classes?
+
+```{r}
+ggplot(df, aes(x=rows, y=diff, color=factor(class))) + geom_line()
+```
+
+Yes! The same but zooming on where the spikes are:
+
+```{r}
+ggplot(df, aes(x=rows, y=diff, color=factor(class))) + geom_line() +xlim(65,110)
+```
+
+The only thing that changes as we increase the size of the problem is the amplitude of the spikes, but they are at the exact same place and seem to compensate themselves. We can verify this by computing the sums of the differences:
+
+```{r}
+diffs <- c(sum(a.16$diff), sum(b.16$diff), sum(c.16$diff))
+diffs
+```
+
+Very accurate indeed!

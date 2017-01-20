@@ -1,0 +1,89 @@
+---
+title: "Folded Execution of C-64"
+author: "F. Suter"
+output: html_document
+---
+
+## Motive
+The objective is to compare COMP 4b min, max and avg between
+the folded and regular execution.
+
+## Overview
+Executions of TD C-64 with folding factor of 2, 4, 8, 16 and 32 were taken on
+graphene.
+Their **COMP 4b** global values were parsed using the _scripts/Expand.java_ code with this format.
+See _org/analysis.org_
+
+The folded execution with a factor of 32 (i.e., with only 2 cores) that led to 'datasets/td.lu.C.64.folded.32.comp.4b.I' was corrupted as 4 cores were used. This explains why a new trace has been acquired to obtain 'datasets/td.lu.C.64.folded.32.comp.4b.IV'. The same applies for second and third samples that are not used here (see _./folded.execution.c.64.Rmd_)
+
+## Loading datasets
+First we have to load the datasets:
+```{r Loading datasets}
+setwd ('~/SVN/Anshul/ScalaTrace-TI')
+dataset.td.lu.C.64.folded.1.comp.4b.I <- read.table('datasets/td.lu.C.64.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.2.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.2.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.4.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.4.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.8.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.8.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.16.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.16.comp.4b.I', header=TRUE)
+dataset.td.lu.C.64.folded.32.comp.4b.I <- read.table('datasets/td.lu.C.64.folded.32.comp.4b.IV', header=TRUE)
+```
+
+## Approximation the execution time of each block
+From these datasets, we want to have an approximation of the compute part of the execution time that would be simulated using such a trace. This approximation should increase with the folding factor as the timings in the trace were impacted by the competition for the resources by the processes.
+
+To compute this approximation, we weight (i.e., multiply) the average compute time stored in the summary of each event sub-block by the number of times this sub-block is visited when the trace is unfolded. The result is stored in a new column called 'approx_comp'.
+
+```{r Approximate the time taken by all the occurrences of an event}
+dataset.td.lu.C.64.folded.1.comp.4b.I$approx_comp<-(dataset.td.lu.C.64.folded.1.comp.4b.I$avg * dataset.td.lu.C.64.folded.1.comp.4b.I$events)
+dataset.td.lu.C.64.folded.2.comp.4b.I$approx_comp<-(dataset.td.lu.C.64.folded.2.comp.4b.I$avg * dataset.td.lu.C.64.folded.2.comp.4b.I$events)
+dataset.td.lu.C.64.folded.4.comp.4b.I$approx_comp<-(dataset.td.lu.C.64.folded.4.comp.4b.I$avg * dataset.td.lu.C.64.folded.4.comp.4b.I$events)
+dataset.td.lu.C.64.folded.8.comp.4b.I$approx_comp<-(dataset.td.lu.C.64.folded.8.comp.4b.I$avg * dataset.td.lu.C.64.folded.8.comp.4b.I$events)
+dataset.td.lu.C.64.folded.16.comp.4b.I$approx_comp<-(dataset.td.lu.C.64.folded.16.comp.4b.I$avg * dataset.td.lu.C.64.folded.16.comp.4b.I$events)
+dataset.td.lu.C.64.folded.32.comp.4b.I$approx_comp<-(dataset.td.lu.C.64.folded.32.comp.4b.I$avg * dataset.td.lu.C.64.folded.32.comp.4b.I$events)
+```
+
+## Getting an overall approximation
+The overall approximation of the compute time is obtained by summing the values in 'approx_comp'. We create a new dataframe to store these values. We divide them by 1e6 to have seconds as a unit.
+
+```{r Computing the overall approximation of compute time for each folded instance}
+approx <- c(sum(dataset.td.lu.C.64.folded.1.comp.4b.I$approx_comp)/1e6,
+            sum(dataset.td.lu.C.64.folded.2.comp.4b.I$approx_comp)/1e6,
+            sum(dataset.td.lu.C.64.folded.4.comp.4b.I$approx_comp)/1e6,
+            sum(dataset.td.lu.C.64.folded.8.comp.4b.I$approx_comp)/1e6,
+            sum(dataset.td.lu.C.64.folded.16.comp.4b.I$approx_comp)/1e6,
+            sum(dataset.td.lu.C.64.folded.32.comp.4b.I$approx_comp)/1e6)
+names(approx)<-c('1','2','4','8','16','32')
+```
+
+#Comparison with the measured execution time
+We can compare the computed approximations with the execution time that is reported in the summary of the execution of the benchmark.
+
+```{r storing the reported execution times}
+exec <- c(40.32,100.75,180.33,390.73,791.77,799.78)
+names(exec)<-c('1','2','4','8','16','32')
+
+times <-rbind(approx, exec)
+times
+```
+
+```{r}
+approx_ratios <-approx /approx[1]
+exec_ratios <- exec /exec[1]
+ratios <- rbind(approx_ratios, exec_ratios)
+ratios
+```
+
+There are several issues there:
+
+  + approximations are much larger than measured times
+
+  + ratios don't evolve in the same way
+
+  + ratio stall between 16 and 32 while it shouldn't
+  
+But there might be an explanation for the first two issues. We sum the time for all the occurrences of all of the blocks, regardless if a process actually executes it or not. Then we overestimate the compute time greatly and it compromises the computation of the ratios.
+
+One solution could be to modify the expand.java program to add a (TRUE/FALSE) column that tells whether the process of rank 0 is involved or not. We have this information in the RANK line of each event, but might need 'unwind' to extract it.
+
+There is still an issue with the 32 folding factor. The reported times in the details.32. files do not increase with regard to those reported in the details.16 files. More than two cores per node should have been used.
+

@@ -351,10 +351,12 @@ void histo_replay(Trace* trace){
     replay_timer->setCurrentEvent(e);
 
 #ifdef DEBUG
-    if( i % 100 == 0 && my_rank == doTestFor )
+    if( i % 100 == 0 && my_rank == doTestFor ){
+	  
+      cout << replay_timer->getTime() << " " << global_timer->getTime() << endl;
       printMsgCounts();
+    }
 #endif
-
     switch(op_code){
     case umpi_MPI_Init:
       handleQueue = new HandleQueue();
@@ -381,7 +383,11 @@ void histo_replay(Trace* trace){
       postRecvs(global_timer, true);
 #ifdef DEBUG
       if(my_rank == doTestFor)
+	 {
+	cout << replay_timer->getTime() << " " << global_timer->getTime() << endl;
         printMsgCounts();
+	 }
+       
       /* Uncomment the following loops for more debugging
 				for(map<int, int>::iterator it=scounts.begin(); it!=scounts.end(); it++)
 					cout << my_rank << " sent " << it->second << " msgs to " << it->first << endl;

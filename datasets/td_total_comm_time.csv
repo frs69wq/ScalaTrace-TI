@@ -1,0 +1,24 @@
+Class, Processes, Run, Time, TD_TI, COMM_COMP
+B,16,I,7.31324e+07,Timed,Communication
+B,16,II,8.38022e+07,Timed,Communication
+B,16,III,1.2879e+08,Timed,Communication
+B,16,IV,8.61184e+07,Timed,Communication
+B,16,V,8.46965e+07,Timed,Communication
+B,16,VI,8.67339e+07,Timed,Communication
+B,8,I,2.81937e+07,Timed,Communication
+B,8,II,3.18107e+07,Timed,Communication
+B,8,III,3.14786e+07,Timed,Communication
+B,8,IV,3.1603e+07,Timed,Communication
+B,8,V,3.25332e+07,Timed,Communication
+C,16,I,1.42204e+08,Timed,Communication
+C,16,II,1.43948e+08,Timed,Communication
+C,16,III,1.43155e+08,Timed,Communication
+C,16,IV,1.43871e+08,Timed,Communication
+C,16,V,1.42339e+08,Timed,Communication
+C,16,VI,1.45263e+08,Timed,Communication
+C,16,VII,1.65951e+08,Timed,Communication
+C,8,I,5.90246e+07,Timed,Communication
+C,8,II,1.28803e+08,Timed,Communication
+C,8,III,1.41289e+08,Timed,Communication
+C,8,IV,1.05313e+08,Timed,Communication
+C,8,V,1.39357e+08,Timed,Communication

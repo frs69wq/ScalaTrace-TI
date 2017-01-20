@@ -1,0 +1,511 @@
+---
+title: "Compute Rate v/s Number of Instructions"
+author: "Anshul Gupta"
+date: "12/07/2014"
+output: html_document
+---
+
+```{r Init}
+setwd('~/git/ScalaTrace-TI')
+library(ggplot2)
+dataset.tic.lu.B.8.comp.4b.I<-read.table("datasets/tic.lu.B.8.comp.4b.I", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.II<-read.table("datasets/tic.lu.B.8.comp.4b.II", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.III<-read.table("datasets/tic.lu.B.8.comp.4b.III", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.IV<-read.table("datasets/tic.lu.B.8.comp.4b.IV", header=TRUE)
+dataset.tic.lu.B.8.comp.4b.V<-read.table("datasets/tic.lu.B.8.comp.4b.V", header=TRUE)
+dataset.tic.lu.B.8.comp.4c.I<-read.table("datasets/tic.lu.B.8.comp.4c.I", header=TRUE)
+dataset.tic.lu.B.8.comp.4c.II<-read.table("datasets/tic.lu.B.8.comp.4c.II", header=TRUE)
+dataset.tic.lu.B.8.comp.4c.III<-read.table("datasets/tic.lu.B.8.comp.4c.III", header=TRUE)
+dataset.tic.lu.B.8.comp.4c.IV<-read.table("datasets/tic.lu.B.8.comp.4c.IV", header=TRUE)
+dataset.tic.lu.B.8.comp.4c.V<-read.table("datasets/tic.lu.B.8.comp.4c.V", header=TRUE)
+
+dataset.tic.lu.B.16.comp.4b.I<-read.table("datasets/tic.lu.B.16.comp.4b.I", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.II<-read.table("datasets/tic.lu.B.16.comp.4b.II", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.III<-read.table("datasets/tic.lu.B.16.comp.4b.III", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.IV<-read.table("datasets/tic.lu.B.16.comp.4b.IV", header=TRUE)
+dataset.tic.lu.B.16.comp.4b.V<-read.table("datasets/tic.lu.B.16.comp.4b.V", header=TRUE)
+dataset.tic.lu.B.16.comp.4c.I<-read.table("datasets/tic.lu.B.16.comp.4c.I", header=TRUE)
+dataset.tic.lu.B.16.comp.4c.II<-read.table("datasets/tic.lu.B.16.comp.4c.II", header=TRUE)
+dataset.tic.lu.B.16.comp.4c.III<-read.table("datasets/tic.lu.B.16.comp.4c.III", header=TRUE)
+dataset.tic.lu.B.16.comp.4c.IV<-read.table("datasets/tic.lu.B.16.comp.4c.IV", header=TRUE)
+dataset.tic.lu.B.16.comp.4c.V<-read.table("datasets/tic.lu.B.16.comp.4c.V", header=TRUE)
+
+dataset.tic.lu.C.8.comp.4b.I<-read.table("datasets/tic.lu.C.8.comp.4b.I", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.II<-read.table("datasets/tic.lu.C.8.comp.4b.II", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.III<-read.table("datasets/tic.lu.C.8.comp.4b.III", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.IV<-read.table("datasets/tic.lu.C.8.comp.4b.IV", header=TRUE)
+dataset.tic.lu.C.8.comp.4b.V<-read.table("datasets/tic.lu.C.8.comp.4b.V", header=TRUE)
+dataset.tic.lu.C.8.comp.4c.I<-read.table("datasets/tic.lu.C.8.comp.4c.I", header=TRUE)
+dataset.tic.lu.C.8.comp.4c.II<-read.table("datasets/tic.lu.C.8.comp.4c.II", header=TRUE)
+dataset.tic.lu.C.8.comp.4c.III<-read.table("datasets/tic.lu.C.8.comp.4c.III", header=TRUE)
+dataset.tic.lu.C.8.comp.4c.IV<-read.table("datasets/tic.lu.C.8.comp.4c.IV", header=TRUE)
+dataset.tic.lu.C.8.comp.4c.V<-read.table("datasets/tic.lu.C.8.comp.4c.V", header=TRUE)
+
+dataset.tic.lu.C.16.comp.4b.I<-read.table("datasets/tic.lu.C.16.comp.4b.I", header=TRUE)
+dataset.tic.lu.C.16.comp.4b.II<-read.table("datasets/tic.lu.C.16.comp.4b.II", header=TRUE)
+dataset.tic.lu.C.16.comp.4b.III<-read.table("datasets/tic.lu.C.16.comp.4b.III", header=TRUE)
+dataset.tic.lu.C.16.comp.4b.IV<-read.table("datasets/tic.lu.C.16.comp.4b.IV", header=TRUE)
+dataset.tic.lu.C.16.comp.4b.V<-read.table("datasets/tic.lu.C.16.comp.4b.V", header=TRUE)
+dataset.tic.lu.C.16.comp.4c.I<-read.table("datasets/tic.lu.C.16.comp.4c.I", header=TRUE)
+dataset.tic.lu.C.16.comp.4c.II<-read.table("datasets/tic.lu.C.16.comp.4c.II", header=TRUE)
+dataset.tic.lu.C.16.comp.4c.III<-read.table("datasets/tic.lu.C.16.comp.4c.III", header=TRUE)
+dataset.tic.lu.C.16.comp.4c.IV<-read.table("datasets/tic.lu.C.16.comp.4c.IV", header=TRUE)
+dataset.tic.lu.C.16.comp.4c.V<-read.table("datasets/tic.lu.C.16.comp.4c.V", header=TRUE)
+```
+
+The variables are named as `d.<A>.<B>.4b.4c.<X>`,  
+where `<X>` is the TIC dataset,   
+`<A>` is the class,  
+and `<B>` is the number of processes.  
+Each `d.<A>.<B>.4b.4c.<X>` has 6 fields:
+
+* eventID = Event ID
+* opcode = Opcode of the event
+* subblock = Subblock ID of the event
+* events = Number of elements involved in the event
+* COMP.4b.avg = Average of COMP 4b
+* COMP.4c.avg = Average of COMP 4c
+
+```{r Read datasets}
+d.B.8.4b.4c.I<-cbind(dataset.tic.lu.B.8.comp.4b.I[,1:4], dataset.tic.lu.B.8.comp.4b.I$avg/1e6, dataset.tic.lu.B.8.comp.4c.I$avg*1e3)
+d.B.8.4b.4c.II<-cbind(dataset.tic.lu.B.8.comp.4b.II[,1:4], dataset.tic.lu.B.8.comp.4b.II$avg/1e6, dataset.tic.lu.B.8.comp.4c.II$avg*1e3)
+d.B.8.4b.4c.III<-cbind(dataset.tic.lu.B.8.comp.4b.III[,1:4], dataset.tic.lu.B.8.comp.4b.III$avg/1e6, dataset.tic.lu.B.8.comp.4c.III$avg*1e3)
+d.B.8.4b.4c.IV<-cbind(dataset.tic.lu.B.8.comp.4b.IV[,1:4], dataset.tic.lu.B.8.comp.4b.IV$avg/1e6, dataset.tic.lu.B.8.comp.4c.IV$avg*1e3)
+d.B.8.4b.4c.V<-cbind(dataset.tic.lu.B.8.comp.4b.V[,1:4], dataset.tic.lu.B.8.comp.4b.V$avg/1e6, dataset.tic.lu.B.8.comp.4c.V$avg*1e3)
+
+colnames(d.B.8.4b.4c.I)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.B.8.4b.4c.II)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.B.8.4b.4c.III)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.B.8.4b.4c.IV)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.B.8.4b.4c.V)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+d.B.16.4b.4c.I<-cbind(dataset.tic.lu.B.16.comp.4b.I[,1:4], dataset.tic.lu.B.16.comp.4b.I$avg/1e6, dataset.tic.lu.B.16.comp.4c.I$avg*1e3)
+d.B.16.4b.4c.II<-cbind(dataset.tic.lu.B.16.comp.4b.II[,1:4], dataset.tic.lu.B.16.comp.4b.II$avg/1e6, dataset.tic.lu.B.16.comp.4c.II$avg*1e3)
+d.B.16.4b.4c.III<-cbind(dataset.tic.lu.B.16.comp.4b.III[,1:4], dataset.tic.lu.B.16.comp.4b.III$avg/1e6, dataset.tic.lu.B.16.comp.4c.III$avg*1e3)
+d.B.16.4b.4c.IV<-cbind(dataset.tic.lu.B.16.comp.4b.IV[,1:4], dataset.tic.lu.B.16.comp.4b.IV$avg/1e6, dataset.tic.lu.B.16.comp.4c.IV$avg*1e3)
+d.B.16.4b.4c.V<-cbind(dataset.tic.lu.B.16.comp.4b.V[,1:4], dataset.tic.lu.B.16.comp.4b.V$avg/1e6, dataset.tic.lu.B.16.comp.4c.V$avg*1e3)
+
+colnames(d.B.16.4b.4c.I)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.B.16.4b.4c.II)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.B.16.4b.4c.III)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.B.16.4b.4c.IV)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.B.16.4b.4c.V)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+d.C.8.4b.4c.I<-cbind(dataset.tic.lu.C.8.comp.4b.I[,1:4], dataset.tic.lu.C.8.comp.4b.I$avg/1e6, dataset.tic.lu.C.8.comp.4c.I$avg*1e3)
+d.C.8.4b.4c.II<-cbind(dataset.tic.lu.C.8.comp.4b.II[,1:4], dataset.tic.lu.C.8.comp.4b.II$avg/1e6, dataset.tic.lu.C.8.comp.4c.II$avg*1e3)
+d.C.8.4b.4c.III<-cbind(dataset.tic.lu.C.8.comp.4b.III[,1:4], dataset.tic.lu.C.8.comp.4b.III$avg/1e6, dataset.tic.lu.C.8.comp.4c.III$avg*1e3)
+d.C.8.4b.4c.IV<-cbind(dataset.tic.lu.C.8.comp.4b.IV[,1:4], dataset.tic.lu.C.8.comp.4b.IV$avg/1e6, dataset.tic.lu.C.8.comp.4c.IV$avg*1e3)
+d.C.8.4b.4c.V<-cbind(dataset.tic.lu.C.8.comp.4b.V[,1:4], dataset.tic.lu.C.8.comp.4b.V$avg/1e6, dataset.tic.lu.C.8.comp.4c.V$avg*1e3)
+
+colnames(d.C.8.4b.4c.I)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.C.8.4b.4c.II)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.C.8.4b.4c.III)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.C.8.4b.4c.IV)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.C.8.4b.4c.V)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+
+d.C.16.4b.4c.I<-cbind(dataset.tic.lu.C.16.comp.4b.I[,1:4], dataset.tic.lu.C.16.comp.4b.I$avg/1e6, dataset.tic.lu.C.16.comp.4c.I$avg*1e3)
+d.C.16.4b.4c.II<-cbind(dataset.tic.lu.C.16.comp.4b.II[,1:4], dataset.tic.lu.C.16.comp.4b.II$avg/1e6, dataset.tic.lu.C.16.comp.4c.II$avg*1e3)
+d.C.16.4b.4c.III<-cbind(dataset.tic.lu.C.16.comp.4b.III[,1:4], dataset.tic.lu.C.16.comp.4b.III$avg/1e6, dataset.tic.lu.C.16.comp.4c.III$avg*1e3)
+d.C.16.4b.4c.IV<-cbind(dataset.tic.lu.C.16.comp.4b.IV[,1:4], dataset.tic.lu.C.16.comp.4b.IV$avg/1e6, dataset.tic.lu.C.16.comp.4c.IV$avg*1e3)
+d.C.16.4b.4c.V<-cbind(dataset.tic.lu.C.16.comp.4b.V[,1:4], dataset.tic.lu.C.16.comp.4b.V$avg/1e6, dataset.tic.lu.C.16.comp.4c.V$avg*1e3)
+
+colnames(d.C.16.4b.4c.I)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.C.16.4b.4c.II)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.C.16.4b.4c.III)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.C.16.4b.4c.IV)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+colnames(d.C.16.4b.4c.V)[5:6]<-c("COMP.4b.avg", "COMP.4c.avg")
+```
+
+### Get the average instruction rate
+Having COMP 4b averages and COMP 4c averages, instruction rate is calculated by:   
+`instruction rate = mean(COMP.4c.average / COMP.4b.average)`
+
+**Instruction Rate for dataset.tic.B.8**
+
+```{r Instruction Rate Dataset B 8}
+inst.rate.B.8<-c(mean(d.B.8.4b.4c.I$COMP.4c.avg/d.B.8.4b.4c.I$COMP.4b.avg),
+     mean(d.B.8.4b.4c.II$COMP.4c.avg/d.B.8.4b.4c.II$COMP.4b.avg),
+     mean(d.B.8.4b.4c.III$COMP.4c.avg/d.B.8.4b.4c.III$COMP.4b.avg),
+     mean(d.B.8.4b.4c.IV$COMP.4c.avg/d.B.8.4b.4c.IV$COMP.4b.avg),
+     mean(d.B.8.4b.4c.V$COMP.4c.avg/d.B.8.4b.4c.V$COMP.4b.avg))
+
+names(inst.rate.B.8)<-c('dataset1','dataset2','dataset3','dataset4','dataset5')
+print(inst.rate.B.8)
+```
+
+**Instruction Rate for dataset.tic.B.16**
+
+```{r Instruction Rate Dataset B 16}
+inst.rate.B.16<-c(mean(d.B.16.4b.4c.I$COMP.4c.avg/d.B.16.4b.4c.I$COMP.4b.avg),
+     mean(d.B.16.4b.4c.II$COMP.4c.avg/d.B.16.4b.4c.II$COMP.4b.avg),
+     mean(d.B.16.4b.4c.III$COMP.4c.avg/d.B.16.4b.4c.III$COMP.4b.avg),
+     mean(d.B.16.4b.4c.IV$COMP.4c.avg/d.B.16.4b.4c.IV$COMP.4b.avg),
+     mean(d.B.16.4b.4c.V$COMP.4c.avg/d.B.16.4b.4c.V$COMP.4b.avg))
+
+names(inst.rate.B.16)<-c('dataset1','dataset2','dataset3','dataset4','dataset5')
+print(inst.rate.B.16)
+```
+
+**Instruction Rate for dataset.tic.C.8**
+
+```{r Instruction Rate Dataset C 8}
+inst.rate.C.8<-c(mean(d.C.8.4b.4c.I$COMP.4c.avg/d.C.8.4b.4c.I$COMP.4b.avg),
+     mean(d.C.8.4b.4c.II$COMP.4c.avg/d.C.8.4b.4c.II$COMP.4b.avg),
+     mean(d.C.8.4b.4c.III$COMP.4c.avg/d.C.8.4b.4c.III$COMP.4b.avg),
+     mean(d.C.8.4b.4c.IV$COMP.4c.avg/d.C.8.4b.4c.IV$COMP.4b.avg),
+     mean(d.C.8.4b.4c.V$COMP.4c.avg/d.C.8.4b.4c.V$COMP.4b.avg))
+
+names(inst.rate.C.8)<-c('dataset1','dataset2','dataset3','dataset4','dataset5')
+print(inst.rate.C.8)
+```
+
+**Instruction Rate for dataset.tic.C.16**
+
+```{r Instruction Rate Dataset C 16}
+inst.rate.C.16<-c(mean(d.C.16.4b.4c.I$COMP.4c.avg/d.C.16.4b.4c.I$COMP.4b.avg),
+     mean(d.C.16.4b.4c.II$COMP.4c.avg/d.C.16.4b.4c.II$COMP.4b.avg),
+     mean(d.C.16.4b.4c.III$COMP.4c.avg/d.C.16.4b.4c.III$COMP.4b.avg),
+     mean(d.C.16.4b.4c.IV$COMP.4c.avg/d.C.16.4b.4c.IV$COMP.4b.avg),
+     mean(d.C.16.4b.4c.V$COMP.4c.avg/d.C.16.4b.4c.V$COMP.4b.avg))
+
+names(inst.rate.C.16)<-c('dataset1','dataset2','dataset3','dataset4','dataset5')
+print(inst.rate.C.16)
+```  
+
+**Dataset.tic.B.8.I**  
+
+```{r Events vs Instruction Rate Dataset B 8 1}
+ggplot(d.B.8.4b.4c.I, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.B.8[1]) + scale_x_log10()
+```
+
+**Dataset.tic.B.8.II**  
+
+```{r Events vs Instruction Rate Dataset B 8 2}
+ggplot(d.B.8.4b.4c.II, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.B.8[2]) + scale_x_log10()
+```
+
+**Dataset.tic.B.8.III**  
+
+```{r Events vs Instruction Rate Dataset B 8 3}
+ggplot(d.B.8.4b.4c.III, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.B.8[3]) + scale_x_log10()
+```
+
+**Dataset.tic.B.8.IV**  
+
+```{r Events vs Instruction Rate Dataset B 8 4}
+ggplot(d.B.8.4b.4c.IV, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.B.8[4]) + scale_x_log10()
+```
+
+**Dataset.tic.B.8.V**  
+
+```{r Events vs Instruction Rate Dataset B 8 5}
+ggplot(d.B.8.4b.4c.V, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.B.8[5]) + scale_x_log10()
+```
+
+**Dataset.tic.B.16.I**  
+
+```{r Events vs Instruction Rate Dataset B 16 1}
+ggplot(d.B.16.4b.4c.I, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.B.16[1]) + scale_x_log10()
+```
+
+**Dataset.tic.B.16.II**  
+
+```{r Events vs Instruction Rate Dataset B 16 2}
+ggplot(d.B.16.4b.4c.II, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.B.16[2]) + scale_x_log10()
+```
+
+**Dataset.tic.B.16.III**  
+
+```{r Events vs Instruction Rate Dataset B 16 3}
+ggplot(d.B.16.4b.4c.III, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.B.16[3]) + scale_x_log10()
+```
+
+**Dataset.tic.B.16.IV**  
+
+```{r Events vs Instruction Rate Dataset B 16 4}
+ggplot(d.B.16.4b.4c.IV, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.B.16[4]) + scale_x_log10()
+```
+
+**Dataset.tic.B.16.V**  
+
+```{r Events vs Instruction Rate Dataset B 16 5}
+ggplot(d.B.16.4b.4c.V, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.B.16[5]) + scale_x_log10()
+```
+
+**Dataset.tic.C.8.I**  
+
+```{r Events vs Instruction Rate Dataset C 8 1}
+ggplot(d.C.8.4b.4c.I, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.C.8[1]) + scale_x_log10()
+```
+
+**Dataset.tic.C.8.II**  
+
+```{r Events vs Instruction Rate Dataset C 8 2}
+ggplot(d.C.8.4b.4c.II, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.C.8[2]) + scale_x_log10()
+```
+
+**Dataset.tic.C.8.III**  
+
+```{r Events vs Instruction Rate Dataset C 8 3}
+ggplot(d.C.8.4b.4c.III, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.C.8[3]) + scale_x_log10()
+```
+
+**Dataset.tic.C.8.IV**  
+
+```{r Events vs Instruction Rate Dataset C 8 4}
+ggplot(d.C.8.4b.4c.IV, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.C.8[4]) + scale_x_log10()
+```
+
+**Dataset.tic.C.8.V**  
+
+```{r Events vs Instruction Rate Dataset C 8 5}
+ggplot(d.C.8.4b.4c.V, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.C.8[5]) + scale_x_log10()
+```
+
+**Dataset.tic.C.16.I**  
+
+```{r Events vs Instruction Rate Dataset C 16 1}
+ggplot(d.C.16.4b.4c.I, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.C.16[1]) + scale_x_log10()
+```
+
+**Dataset.tic.C.16.II**  
+
+```{r Events vs Instruction Rate Dataset C 16 2}
+ggplot(d.C.16.4b.4c.II, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.C.16[2]) + scale_x_log10()
+```
+
+**Dataset.tic.C.16.III**  
+
+```{r Events vs Instruction Rate Dataset C 16 3}
+ggplot(d.C.16.4b.4c.III, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.C.16[3]) + scale_x_log10()
+```
+
+**Dataset.tic.C.16.IV**  
+
+```{r Events vs Instruction Rate Dataset C 16 4}
+ggplot(d.C.16.4b.4c.IV, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.C.16[4]) + scale_x_log10()
+```
+
+**Dataset.tic.C.16.V**  
+
+```{r Events vs Instruction Rate Dataset C 16 5}
+ggplot(d.C.16.4b.4c.V, aes(x=COMP.4c.avg,
+                      y=COMP.4c.avg/COMP.4b.avg,
+                      color=COMP.4c.avg,
+                      size=events)) +
+  geom_point() + xlab("Event") + ylab("Instruction Rate") +
+  geom_hline(yintercept=inst.rate.C.16[5]) + scale_x_log10()
+```
+
+
+```{r Facet Plot Datasets}
+facet.frame.I<-rbind(data.frame(comp.4c.avg=d.B.8.4b.4c.I$COMP.4c.avg,
+                                elements=d.B.8.4b.4c.I$events,
+                                rate=d.B.8.4b.4c.I$COMP.4c.avg/d.B.8.4b.4c.I$COMP.4b.avg,
+                                class="B-8"),
+                     data.frame(comp.4c.avg=d.B.16.4b.4c.I$COMP.4c.avg,
+                                elements=d.B.16.4b.4c.I$events,
+                                rate=d.B.16.4b.4c.I$COMP.4c.avg/d.B.16.4b.4c.I$COMP.4b.avg,
+                                class="B-16"),
+                     data.frame(comp.4c.avg=d.C.8.4b.4c.I$COMP.4c.avg,
+                                elements=d.C.8.4b.4c.I$events,
+                                rate=d.C.8.4b.4c.I$COMP.4c.avg/d.C.8.4b.4c.I$COMP.4b.avg,
+                                class="C-8"),
+                     data.frame(comp.4c.avg=d.C.16.4b.4c.I$COMP.4c.avg,
+                                elements=d.C.16.4b.4c.I$events,
+                                rate=d.C.16.4b.4c.I$COMP.4c.avg/d.C.16.4b.4c.I$COMP.4b.avg,
+                                class="C-16"))
+
+facet.frame.II<-rbind(data.frame(comp.4c.avg=d.B.8.4b.4c.II$COMP.4c.avg,
+                                 elements=d.B.8.4b.4c.II$events,
+                                 rate=d.B.8.4b.4c.II$COMP.4c.avg/d.B.8.4b.4c.II$COMP.4b.avg,
+                                 class="B-8"),
+                      data.frame(comp.4c.avg=d.B.16.4b.4c.II$COMP.4c.avg,
+                                 elements=d.B.16.4b.4c.II$events,
+                                 rate=d.B.16.4b.4c.II$COMP.4c.avg/d.B.16.4b.4c.II$COMP.4b.avg,
+                                 class="B-16"),
+                      data.frame(comp.4c.avg=d.C.8.4b.4c.II$COMP.4c.avg,
+                                 elements=d.C.8.4b.4c.II$events,
+                                 rate=d.C.8.4b.4c.II$COMP.4c.avg/d.C.8.4b.4c.II$COMP.4b.avg,
+                                 class="C-8"),
+                      data.frame(comp.4c.avg=d.C.16.4b.4c.II$COMP.4c.avg,
+                                 elements=d.C.16.4b.4c.II$events,
+                                 rate=d.C.16.4b.4c.II$COMP.4c.avg/d.C.16.4b.4c.II$COMP.4b.avg,
+                                 class="C-16"))
+
+facet.frame.III<-rbind(data.frame(comp.4c.avg=d.B.8.4b.4c.III$COMP.4c.avg,
+                                  elements=d.B.8.4b.4c.III$events,
+                                  rate=d.B.8.4b.4c.III$COMP.4c.avg/d.B.8.4b.4c.III$COMP.4b.avg,
+                                  class="B-8"),
+                       data.frame(comp.4c.avg=d.B.16.4b.4c.III$COMP.4c.avg,
+                                  elements=d.B.16.4b.4c.III$events,
+                                  rate=d.B.16.4b.4c.III$COMP.4c.avg/d.B.16.4b.4c.III$COMP.4b.avg,
+                                  class="B-16"),
+                       data.frame(comp.4c.avg=d.C.8.4b.4c.III$COMP.4c.avg,
+                                  elements=d.C.8.4b.4c.III$events,
+                                  rate=d.C.8.4b.4c.III$COMP.4c.avg/d.C.8.4b.4c.III$COMP.4b.avg,
+                                  class="C-8"),
+                       data.frame(comp.4c.avg=d.C.16.4b.4c.III$COMP.4c.avg,
+                                  elements=d.C.16.4b.4c.III$events,
+                                  rate=d.C.16.4b.4c.III$COMP.4c.avg/d.C.16.4b.4c.III$COMP.4b.avg,
+                                  class="C-16"))
+
+facet.frame.IV<-rbind(data.frame(comp.4c.avg=d.B.8.4b.4c.IV$COMP.4c.avg,
+                                 elements=d.B.8.4b.4c.IV$events,
+                                 rate=d.B.8.4b.4c.IV$COMP.4c.avg/d.B.8.4b.4c.IV$COMP.4b.avg,
+                                 class="B-8"),
+                      data.frame(comp.4c.avg=d.B.16.4b.4c.IV$COMP.4c.avg,
+                                 elements=d.B.16.4b.4c.IV$events,
+                                 rate=d.B.16.4b.4c.IV$COMP.4c.avg/d.B.16.4b.4c.IV$COMP.4b.avg,
+                                 class="B-16"),
+                      data.frame(comp.4c.avg=d.C.8.4b.4c.IV$COMP.4c.avg,
+                                 elements=d.C.8.4b.4c.IV$events,
+                                 rate=d.C.8.4b.4c.IV$COMP.4c.avg/d.C.8.4b.4c.IV$COMP.4b.avg,
+                                 class="C-8"),
+                      data.frame(comp.4c.avg=d.C.16.4b.4c.IV$COMP.4c.avg,
+                                 elements=d.C.16.4b.4c.IV$events,
+                                 rate=d.C.16.4b.4c.IV$COMP.4c.avg/d.C.16.4b.4c.IV$COMP.4b.avg,
+                                 class="C-16"))
+
+facet.frame.V<-rbind(data.frame(comp.4c.avg=d.B.8.4b.4c.V$COMP.4c.avg,
+                                elements=d.B.8.4b.4c.V$events,
+                                rate=d.B.8.4b.4c.V$COMP.4c.avg/d.B.8.4b.4c.V$COMP.4b.avg,
+                                class="B-8"),
+                     data.frame(comp.4c.avg=d.B.16.4b.4c.V$COMP.4c.avg,
+                                elements=d.B.16.4b.4c.V$events,
+                                rate=d.B.16.4b.4c.V$COMP.4c.avg/d.B.16.4b.4c.V$COMP.4b.avg,
+                                class="B-16"),
+                     data.frame(comp.4c.avg=d.C.8.4b.4c.V$COMP.4c.avg,
+                                elements=d.C.8.4b.4c.V$events,
+                                rate=d.C.8.4b.4c.V$COMP.4c.avg/d.C.8.4b.4c.V$COMP.4b.avg,
+                                class="C-8"),
+                     data.frame(comp.4c.avg=d.C.16.4b.4c.V$COMP.4c.avg,
+                                elements=d.C.16.4b.4c.V$events,
+                                rate=d.C.16.4b.4c.V$COMP.4c.avg/d.C.16.4b.4c.V$COMP.4b.avg,
+                                class="C-16"))
+```
+
+## Facet Plot for Dataset I
+
+```{r Facet Plot Dataset I}
+ggplot(data=facet.frame.I, aes(x=comp.4c.avg, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class) + scale_x_log10()
+```
+
+## Facet Plot for Dataset II
+
+```{r Facet Plot Dataset II}
+ggplot(data=facet.frame.II, aes(x=comp.4c.avg, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class) + scale_x_log10()
+```
+
+## Facet Plot for Dataset III
+
+```{r Facet Plot for Dataset III}
+ggplot(data=facet.frame.III, aes(x=comp.4c.avg, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class) + scale_x_log10()
+```
+
+## Facet Plot for Dataset IV
+
+```{r Facet Plot Dataset IV}
+ggplot(data=facet.frame.IV, aes(x=comp.4c.avg, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class) + scale_x_log10()
+```
+
+## Facet Plot for Dataset V
+
+```{r Facet Plot for Dataset V}
+ggplot(data=facet.frame.V, aes(x=comp.4c.avg, y=rate, color=comp.4c.avg, size=elements)) + geom_point() + facet_wrap(~ class) + scale_x_log10()
+```
